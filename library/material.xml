@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<data pyBar="http://open.btp.free.fr/?/pyBar" version="1.15">
+	<group id="Acier">
+		<materiau alpha="12e-6" id="AcierXC10" mv="7800" young="216"/>
+		<materiau alpha="12e-6" id="AcierC32" mv="7800" young="200"/>
+		<materiau alpha="12e-6" id="AcierC45" mv="7800" young="200"/>
+		<materiau alpha="12e-6" id="Acier35NCD4" mv="7800" young="200"/>
+		<materiau alpha="12e-6" id="Acier45SCD6" mv="7800" young="220"/>
+		<materiau alpha="12e-6" id="Acier inox.18.10" mv="7800" young="203"/>
+	</group>
+	<group id="Laiton">
+		<materiau alpha="18.5e-6" id="Laiton CuZn5" mv="8300" young="125"/>
+		<materiau alpha="18.5e-6" id="Laiton CuZn40" mv="8300" young="105"/>
+	</group>
+	<materiau alpha="9e-6" id="Platine" mv="21450" young="168"/>
+	<materiau alpha="4.5e-6" id="Tungstène" mv="19300" young="406"/>
+	<materiau alpha="16.5e-6" id="Cuivre" mv="8900" young="100"/>
+	<materiau alpha="18e-6" id="Maillechort" mv="8720" young="125"/>
+	<materiau alpha="11.8e-6" id="Fer" mv="7800" young="200"/>
+	<materiau alpha="30.2e-6" id="Zinc" mv="7150" young="130"/>
+	<materiau alpha="13.4e-6" id="Nickel" mv="8300" young="205"/>
+	<materiau alpha="7.5e-6" id="Verre" mv="2500" young="600"/>
+	<materiau alpha="17.5e-6" id="Bronze" mv="8400" young="106"/>
+</data>

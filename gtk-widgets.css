@@ -1,0 +1,15 @@
+
+GtkLabel {
+}
+GtkHPaned {
+    background-color: rgba(0.1, 0.1, 0.1, 0.1);
+}
+GtkButton, GtkEntry {
+    /*color: #ff00ea;
+    font: Comic Sans 12*/
+}
+
+MyButton {
+    /*color: #00ffea;
+    font: Comic Sans 8*/
+}

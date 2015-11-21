@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# BASEDIR chemin absolu vers l'application pyBar
+BASEDIR="$(which $0)"
+BASEDIR=${BASEDIR%/*}
+
+
+cd $BASEDIR
+/usr/bin/python $BASEDIR/pyBar.py
+cd -

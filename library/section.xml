@@ -1,0 +1,299 @@
+<?xml version="1.0" ?>
+<data pyBar="http://open.btp.free.fr/?/pyBar" version="1.15">
+	<group id="Profilé UPN">
+		<profil h="8" id="UPN 80" igz="106" m="8.65" s="11.02"/>
+		<profil h="10" id="UPN 100" igz="206" m="10.6" s="13.5"/>
+		<profil h="12" id="UPN 120" igz="364" m="13.4" s="17"/>
+		<profil h="14" id="UPN 140" igz="605" m="16" s="20.4"/>
+		<profil h="16" id="UPN 160" igz="925" m="18.8" s="24"/>
+		<profil h="18" id="UPN 180" igz="1350" m="22" s="28"/>
+		<profil h="20" id="UPN 200" igz="1910" m="25.3" s="32.2"/>
+		<profil h="22" id="UPN 220" igz="2690" m="29.4" s="37.4"/>
+		<profil h="24" id="UPN 240" igz="3600" m="33.2" s="42.3"/>
+		<profil h="26" id="UPN 260" igz="4820" m="37.9" s="48.3"/>
+		<profil h="28" id="UPN 280" igz="6280" m="41.8" s="53.3"/>
+		<profil h="30" id="UPN 300" igz="8030" m="46.2" s="58.8"/>
+		<profil h="32" id="UPN 320" igz="10870" m="59.5" s="75.8"/>
+		<profil h="35" id="UPN 350" igz="12840" m="60.6" s="77.3"/>
+		<profil h="38" id="UPN 380" igz="15760" m="63.1" s="80.4"/>
+		<profil h="40" id="UPN 400" igz="20350" m="71.8" s="91.5"/>
+	</group>
+	<group id="Profilé IPE">
+		<profil h="7.8" id="IPE 80 A" igz="64.38" m="5" s="6.38"/>
+		<profil h="8" id="IPE 80" igz="80.14" m="6" s="7.64"/>
+		<profil h="9.8" id="IPE A 100" igz="141.2" m="6.9" s="8.78"/>
+		<profil h="10" id="IPE 100" igz="171" m="8.1" s="10.3"/>
+		<profil h="11.76" id="IPE A 120" igz="257.4" m="8.7" s="11"/>
+		<profil h="12" id="IPE 120" igz="317.8" m="10.4" s="13.2"/>
+		<profil h="13.74" id="IPE A 140" igz="434.9" m="10.5" s="13.4"/>
+		<profil h="14" id="IPE 140" igz="541.2" m="12.9" s="16.4"/>
+		<profil h="15.7" id="IPE A 160" igz="689.3" m="12.7" s="16.2"/>
+		<profil h="16" id="IPE 160" igz="869.3" m="15.8" s="20.1"/>
+		<profil h="17.7" id="IPE A 180" igz="1063" m="15.4" s="19.6"/>
+		<profil h="18" id="IPE 180" igz="1317" m="18.8" s="23.9"/>
+		<profil h="18.2" id="IPE O 180" igz="1505" m="21.3" s="27.1"/>
+		<profil h="19.7" id="IPE A 200" igz="1591" m="18.4" s="23.5"/>
+		<profil h="20" id="IPE 200" igz="1943" m="22.4" s="28.5"/>
+		<profil h="20.2" id="IPE O 200" igz="2211" m="25.1" s="32"/>
+		<profil h="21.7" id="IPE A 220" igz="2317" m="22.2" s="28.3"/>
+		<profil h="22" id="IPE 220" igz="2772" m="26.2" s="33.4"/>
+		<profil h="22.2" id="IPE O 220" igz="3134" m="29.4" s="37.4"/>
+		<profil h="23.7" id="IPE A 240" igz="3290" m="26.2" s="33.3"/>
+		<profil h="24" id="IPE 240" igz="3892" m="30.7" s="39.1"/>
+		<profil h="24.2" id="IPE O 240" igz="4369" m="34.3" s="43.7"/>
+		<profil h="26.7" id="IPE A 270" igz="4917" m="30.7" s="39.2"/>
+		<profil h="27" id="IPE 270" igz="5790" m="36.1" s="45.9"/>
+		<profil h="27.4" id="IPE O 270" igz="6947" m="42.3" s="53.8"/>
+		<profil h="29.7" id="IPE A 300" igz="7173" m="36.5" s="46.5"/>
+		<profil h="30" id="IPE 300" igz="8356" m="42.2" s="53.8"/>
+		<profil h="30.4" id="IPE O 300" igz="9994" m="49.3" s="62.8"/>
+		<profil h="32.7" id="IPE A 330" igz="10230" m="43" s="54.7"/>
+		<profil h="33" id="IPE 330" igz="11770" m="49.1" s="62.6"/>
+		<profil h="33.4" id="IPE O 330" igz="13910" m="57" s="72.6"/>
+		<profil h="35.76" id="IPE A 360" igz="14520" m="50.2" s="64"/>
+		<profil h="36" id="IPE 360" igz="16270" m="57.1" s="72.7"/>
+		<profil h="36.4" id="IPE O 360" igz="19050" m="66" s="84.1"/>
+		<profil h="39.7" id="IPE A 400" igz="20290" m="57.4" s="73.1"/>
+		<profil h="40" id="IPE 400" igz="23130" m="66.3" s="84.5"/>
+		<profil h="40.4" id="IPE O 400" igz="26750" m="75.7" s="96.4"/>
+		<profil h="44.7" id="IPE A 450" igz="29760" m="67.2" s="85.6"/>
+		<profil h="45" id="IPE 450" igz="33740" m="77.6" s="98.8"/>
+		<profil h="45.6" id="IPE O 450" igz="40920" m="92.4" s="118"/>
+		<profil h="49.7" id="IPE A 500" igz="42930" m="79.4" s="101"/>
+		<profil h="50" id="IPE 500" igz="48200" m="90.7" s="116"/>
+		<profil h="50.6" id="IPE O 500" igz="57780" m="107" s="137"/>
+		<profil h="54.7" id="IPE A 550" igz="59980" m="92.1" s="117"/>
+		<profil h="55" id="IPE 550" igz="67120" m="106" s="134"/>
+		<profil h="55.6" id="IPE O 550" igz="79160" m="123" s="156"/>
+		<profil h="59.7" id="IPE A 600" igz="82920" m="108" s="137"/>
+		<profil h="60" id="IPE 600" igz="92080" m="122" s="156"/>
+		<profil h="61" id="IPE O 600" igz="118300" m="154" s="197"/>
+		<profil h="75.3" id="IPE 750 x 137" igz="159900" m="137" s="175"/>
+		<profil h="75.3" id="IPE 750 x 147" igz="166100" m="147" s="188"/>
+		<profil h="76.2" id="IPE 750 x 173" igz="205800" m="173" s="221"/>
+		<profil h="77" id="IPE 750 x 196" igz="240300" m="196" s="251"/>
+	</group>
+	<group id="Profilé UPE">
+		<profil h="8" id="UPE 80" igz="107.2" m="7.9" s="10.1"/>
+		<profil h="10" id="UPE 100" igz="206.9" m="9.82" s="12.5"/>
+		<profil h="12" id="UPE 120" igz="363.5" m="12.1" s="15.4"/>
+		<profil h="14" id="UPE 140" igz="599.5" m="14.5" s="18.4"/>
+		<profil h="16" id="UPE 160" igz="911.1" m="17" s="21.7"/>
+		<profil h="18" id="UPE 180" igz="1353" m="19.7" s="25.1"/>
+		<profil h="20" id="UPE 200" igz="1909" m="22.8" s="29"/>
+		<profil h="22" id="UPE 220" igz="2682" m="26.6" s="33.9"/>
+		<profil h="24" id="UPE 240" igz="3599" m="30.2" s="38.5"/>
+		<profil h="27" id="UPE 270" igz="5255" m="35.2" s="44.8"/>
+		<profil h="30" id="UPE 300" igz="7823" m="44.4" s="56.6"/>
+		<profil h="33" id="UPE 330" igz="11010" m="53.2" s="67.8"/>
+		<profil h="36" id="UPE 360" igz="14830" m="61.2" s="77.9"/>
+		<profil h="40" id="UPE 400" igz="20980" m="72.2" s="91.9"/>
+	</group>
+	<group id="Profilé IPN">
+		<profil h="8" id="IPN 80" igz="77.8" m="5.9" s="7.58"/>
+		<profil h="10" id="IPN 100" igz="171" m="8.3" s="10.6"/>
+		<profil h="12" id="IPN 120" igz="328" m="11.1" s="14.2"/>
+		<profil h="14" id="IPN 140" igz="573" m="14.3" s="18.3"/>
+		<profil h="16" id="IPN 160" igz="935" m="17.9" s="22.8"/>
+		<profil h="18" id="IPN 180" igz="1450" m="21.9" s="27.9"/>
+		<profil h="20" id="IPN 200" igz="2140" m="26.2" s="33.4"/>
+		<profil h="22" id="IPN 220" igz="3060" m="31.1" s="39.5"/>
+		<profil h="24" id="IPN 240" igz="4250" m="36.2" s="46.1"/>
+		<profil h="26" id="IPN 260" igz="5740" m="41.9" s="53.3"/>
+		<profil h="28" id="IPN 280" igz="7590" m="47.9" s="61"/>
+		<profil h="30" id="IPN 300" igz="9800" m="54.2" s="69"/>
+		<profil h="32" id="IPN 320" igz="12510" m="61" s="77.7"/>
+		<profil h="34" id="IPN 340" igz="15700" m="68" s="86.7"/>
+		<profil h="36" id="IPN 360" igz="19610" m="76.1" s="97"/>
+		<profil h="38" id="IPN 380" igz="24010" m="84" s="107"/>
+		<profil h="40" id="IPN 400" igz="29210" m="92.4" s="118"/>
+		<profil h="45" id="IPN 450" igz="45850" m="115" s="147"/>
+		<profil h="50" id="IPN 500" igz="68740" m="141" s="179"/>
+		<profil h="55" id="IPN 550" igz="99180" m="166" s="212"/>
+		<profil h="60" id="IPN 600" igz="138800" m="199" s="254"/>
+	</group>
+	<group id="Profilé HE ">
+		<profil h="9.1" id="HE 100 AA" igz="236.5" m="12.2" s="15.6"/>
+		<profil h="9.6" id="HE 100 A" igz="349.2" m="16.7" s="21.2"/>
+		<profil h="10" id="HE 100 B" igz="449.5" m="20.4" s="26"/>
+		<profil h="12" id="HE 100 M" igz="1143" m="41.8" s="53.2"/>
+		<profil h="10.9" id="HE 120 AA" igz="413.4" m="14.6" s="18.6"/>
+		<profil h="11.4" id="HE 120 A" igz="606.2" m="19.9" s="25.3"/>
+		<profil h="12" id="HE 120 B" igz="864.4" m="26.7" s="34"/>
+		<profil h="14" id="HE 120 M" igz="2018" m="52.1" s="66.4"/>
+		<profil h="12.8" id="HE 140 AA" igz="719.5" m="18.1" s="23"/>
+		<profil h="13.3" id="HE 140 A" igz="1033" m="24.7" s="31.4"/>
+		<profil h="14" id="HE 140 B" igz="1509" m="33.7" s="43"/>
+		<profil h="16" id="HE 140 M" igz="3291" m="63.2" s="80.6"/>
+		<profil h="14.8" id="HE 160 AA" igz="1283" m="23.8" s="30.4"/>
+		<profil h="15.2" id="HE 160 A" igz="1673" m="30.4" s="38.8"/>
+		<profil h="16" id="HE 160 B" igz="2492" m="42.6" s="54.3"/>
+		<profil h="18" id="HE 160 M" igz="5098" m="76.2" s="97.1"/>
+		<profil h="16.7" id="HE 180 AA" igz="1967" m="28.7" s="36.5"/>
+		<profil h="17.1" id="HE 180 A" igz="2510" m="35.5" s="45.3"/>
+		<profil h="18" id="HE 180 B" igz="3831" m="51.2" s="65.3"/>
+		<profil h="20" id="HE 180 M" igz="7483" m="88.9" s="113.3"/>
+		<profil h="18.6" id="HE 200 AA" igz="2944" m="34.6" s="44.1"/>
+		<profil h="19" id="HE 200 A" igz="3692" m="42.3" s="53.8"/>
+		<profil h="20" id="HE 200 B" igz="5696" m="61.3" s="78.1"/>
+		<profil h="22" id="HE 200 M" igz="10640" m="103" s="131.3"/>
+		<profil h="20.5" id="HE 220 AA" igz="4170" m="40.4" s="51.5"/>
+		<profil h="21" id="HE 220 A" igz="5410" m="50.5" s="64.3"/>
+		<profil h="22" id="HE 220 B" igz="8091" m="71.5" s="91"/>
+		<profil h="24" id="HE 220 M" igz="14600" m="117" s="149.4"/>
+		<profil h="22.4" id="HE 240 AA" igz="5835" m="47.4" s="60.4"/>
+		<profil h="23" id="HE 240 A" igz="7763" m="60.3" s="76.8"/>
+		<profil h="24" id="HE 240 B" igz="11260" m="83.2" s="106"/>
+		<profil h="26" id="HE 240 M" igz="24290" m="157" s="199.6"/>
+		<profil h="24.4" id="HE 260 AA" igz="7981" m="54.1" s="69"/>
+		<profil h="25" id="HE 260 A" igz="10450" m="68.2" s="86.8"/>
+		<profil h="26" id="HE 260 B" igz="14920" m="93" s="118.4"/>
+		<profil h="29" id="HE 260 M" igz="31310" m="172" s="219.6"/>
+		<profil h="26.4" id="HE 280 AA" igz="10560" m="61.2" s="78"/>
+		<profil h="27" id="HE 280 A" igz="13670" m="76.4" s="97.3"/>
+		<profil h="28" id="HE 280 B" igz="19270" m="103" s="131.4"/>
+		<profil h="31" id="HE 280 M" igz="39550" m="189" s="240.2"/>
+		<profil h="28.3" id="HE 300 AA" igz="13800" m="69.8" s="88.9"/>
+		<profil h="29" id="HE 300 A" igz="18260" m="88.3" s="112.5"/>
+		<profil h="30" id="HE 300 B" igz="25170" m="117" s="149.1"/>
+		<profil h="34" id="HE 300 M" igz="59200" m="238" s="303.1"/>
+		<profil h="30.1" id="HE 320 AA" igz="16450" m="74.2" s="94.6"/>
+		<profil h="31" id="HE 320 A" igz="22930" m="97.6" s="124.4"/>
+		<profil h="32" id="HE 320 B" igz="30820" m="127" s="161.3"/>
+		<profil h="35.9" id="HE 320 M" igz="68130" m="245" s="312"/>
+		<profil h="32" id="HE 340 AA" igz="19550" m="78.9" s="100.5"/>
+		<profil h="33" id="HE 340 A" igz="27690" m="105" s="133.5"/>
+		<profil h="34" id="HE 340 B" igz="36660" m="134" s="170.9"/>
+		<profil h="37.7" id="HE 340 M" igz="76370" m="248" s="315.8"/>
+		<profil h="33.9" id="HE 360 AA" igz="23040" m="83.7" s="106.6"/>
+		<profil h="35" id="HE 360 A" igz="33090" m="112" s="142.8"/>
+		<profil h="36" id="HE 360 B" igz="43190" m="142" s="180.6"/>
+		<profil h="39.5" id="HE 360 M" igz="84870" m="250" s="318.8"/>
+		<profil h="37.8" id="HE 400 AA" igz="31250" m="92.4" s="117.7"/>
+		<profil h="39" id="HE 400 A" igz="45070" m="125" s="159"/>
+		<profil h="40" id="HE 400 B" igz="57680" m="155" s="197.8"/>
+		<profil h="43.2" id="HE 400 M" igz="104100" m="256" s="325.8"/>
+		<profil h="42.5" id="HE 450 AA" igz="41890" m="99.7" s="127.1"/>
+		<profil h="44" id="HE 450 A" igz="63720" m="140" s="178"/>
+		<profil h="45" id="HE 450 B" igz="79890" m="171" s="218"/>
+		<profil h="47.8" id="HE 450 M" igz="131500" m="263" s="335.4"/>
+		<profil h="47.2" id="HE 500 AA" igz="54640" m="107" s="136.9"/>
+		<profil h="49" id="HE 500 A" igz="86970" m="155" s="197.5"/>
+		<profil h="50" id="HE 500 B" igz="107200" m="187" s="238.6"/>
+		<profil h="52.4" id="HE 500 M" igz="161900" m="270" s="344.3"/>
+		<profil h="52.2" id="HE 550 AA" igz="72870" m="120" s="152.8"/>
+		<profil h="54" id="HE 550 A" igz="111900" m="166" s="211.8"/>
+		<profil h="55" id="HE 550 B" igz="136700" m="199" s="254.1"/>
+		<profil h="57.2" id="HE 550 M" igz="198000" m="278" s="354.4"/>
+		<profil h="57.1" id="HE 600 AA" igz="91900" m="129" s="164.1"/>
+		<profil h="59" id="HE 600 A" igz="141200" m="178" s="226.5"/>
+		<profil h="60" id="HE 600 B" igz="171000" m="212" s="270"/>
+		<profil h="62" id="HE 600 M" igz="237400" m="285" s="363.7"/>
+		<profil h="63.2" id="HE 600 x 337" igz="283200" m="337" s="429.2"/>
+		<profil h="64.8" id="HE 600 x 399" igz="344600" m="399" s="508.5"/>
+		<profil h="62" id="HE 650 AA" igz="113900" m="138" s="175.8"/>
+		<profil h="64" id="HE 650 A" igz="175200" m="190" s="241.6"/>
+		<profil h="65" id="HE 650 B" igz="210600" m="225" s="286.3"/>
+		<profil h="66.8" id="HE 650 M" igz="281700" m="293" s="373.7"/>
+		<profil h="68" id="HE 650 x 343" igz="333700" m="343" s="437.5"/>
+		<profil h="69.6" id="HE 650 x 407" igz="405400" m="407" s="518.8"/>
+		<profil h="67" id="HE 700 AA" igz="142700" m="150" s="190.9"/>
+		<profil h="69" id="HE 700 A" igz="215300" m="204" s="260.5"/>
+		<profil h="70" id="HE 700 B" igz="256900" m="241" s="306.4"/>
+		<profil h="71.6" id="HE 700 M" igz="329300" m="301" s="383"/>
+		<profil h="72.8" id="HE 700 x 352" igz="389700" m="352" s="448.6"/>
+		<profil h="74.4" id="HE 700 x 418" igz="472500" m="418" s="531.9"/>
+		<profil h="77" id="HE 800 AA" igz="208900" m="172" s="218.5"/>
+		<profil h="79" id="HE 800 A" igz="303400" m="224" s="285.8"/>
+		<profil h="80" id="HE 800 B" igz="359100" m="262" s="334.2"/>
+		<profil h="81.4" id="HE 800 M" igz="442600" m="317" s="404.3"/>
+		<profil h="82.6" id="HE 800 x 373" igz="523900" m="373" s="474.6"/>
+		<profil h="84.2" id="HE 800 x 444" igz="634500" m="444" s="566"/>
+		<profil h="87" id="HE 900 AA" igz="301100" m="198" s="252.2"/>
+		<profil h="89" id="HE 900 A" igz="422100" m="252" s="320.5"/>
+		<profil h="90" id="HE 900 B" igz="494100" m="291" s="371.3"/>
+		<profil h="91" id="HE 900 M" igz="570400" m="333" s="423.6"/>
+		<profil h="92.2" id="HE 900 x 391" igz="674300" m="391" s="497.7"/>
+		<profil h="93.8" id="HE 900 x 466" igz="814900" m="466" s="593.7"/>
+		<profil h="97" id="HE 1000 AA" igz="406500" m="222" s="282.2"/>
+		<profil h="98" id="HE 1000 x 249" igz="481100" m="249" s="316.8"/>
+		<profil h="99" id="HE 1000 A" igz="553800" m="272" s="346.8"/>
+		<profil h="100" id="HE 1000 B" igz="644700" m="314" s="400"/>
+		<profil h="100.8" id="HE 1000 M" igz="722300" m="349" s="444.2"/>
+		<profil h="101.6" id="HE 1000 x 393" igz="807700" m="393" s="500.2"/>
+		<profil h="102" id="HE 1000 x 415" igz="853100" m="415" s="528.7"/>
+		<profil h="102.6" id="HE 1000 x 438" igz="909800" m="437" s="557.2"/>
+		<profil h="103.6" id="HE 1000 x 494" igz="1028000" m="494" s="629.1"/>
+		<profil h="105.6" id="HE 1000 x 584" igz="1246100" m="584" s="743.7"/>
+	</group>
+	<group id="Profilé HD ">
+		<profil h="24.4" id="HD 260 x 54,1" igz="7981" m="54.1" s="69"/>
+		<profil h="25" id="HD 260 x 68,2" igz="10450" m="68.2" s="86.8"/>
+		<profil h="26" id="HD 260 x 93,0" igz="14920" m="93" s="118.4"/>
+		<profil h="26.8" id="HD 260 x 114" igz="18910" m="114" s="145.7"/>
+		<profil h="27.8" id="HD 260 x 142" igz="24330" m="142" s="180.3"/>
+		<profil h="29" id="HD 260 x 172" igz="31310" m="172" s="219.6"/>
+		<profil h="30.1" id="HD 320 x 74,2" igz="16450" m="74.2" s="94.6"/>
+		<profil h="31" id="HD 320 x 97,6" igz="22930" m="97.6" s="124.4"/>
+		<profil h="32" id="HD 320 x 127" igz="30820" m="127" s="161.3"/>
+		<profil h="33" id="HD 320 x 158" igz="39640" m="158" s="201.2"/>
+		<profil h="34.3" id="HD 320 x 198" igz="51900" m="198" s="252.3"/>
+		<profil h="35.9" id="HD 320 x 245" igz="68130" m="245" s="312"/>
+		<profil h="37.5" id="HD 320 x 300" igz="86900" m="300" s="382.1"/>
+		<profil h="35.6" id="HD 360 x 134" igz="41510" m="134" s="170.6"/>
+		<profil h="36" id="HD 360 x 147" igz="46290" m="147" s="187.9"/>
+		<profil h="36.4" id="HD 360 x 162" igz="51540" m="162" s="206.3"/>
+		<profil h="36.8" id="HD 360 x 179" igz="57440" m="179" s="228.3"/>
+		<profil h="37.2" id="HD 360 x 196" igz="63630" m="196" s="250.3"/>
+		<profil h="36.8" id="HD 400 x 187" igz="60180" m="187" s="237.6"/>
+		<profil h="37.5" id="HD 400 x 216" igz="71140" m="216" s="275.5"/>
+		<profil h="38" id="HD 400 x 237" igz="78780" m="237" s="300.9"/>
+		<profil h="38.7" id="HD 400 x 262" igz="89410" m="262" s="334.6"/>
+		<profil h="39.3" id="HD 400 x 287" igz="99710" m="287" s="366.3"/>
+		<profil h="39.9" id="HD 400 x 314" igz="110200" m="314" s="399.2"/>
+		<profil h="40.7" id="HD 400 x 347" igz="124900" m="347" s="442"/>
+		<profil h="41.6" id="HD 400 x 382" igz="141300" m="382" s="487.1"/>
+		<profil h="42.5" id="HD 400 x 421" igz="159600" m="421" s="537.1"/>
+		<profil h="43.5" id="HD 400 x 463" igz="180200" m="463" s="589.5"/>
+		<profil h="44.6" id="HD 400 x 509" igz="204500" m="509" s="649"/>
+		<profil h="45.5" id="HD 400 x 551" igz="226100" m="551" s="701.4"/>
+		<profil h="46.5" id="HD 400 x 592" igz="250200" m="592" s="754.9"/>
+		<profil h="47.4" id="HD 400 x 634" igz="274200" m="634" s="808"/>
+		<profil h="48.3" id="HD 400 x 677" igz="299500" m="677" s="863.4"/>
+		<profil h="49.8" id="HD 400 x 744" igz="342100" m="744" s="948.1"/>
+		<profil h="51.4" id="HD 400 x 818" igz="392200" m="818" s="1043"/>
+		<profil h="53.1" id="HD 400 x 900" igz="450200" m="900" s="1149"/>
+		<profil h="55" id="HD 400 x 990" igz="518900" m="990" s="1262"/>
+		<profil h="56.9" id="HD 400 x 1086" igz="595700" m="1086" s="1386"/>
+	</group>
+	<group id="Profilé HL ">
+		<profil h="91.2" id="HL 920 x 342" igz="624900" m="342" s="436.1"/>
+		<profil h="91.6" id="HL 920 x 365" igz="670700" m="365" s="464.4"/>
+		<profil h="92.1" id="HL 920 x 387" igz="718300" m="387" s="493"/>
+		<profil h="92.8" id="HL 920 x 417" igz="787600" m="417" s="532.5"/>
+		<profil h="93.3" id="HL 920 x 446" igz="846800" m="446" s="569.6"/>
+		<profil h="94.2" id="HL 920 x 488" igz="935390" m="488" s="621.3"/>
+		<profil h="95" id="HL 920 x 534" igz="1031000" m="534" s="681"/>
+		<profil h="96" id="HL 920 x 585" igz="1143090" m="585" s="745.3"/>
+		<profil h="97.2" id="HL 920 x 653" igz="1292000" m="653" s="831.9"/>
+		<profil h="" id="HL 920 x 725" igz="1492000" m="725" s="922.9"/>
+		<profil h="99.6" id="HL 920 x 784" igz="1593000" m="784" s="997.7"/>
+		<profil h="102.8" id="HL 920 x 967" igz="2033000" m="967" s="1231"/>
+		<profil h="98.2" id="HL 1000 AA" igz="618700" m="296" s="3768"/>
+		<profil h="99" id="HL 1000 A" igz="696400" m="321" s="408.8"/>
+		<profil h="100" id="HL 1000 B" igz="812100" m="371" s="472"/>
+		<profil h="100.8" id="HL 1000 M" igz="909800" m="412" s="524.2"/>
+		<profil h="101.2" id="HL 1000 x 443" igz="966510" m="443" s="563.7"/>
+		<profil h="102" id="HL 1000 x 483" igz="1067480" m="483" s="615.1"/>
+		<profil h="103" id="HL 1000 x 539" igz="1202540" m="539" s="687.2"/>
+		<profil h="103.2" id="HL 1000 x 554" igz="1232000" m="554" s="705.8"/>
+		<profil h="104" id="HL 1000 x 591" igz="1331040" m="591" s="752.7"/>
+		<profil h="104.8" id="HL 1000 x 642" igz="1451000" m="642" s="817.6"/>
+		<profil h="106.8" id="HL 1000 x 748" igz="1732000" m="748" s="953.4"/>
+		<profil h="109.2" id="HL 1000 x 883" igz="2096000" m="883" s="1125.3"/>
+		<profil h="109" id="HL 1100 A" igz="867400" m="343" s="436.5"/>
+		<profil h="110" id="HL 1100 B" igz="1005000" m="390" s="497"/>
+		<profil h="110.8" id="HL 1100 M" igz="1126000" m="433" s="551.2"/>
+		<profil h="111.8" id="HL 1100 R" igz="1294000" m="499" s="635.2"/>
+	</group>
+</data>

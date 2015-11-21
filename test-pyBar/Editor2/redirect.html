@@ -1,0 +1,38 @@
+<html><head><title>Epydoc Redirect Page</title>
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="pragma" content="no-cache" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+<!--
+var pages = ["classEditor.AbstractNode-c", "classEditor.AbstractBar-c", "classEditor.CMenuChar1-c", "classEditor.CMenuChar2-c", "classEditor.CMenuEmpty-c", "classEditor.CMenuNode1-c", "classEditor.CMenuNode2-c", "classEditor.DataEditor-c", "classEditor.EmptyRdm-c", "classEditor.Material-c", "classEditor.Parabola-c", "classEditor.ArcNode-c", "classEditor.CharArc-c", "classEditor.CharBar-c", "classEditor.MyError-c", "classEditor.Section-c", "classEditor.CharFp-c", "classEditor.CharNo-c", "classEditor.CharPp-c", "classEditor.CharQu-c", "classEditor.CharTh-c", "classEditor.CharTr-c", "classEditor.Editor-c", "classEditor.MBarre-c", "classEditor.Barre-c", "classEditor.Combi-c", "classEditor.Case-c", "classEditor.Char-c", "classEditor.Node-c", "classEditor.Arc-c", "classEditor-m"];
+var dottedName = get_anchor();
+if (dottedName) {
+    var target = redirect_url(dottedName);
+    if (target) window.location.replace(target);
+}
+// -->
+</script>
+
+<h3>Epydoc Auto-redirect page</h3>
+
+<p>When javascript is enabled, this page will redirect URLs of
+the form <tt>redirect.html#<i>dotted.name</i></tt> to the
+documentation for the object with the given fully-qualified
+dotted name.</p>
+<p><a id="message"> &nbsp; </a></p>
+
+<script type="text/javascript">
+<!--
+if (dottedName) {
+    var msg = document.getElementById("message");
+    msg.innerHTML = "No documentation found for <tt>"+
+                    dottedName+"</tt>";
+}
+// -->
+</script>
+
+</body>
+</html>

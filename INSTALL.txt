@@ -1,0 +1,43 @@
+---------------INSTALLATION DE PYBAR ----------------
+
+1) Sous linux
+
+a) Décompresser l'archive pyBar.zip dans le répertoire de votre choix.
+
+b) Installer Python2.4 et plus : python est normalement présent sous bon
+nombre de distribution Linux. S'en assurer en lançant la commande python.
+
+c) Vérifier la présence de la librairie pygtk. Dans l'interpréteur de python,
+lancer la commande "import pygtk". En cas d'échec, installer pygtk.
+
+d) Installer numpy (librairie mathématique) (numpy ou python-numpy)
+
+e) S'assurer que le fichier pyBar est executable : 
+	chmod u+x pyBar
+f) Lancer le fichier pyBar (./pyBar)
+
+2) Sous Windows (testé pour 2000 et NT)
+2 procédures :
+
+2-1) Installation simplifiée à partir de l'installeur pyBarXX_setup.exe
+
+2-2) Installation à partir des sources du programmme
+
+a) Décompresser l'archive dans le répertoire de votre choix
+
+b) Installer python (choisir python2.5.msi pour windows)
+
+c) Installation de la librairie PYGTK
+A partir de la page de pygtk, choisir la version compatible avec votre version
+de python.
+- installer pyGTK-runtime
+- installer pycairo
+- installer pygobject
+- installer pygtk
+
+d) Installation de la librairie numpy
+A partir du site de numpy :
+- installer numpy
+
+e) double-cliquer sur l'icone du fichier pyBar.py (s'assurer que le fichier a
+bien l'extension .py)

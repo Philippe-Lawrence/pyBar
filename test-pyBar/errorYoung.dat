@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<data pyBar="http://open.btp.free.fr/?/pyBar" version="2.3">
+	<elem id="node">
+		<node d="0.0,0.0" id="N1" liaison="1"/>
+		<node d="10.0,0.0" id="N2" liaison="2"/>
+		<node d="12.0,0.0" id="N3" liaison="2"/>
+		<node d="15.0,0.0" id="N4" liaison="2"/>
+		<node d="18,0" id="N5" liaison="2"/>
+	</elem>
+	<elem id="barre">
+		<barre d="N1,N2,0,0" id="B1"/>
+		<barre d="N2,N3,0,0" id="B2"/>
+		<barre d="N3,N4,0,0" id="B3"/>
+		<barre d="N4,N5,0,0" id="B4"/>
+	</elem>
+	<elem id="geo">
+		<barre h="0.14" id="*" igz="6.05e-06" profil="UPN 140" s="0.00204" v="0.07"/>
+	</elem>
+	<elem id="material">
+		<barre id="B1,B2" mv="7800" young="210000"/>
+		<barre id="B3" mv="7000" young="200000"/>
+	</elem>
+	<elem id="char">
+		<case id="CP">
+			<barre id="*" pp="true"/>
+		</case>
+		<case id="Q1">
+			<barre id="B1" qu="0,,0.0,-10000"/>
+		</case>
+		<case id="Q2">
+			<barre id="B2" qu="0,,0.0,-10000.0"/>
+		</case>
+		<case id="Q3">
+			<barre id="B3" qu="0,,0.0,-10000.0"/>
+		</case>
+	</elem>
+	<elem id="combinaison">
+		<combinaison d="1.35,1.5,0.0,0.0" id="1,35G+1,5Q1"/>
+		<combinaison d="1.35,1.5,1.5,1.5" id="1,35G+1,5Q1+1,5Q2+1,5Q3"/>
+		<combinaison d="1.35,1.5,0.0,1.5" id="1,35G+1,5Q1+1,5Q3"/>
+		<combinaison d="1.35,0.0,1.5,0.0" id="1,35G+1,5Q2"/>
+		<combinaison d="1.35,0.0,0.0,1.5" id="1,35G+1,5Q3"/>
+		<combinaison d="1.0,1.0,1.0,1.0" id="G+Q1+Q2+Q3"/>
+	</elem>
+	<elem id="prefs">
+		<unit d="1.0" id="C"/>
+		<unit d="1000000.0" id="E"/>
+		<unit d="1.0" id="F"/>
+		<unit d="1.0" id="I"/>
+		<unit d="1.0" id="M"/>
+		<unit d="1.0" id="L"/>
+		<unit d="1.0" id="S"/>
+		<const g="9.81"/>
+		<conv conv="1.0"/>
+	</elem>
+</data>

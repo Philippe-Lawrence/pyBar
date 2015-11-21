@@ -1,0 +1,3347 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>classEditor.Editor</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="classEditor-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="classEditor-module.html">Module&nbsp;classEditor</a> ::
+        Class&nbsp;Editor
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="classEditor.Editor-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Editor</h1><p class="nomargin-top"><span class="codelink"><a href="classEditor-pysrc.html#Editor">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_classedi_23" name="uml_class_diagram_for_classedi_23">
+<area shape="rect" id="node1_14" href="classEditor.Editor-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,39,333,57"/>
+<area shape="rect" id="node1_15" href="classEditor.Editor-class.html#print_message" title="Affiche les messages en bas de la fenetre" alt="" coords="17,57,333,76"/>
+<area shape="rect" id="node1_16" href="classEditor.Editor-class.html#on_w2_add" title="Action li&#233;e au bouton d&#39;ajout" alt="" coords="17,76,333,95"/>
+<area shape="rect" id="node1_17" href="classEditor.Editor-class.html#on_w2_remove" title="Action li&#233;e au bouton de suppression" alt="" coords="17,95,333,113"/>
+<area shape="rect" id="node1_18" href="classEditor.Editor-class.html#on_w2_xml" title="Basculement en mode xml ou normal" alt="" coords="17,113,333,132"/>
+<area shape="rect" id="node1_19" href="classEditor.Editor-class.html#set_node_toolbar" title="classEditor.Editor.set_node_toolbar" alt="" coords="17,132,333,151"/>
+<area shape="rect" id="node1_20" href="classEditor.Editor-class.html#on_w2_configure" title="G&#232;re les &#233;v&#232;nements correspondant au redimensionnement de la fenetre" alt="" coords="17,151,333,169"/>
+<area shape="rect" id="node1_21" href="classEditor.Editor-class.html#new_page_editor" title="Actualise l&#39;&#233;diteur de donn&#233;es pour la nouvelle &#233;tude" alt="" coords="17,169,333,188"/>
+<area shape="rect" id="node1_22" href="classEditor.Editor-class.html#update_window" title="Met &#224; jour imm&#233;diatement l&#39;onglet actif et an arri&#232;re plan les autres &#160;onglets" alt="" coords="17,188,333,207"/>
+<area shape="rect" id="node1_23" href="classEditor.Editor-class.html#ini_box_dict" title="Initialise le dictionnaire contenant les vbox des onglets" alt="" coords="17,207,333,225"/>
+<area shape="rect" id="node1_24" href="classEditor.Editor-class.html#ini_units_box" title="Remplit la zone pour les unit&#233;s avec les labels et combobox vides" alt="" coords="17,225,333,244"/>
+<area shape="rect" id="node1_25" href="classEditor.Editor-class.html#fill_units_combo" title="Remplit les combobox des unit&#233;s avec les unit&#233;s imp&#233;riales ou SI" alt="" coords="17,244,333,263"/>
+<area shape="rect" id="node1_26" href="classEditor.Editor-class.html#on_add_node1" title="Ajoute un noeud ordinaire dans la page des noeuds" alt="" coords="17,263,333,281"/>
+<area shape="rect" id="node1_27" href="classEditor.Editor-class.html#on_w2_change_page" title="classEditor.Editor.on_w2_change_page" alt="" coords="17,300,333,319"/>
+<area shape="rect" id="node1" href="classEditor.Editor-class.html" title="Classe unique pour l&#39;&#233;diteur des donn&#233;es" alt="" coords="5,6,345,325"/>
+</map>
+  <img src="uml_class_diagram_for_classedi_23.png" alt='' usemap="#uml_class_diagram_for_classedi_23" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Classe unique pour l'&#233;diteur des donn&#233;es</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classEditor.Editor-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">study</span>)</span><br />
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="print_message"></a><span class="summary-sig-name">print_message</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">text</span>)</span><br />
+      Affiche les messages en bas de la fenetre</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.print_message">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add"></a><span class="summary-sig-name">on_w2_add</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Action li&#233;e au bouton d'ajout</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_remove"></a><span class="summary-sig-name">on_w2_remove</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Action li&#233;e au bouton de suppression</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_remove">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_xml_exit"></a><span class="summary-sig-name">_xml_exit</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Quitte le mode xml sans actualisation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._xml_exit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_xml"></a><span class="summary-sig-name">on_w2_xml</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Basculement en mode xml ou normal</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_xml">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_toolbar"></a><span class="summary-sig-name">_set_toolbar</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Actualise la barre d'outils principales</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._set_toolbar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_node_toolbar"></a><span class="summary-sig-name">set_node_toolbar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tag</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.set_node_toolbar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_xml_window"></a><span class="summary-sig-name">_get_xml_window</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Retourne la sw contenant le textview des donn&#233;es xml</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._get_xml_window">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_on_xml_changed"></a><span class="summary-sig-name">_on_xml_changed</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">buffer</span>)</span><br />
+      Changement du contenu du textview pour le xml</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._on_xml_changed">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_window"></a><span class="summary-sig-name">_ini_window</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_window">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_configure"></a><span class="summary-sig-name">on_w2_configure</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      G&#232;re les &#233;v&#232;nements correspondant au redimensionnement de la fenetre</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_configure">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="new_page_editor"></a><span class="summary-sig-name">new_page_editor</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">study</span>)</span><br />
+      Actualise l'&#233;diteur de donn&#233;es pour la nouvelle &#233;tude</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.new_page_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_window"></a><span class="summary-sig-name">update_window</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Met &#224; jour imm&#233;diatement l'onglet actif et an arri&#232;re plan les autres
+      onglets</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_window">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_on_switch_page"></a><span class="summary-sig-name">_on_switch_page</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">book</span>,
+        <span class="summary-sig-arg">page</span>,
+        <span class="summary-sig-arg">page_num</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._on_switch_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_di_methode"></a><span class="summary-sig-name">_ini_di_methode</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_di_methode">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ini_box_dict"></a><span class="summary-sig-name">ini_box_dict</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initialise le dictionnaire contenant les vbox des onglets</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.ini_box_dict">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_save_unit_pref"></a><span class="summary-sig-name">_save_unit_pref</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._save_unit_pref">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_units_page"></a><span class="summary-sig-name">_ini_units_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Remplit la combobox des unit&#233;s lors de l'ouverture de la fenetre 
+      Connecte les combobox</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_units_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ini_units_box"></a><span class="summary-sig-name">ini_units_box</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">box</span>)</span><br />
+      Remplit la zone pour les unit&#233;s avec les labels et combobox vides</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.ini_units_box">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="fill_units_combo"></a><span class="summary-sig-name">fill_units_combo</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Remplit les combobox des unit&#233;s avec les unit&#233;s imp&#233;riales ou SI</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.fill_units_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_units_page"></a><span class="summary-sig-name">_update_units_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Active la bonne unit&#233; dans les combobox des unit&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_units_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_imperial"></a><span class="summary-sig-name">_set_imperial</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Change les unit&#233;s en unit&#233;s imp&#233;riales</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._set_imperial">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_L"></a><span class="summary-sig-name">_update_numeric_L</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Met &#224; jour les valeurs num&#233;riques suite &#224; un changement d'unit&#233; de 
+      longueur</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_L">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_I"></a><span class="summary-sig-name">_update_numeric_I</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Met &#224; jour les valeurs num&#233;riques suite &#224; un changement d'unit&#233; de 
+      moment quadratique</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_I">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_S"></a><span class="summary-sig-name">_update_numeric_S</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Met &#224; jour les valeurs num&#233;riques suite &#224; un changement d'unit&#233; de la
+      section</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_S">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_E"></a><span class="summary-sig-name">_update_numeric_E</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Met &#224; jour les valeurs num&#233;riques suite &#224; un changement d'unit&#233; du 
+      module d'Young</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_E">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_M"></a><span class="summary-sig-name">_update_numeric_M</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Met &#224; jour les valeurs num&#233;riques suite &#224; un changement d'unit&#233; de la
+      masse volumique</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_M">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_F"></a><span class="summary-sig-name">_update_numeric_F</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Met &#224; jour les valeurs num&#233;riques suite &#224; un changement d'unit&#233; de 
+      force</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_F">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_numeric_vals"></a><span class="summary-sig-name">_update_numeric_vals</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">factor</span>)</span><br />
+      Convertit les valeurs num&#233;riques de l'ensemble des onglets dans la 
+      nouvelle unit&#233;</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_numeric_vals">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_texts_L"></a><span class="summary-sig-name">_update_texts_L</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">units</span>,
+        <span class="summary-sig-arg">unit_L</span>)</span><br />
+      Convertit les labels suite &#224; un changement d'unit&#233; de longueur</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_texts_L">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_texts_I"></a><span class="summary-sig-name">_update_texts_I</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">units</span>,
+        <span class="summary-sig-arg">unit</span>)</span><br />
+      Convertit les labels suite &#224; un changement d'unit&#233; de moment qua</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_texts_I">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_texts_S"></a><span class="summary-sig-name">_update_texts_S</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">units</span>,
+        <span class="summary-sig-arg">unit</span>)</span><br />
+      Convertit les labels suite &#224; un changement d'unit&#233; de surface</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_texts_S">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_texts_E"></a><span class="summary-sig-name">_update_texts_E</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">units</span>,
+        <span class="summary-sig-arg">unit</span>)</span><br />
+      Convertit les labels suite &#224; un changement d'unit&#233; de module 
+      &#233;lastique</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_texts_E">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_texts_M"></a><span class="summary-sig-name">_update_texts_M</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">units</span>,
+        <span class="summary-sig-arg">unit</span>)</span><br />
+      Convertit les labels suite &#224; un changement d'unit&#233; de masse volumique</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_texts_M">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_texts_F"></a><span class="summary-sig-name">_update_texts_F</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">units</span>,
+        <span class="summary-sig-arg">unit_F</span>)</span><br />
+      Convertit les labels suite &#224; un changement d'unit&#233; de force</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_texts_F">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_new_unit"></a><span class="summary-sig-name">_update_new_unit</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Actualise les unit&#233;s dans les labels de l'&#233;diteur et tooltips</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_new_unit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_liaison_num"></a><span class="summary-sig-name">_update_liaison_num</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factor</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_liaison_num">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_conv"></a><span class="summary-sig-name">_update_conv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nement de changement de la convension des signes de l'&#233;tude</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_conv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_G"></a><span class="summary-sig-name">_update_G</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Change la valeur de G</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_G">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_node_page"></a><span class="summary-sig-name">_ini_node_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initialise les widgets de la page des noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_node_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_node1"></a><span class="summary-sig-name">on_add_node1</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute un noeud ordinaire dans la page des noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_node1">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_node2"></a><span class="summary-sig-name">on_add_node2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute un noeud sur un arc dans la page des noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_node2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_nodes"></a><span class="summary-sig-name">remove_nodes</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">action</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Supprime les noeuds s&#233;lectionn&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.remove_nodes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_node_combo"></a><span class="summary-sig-name">_add_node_combo</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">node_name</span>)</span><br />
+      Ajoute le noeud dans les combo contenant des noeuds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_node_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_nodes_combo"></a><span class="summary-sig-name">_remove_nodes_combo</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">old_nodes</span>,
+        <span class="summary-sig-arg">deleted_nodes</span>)</span><br />
+      Supprime le noeud dans les combo contenant des noeuds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_nodes_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_node_list"></a><span class="summary-sig-name">_update_node_list</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Node</span>,
+        <span class="summary-sig-arg">pos</span>)</span><br />
+      Actualise les combo contenant des noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_node_list">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_node_list1"></a><span class="summary-sig-name">_update_node_list1</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Node</span>,
+        <span class="summary-sig-arg">pos</span>)</span><br />
+      Actualise la liste des noeuds pour la page des barres en cas d'ajout 
+      de noeuds, de supression de noeud ou de modification du nom</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_node_list1">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_node_list2"></a><span class="summary-sig-name">_update_node_list2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">new</span>)</span><br />
+      Actualise la liste des noeuds pour la page des appuis en cas d'ajout 
+      de noeuds, de supression de noeud ou de modification du nom</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_node_list2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_node_list3"></a><span class="summary-sig-name">_update_node_list3</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">new</span>)</span><br />
+      Actualise la liste des noeuds pour la page des chargements en cas 
+      d'ajout de noeuds, de supression de noeud ou de modification du nom</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_node_list3">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_fill_preceding_node"></a><span class="summary-sig-name">_fill_preceding_node</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">start_line</span>)</span><br />
+      Remplace tous les combobox des noeuds relatifs dans la page des 
+      noeuds suite &#224; une suppression d'un noeud par exemple &#224; partir de 
+      start_line</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._fill_preceding_node">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_combo_arc"></a><span class="summary-sig-name">update_combo_arc</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">old_name</span>,
+        <span class="summary-sig-arg">new_name</span>)</span><br />
+      Actualise les noms des arcs sur la page des noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_combo_arc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_nodes"></a><span class="summary-sig-name">update_nodes</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">user_node</span>)</span><br />
+      Met &#224; jour les coordonn&#233;es absolues des noeuds et la longueur des 
+      barres</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_nodes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_liaison2"></a><span class="summary-sig-name">_remove_liaison2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">deleted</span>)</span><br />
+      Supprime les hbox des liaisons &#224; partir d'une liste de noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_liaison2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_barre_page"></a><span class="summary-sig-name">_ini_barre_page</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Page des barres Lance la page en mode textview ou entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_barre_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_barre_page"></a><span class="summary-sig-name">_make_barre_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des barres Affichage de la page en mode entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_barre_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_bars_combo"></a><span class="summary-sig-name">update_bars_combo</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Effectue les op&#233;rations n&#233;cessaires &#224; la suite d'un &#233;v&#233;nement de 
+      changement d'un noeud d'une barre ou d'un arc</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_bars_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_bar_names"></a><span class="summary-sig-name">update_bar_names</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">barre</span>,
+        <span class="summary-sig-arg">old_name</span>,
+        <span class="summary-sig-arg">new_name</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_bar_names">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_arc"></a><span class="summary-sig-name">on_add_arc</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute une ligne dans la page des barres pour une barre de type arc</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_arc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_parabola"></a><span class="summary-sig-name">on_add_parabola</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute une ligne dans la page des barres pour une barre de type 
+      parabole</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_parabola">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_multiple"></a><span class="summary-sig-name">on_add_multiple</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute une ligne dans la page des barres pour une barre de type barre
+      &#224; plusieurs noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_multiple">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_variable"></a><span class="summary-sig-name">on_add_variable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute une ligne dans la page des barres pour une barre de type barre
+      &#224; inertie variable</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_variable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_add_segment"></a><span class="summary-sig-name">on_add_segment</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Ajoute une ligne dans la page des barres pour une barre de type 
+      segment</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_add_segment">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_barres"></a><span class="summary-sig-name">_remove_barres</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime les barres s&#233;lectionn&#233;es</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_barres">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_appuis_page"></a><span class="summary-sig-name">_ini_appuis_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initialisation de la page des appuis</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_appuis_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_liaison_page"></a><span class="summary-sig-name">_ini_liaison_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initialisation de la page des liaisons</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_liaison_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_liaison_page"></a><span class="summary-sig-name">_make_liaison_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des liaisons Affichage de la page en mode entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_liaison_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_row_liaison"></a><span class="summary-sig-name">_make_row_liaison</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vbox</span>,
+        <span class="summary-sig-arg">node</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Cr&#233;e la ligne des entry dans la page des liaisons</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_row_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_title_node_liaison"></a><span class="summary-sig-name">_update_title_node_liaison</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">remove</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_title_node_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_node_liaison"></a><span class="summary-sig-name">_changed_node_liaison</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nement li&#233; &#224; un changement du noeud d'une liaison</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_node_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_liaison"></a><span class="summary-sig-name">_add_liaison</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Ajoute une ligne dans la page des liaisons</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_liaison"></a><span class="summary-sig-name">_remove_liaison</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime des lignes dans la page des liaisons</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_liaison"></a><span class="summary-sig-name">_changed_liaison</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nement li&#233; &#224; un changement du combo des liaisons Affiche la saisie
+      des rigidit&#233;s si la liaison est un appui &#233;lastique Supprime dans le 
+      cas contraire</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_angle"></a><span class="summary-sig-name">_changed_angle</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nement li&#233; &#224; un changement d'angle dans un appui de type appui 
+      simple</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_angle">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_k"></a><span class="summary-sig-name">_changed_k</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">i</span>)</span><br />
+      Ev&#232;nement li&#233; &#224; un changement de la raideur dans un appui de type 
+      appui &#233;lastique</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_k">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_combo_liaison"></a><span class="summary-sig-name">_update_combo_liaison</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">combobox</span>,
+        <span class="summary-sig-arg">number</span>)</span><br />
+      Ins&#232;re les &#233;l&#233;ments dans le combo des liaisons et rend actif 
+      l'&#233;l&#233;ment d'index number</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_combo_liaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_option"></a><span class="summary-sig-name">_remove_option</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>)</span><br />
+      Supprime dans la zone de saisie les champs compl&#233;mentaires</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_option">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_insert_incline"></a><span class="summary-sig-name">_insert_incline</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">angle</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
+      Ajoute la zone de saisie des appuis simples inclin&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._insert_incline">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_insert_rigidity"></a><span class="summary-sig-name">_insert_rigidity</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">kx</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">ky</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">kz</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
+      Ajoute la zone de saisie des rigidit&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._insert_rigidity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_dep_page"></a><span class="summary-sig-name">_ini_dep_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Page des d&#233;placements impos&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_dep_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_dep_page"></a><span class="summary-sig-name">_make_dep_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des affaissements Affichage de la page en mode entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_dep_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_row_dep"></a><span class="summary-sig-name">_make_row_dep</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vbox</span>,
+        <span class="summary-sig-arg">node</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Cr&#233;e la ligne des entry dans la page des affaissements</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_row_dep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_node_dep_widget"></a><span class="summary-sig-name">_add_node_dep_widget</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">node</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">remove</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Ajoute les widgets de la ligne des d&#233;placements impos&#233;s situ&#233;s apr&#232;s 
+      le nom du noeud</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_node_dep_widget">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_node_dep"></a><span class="summary-sig-name">_changed_node_dep</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nements li&#233;s &#224; une modification du noeud dans un d&#233;placement 
+      impos&#233;</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_node_dep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_dep"></a><span class="summary-sig-name">_changed_dep</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Actualise les attributs des d&#233;placements des noeuds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_dep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_dep"></a><span class="summary-sig-name">_add_dep</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Ajoute une ligne dans la page des d&#233;placements impos&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_dep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_dep"></a><span class="summary-sig-name">_remove_dep</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime une ligne dans la page des d&#233;placements impos&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_dep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_all_deps"></a><span class="summary-sig-name">_update_all_deps</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Met &#224; jour tous les d&#233;placements impos&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_all_deps">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_title_node_dep"></a><span class="summary-sig-name">_update_title_node_dep</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">remove</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_title_node_dep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_kz_page"></a><span class="summary-sig-name">_ini_kz_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Page des rotations &#233;lastiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_kz_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_rz_page"></a><span class="summary-sig-name">_make_rz_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des affaissements Affichage de la page en mode entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_rz_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_title_node_rz"></a><span class="summary-sig-name">_update_title_node_rz</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">remove</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_title_node_rz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_row_rz"></a><span class="summary-sig-name">_make_row_rz</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vbox</span>,
+        <span class="summary-sig-arg">node</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Cr&#233;e la ligne des entry dans la page des affaissements</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_row_rz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_kz_widgets"></a><span class="summary-sig-name">_add_kz_widgets</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>,
+        <span class="summary-sig-arg">node</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_kz_widgets">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_rz"></a><span class="summary-sig-name">_remove_rz</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime une ligne dans la page des rotations &#233;lastiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_rz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_rz"></a><span class="summary-sig-name">_add_rz</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Ajoute une ligne dans la page des rotations &#233;lastiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_rz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_barre_kz"></a><span class="summary-sig-name">_changed_barre_kz</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Changement d'une barre</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_barre_kz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_kz"></a><span class="summary-sig-name">_changed_kz</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Changement d'une valeur de raideur &#233;lastique</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_kz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_node_kz"></a><span class="summary-sig-name">_changed_node_kz</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_node_kz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_del_kz_by_node"></a><span class="summary-sig-name">_del_kz_by_node</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">deleted_nodes</span>)</span><br />
+      Supprime une rotule &#233;lastique dont le noeud est dans deleted_nodes 
+      Supprime les barres dans le combo des barres</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._del_kz_by_node">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_all_kz_barre"></a><span class="summary-sig-name">_update_all_kz_barre</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Met &#224; jour tous les combo des barres pour la page des rotules 
+      &#233;lastiques &#224; la suite d'un ajout de barre</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_all_kz_barre">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_kz_widgets"></a><span class="summary-sig-name">_update_kz_widgets</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">hbox</span>)</span><br />
+      Met &#224; jour un combo des barres pour la ligne donn&#233;e par hbox</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_kz_widgets">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_combo_kz_barre"></a><span class="summary-sig-name">_update_combo_kz_barre</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">old</span>,
+        <span class="summary-sig-arg">new</span>)</span><br />
+      Met &#224; jour tous les combo des barres si le nom d'une barre a &#233;t&#233; 
+      modifi&#233;</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_combo_kz_barre">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_carac_page"></a><span class="summary-sig-name">_ini_carac_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des caract&#233;ristiques des barres Affichage de la page des
+      caract&#233;ristiques en entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_carac_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_lib"></a><span class="summary-sig-name">on_w2_lib</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_lib">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_active_selection_button"></a><span class="summary-sig-name">_active_selection_button</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tag</span>)</span><br />
+      G&#232;re la sensibilit&#233; des boutons de choix d'un profil</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._active_selection_button">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_close_library"></a><span class="summary-sig-name">_close_library</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._close_library">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_on_add_carac"></a><span class="summary-sig-name">_on_add_carac</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Ajoute une ligne dans la page des caract&#233;ristiques des barres</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._on_add_carac">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_carac"></a><span class="summary-sig-name">_remove_carac</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime une ligne dans la page des caract&#233;ristiques des barres</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_carac">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_material_page"></a><span class="summary-sig-name">_ini_material_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Page des modules &#233;lastiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_material_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_young_page"></a><span class="summary-sig-name">_make_young_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des modules d'young Affichage de la page en mode entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_young_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_row_young"></a><span class="summary-sig-name">_make_row_young</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vbox</span>,
+        <span class="summary-sig-arg">mat</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Cr&#233;e la ligne des entry dans la page des youngs</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_row_young">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_barre_material"></a><span class="summary-sig-name">_update_barre_material</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Actualise les entry des noms des barres pour synchroniser les valeurs
+      entre les diff&#233;rentes fenetres des mat&#233;riaux</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_barre_material">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_young"></a><span class="summary-sig-name">_update_young</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nement li&#233; &#224; un changement dans un entry de la page des modules 
+      d'Young</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_young">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_material"></a><span class="summary-sig-name">_add_material</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Ajoute une ligne dans la page des modules d'young</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_material">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_material"></a><span class="summary-sig-name">_remove_material</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime des lignes dans la page des modules d'young</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_material">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_mv_page"></a><span class="summary-sig-name">_make_mv_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page pour les masses volumiques Affichage de la page en mode 
+      entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_mv_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_row_mv"></a><span class="summary-sig-name">_make_row_mv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vbox</span>,
+        <span class="summary-sig-arg">mat</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Cr&#233;e la ligne des entry dans la page des coefficients de mv 
+      thermiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_row_mv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_mv"></a><span class="summary-sig-name">_update_mv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Met &#224; jour une ligne compl&#232;te dans la page des masses volumiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_mv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_dilatation_page"></a><span class="summary-sig-name">_make_dilatation_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cr&#233;e la page des dilatations Affichage de la page en mode entry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_dilatation_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_row_dilatation"></a><span class="summary-sig-name">_make_row_dilatation</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vbox</span>,
+        <span class="summary-sig-arg">mat</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Cr&#233;e la ligne des entry dans la page des coefficients de dilatations 
+      thermiques</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._make_row_dilatation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_alpha"></a><span class="summary-sig-name">_update_alpha</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Met &#224; jour une ligne compl&#232;te dans la page des coefficients de 
+      dilatation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_alpha">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_cases_book"></a><span class="summary-sig-name">_ini_cases_book</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Les cas de charges sont plac&#233;s dans un notebook Cr&#233;e le notebook pour
+      les cas de charge</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_cases_book">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_on_switch_case"></a><span class="summary-sig-name">_on_switch_case</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">book</span>,
+        <span class="summary-sig-arg">page</span>,
+        <span class="summary-sig-arg">page_num</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._on_switch_case">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_tab"></a><span class="summary-sig-name">_ini_tab</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">page</span>)</span><br />
+      Retourne le contenu de l'onglet du Notebook des cas de charge</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="copy_chars"></a><span class="summary-sig-name">copy_chars</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Copie les chargements s&#233;lectionn&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.copy_chars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="paste_chars"></a><span class="summary-sig-name">paste_chars</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Colle les chargements copi&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.paste_chars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="onCMenu"></a><span class="summary-sig-name">onCMenu</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Affiche le menu contextuel de la scrollwindow</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.onCMenu">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classEditor.Editor-class.html#_ini_case_page" class="summary-sig-name" onclick="show_private();">_ini_case_page</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">case</span>)</span><br />
+      Cr&#233;e un onglet dans le notebook des cas de charge.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_case_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add_char_qu"></a><span class="summary-sig-name">on_w2_add_char_qu</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ajoute une charge uniform&#233;ment r&#233;partie</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add_char_qu">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add_char_fp"></a><span class="summary-sig-name">on_w2_add_char_fp</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ajoute une charge ponctuelle sur barre</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add_char_fp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add_char_nod"></a><span class="summary-sig-name">on_w2_add_char_nod</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ajoute une charge nodale</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add_char_nod">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add_char_tri"></a><span class="summary-sig-name">on_w2_add_char_tri</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ajoute une charge trap&#233;zoidale</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add_char_tri">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add_char_therm"></a><span class="summary-sig-name">on_w2_add_char_therm</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ajoute une charge nodale</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add_char_therm">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_add_char_arc0"></a><span class="summary-sig-name">on_w2_add_char_arc0</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ajoute une charge sur un arc proj=0</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_add_char_arc0">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_chars"></a><span class="summary-sig-name">remove_chars</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Supprime les chargements s&#233;lectionn&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.remove_chars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_on_add_case"></a><span class="summary-sig-name">_on_add_case</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Cr&#233;e un nouvel onglet dans le notebook des chargements cr&#233;ation de la
+      nouvelle page</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._on_add_case">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_case"></a><span class="summary-sig-name">_remove_case</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">page</span>)</span><br />
+      supprime l'onglet courant du notebook des cas de charge</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_case">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_unit_L_char_tooltip"></a><span class="summary-sig-name">_update_unit_L_char_tooltip</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Met &#224; jour tous les tooltips des charges si la longueur des barres a 
+      chang&#233; (changement noeud ou coordonn&#233;es) ou l'unit&#233; de longueur</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_unit_L_char_tooltip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_combo_char_barre"></a><span class="summary-sig-name">update_combo_char_barre</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">old</span>,
+        <span class="summary-sig-arg">new</span>)</span><br />
+      Met &#224; jour la valeur active du combo d'une charge ponctuelle, 
+      triangulaire ou thermique si le nom d'une barre a &#233;t&#233; modifi&#233;</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_combo_char_barre">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_barre_combo"></a><span class="summary-sig-name">_add_barre_combo</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      ajoute une barre dans le combo des  barres pour les chargements de 
+      ype barre et pour les noeuds d'arc</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_barre_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_combo_char_items"></a><span class="summary-sig-name">_remove_combo_char_items</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">deleted</span>)</span><br />
+      Supprime les barres dans les combobox des charges</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_combo_char_items">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_put_entry_tab"></a><span class="summary-sig-name">_put_entry_tab</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">eventbox</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      &quot;Fonction pour renommer les onglets du notebook des cas de 
+      charge remplace le label de l'onglet par un textentry</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._put_entry_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_on_tab_entry"></a><span class="summary-sig-name">_on_tab_entry</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>,
+        <span class="summary-sig-arg">text</span>)</span><br />
+      Ev&#232;nement sur un Entry d'un onglet de chargement</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._on_tab_entry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_rename_tab"></a><span class="summary-sig-name">_rename_tab</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">old_text</span>,
+        <span class="summary-sig-arg">n_page</span>)</span><br />
+      Fonction pour renommer les onglets du notebook des cas de charge &#224; 
+      partir de la valeur du textentry change le nom de l'onglet du 
+      notebook Il faut d&#233;connecter le signal pour pouvoir le reconnecter 
+      par la suite avec un autre argument</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._rename_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ini_combi_page"></a><span class="summary-sig-name">_ini_combi_page</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initialisation de la page des combinaisons Utilis&#233;e &#224; l'ouverture de 
+      l'&#233;diteur et si les cas de charges sont modifi&#233;s</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_combi_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="add_combi_vbox"></a><span class="summary-sig-name">add_combi_vbox</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">case_value</span>=<span class="summary-sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span><br />
+      Cr&#233;e la vbox contenant les deux hbox (nom et coefs) d'une combinaison</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.add_combi_vbox">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_combinaison_name"></a><span class="summary-sig-name">_add_combinaison_name</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Retourne la hbox du titre des combinaisons et du checkbox de 
+      suppression</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_combinaison_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_combinaison_coef"></a><span class="summary-sig-name">_add_combinaison_coef</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">coefs</span>=<span class="summary-sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span><br />
+      Retourne la hbox contenant les entry des coefs d'une combinaison 
+      Connecte les entry &#224; la fonction de r&#233;cup&#233;ration des coef des combi</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_combinaison_coef">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_combinaison"></a><span class="summary-sig-name">_add_combinaison</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Ajoute une nouvelle combinaison</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._add_combinaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_remove_combinaison"></a><span class="summary-sig-name">_remove_combinaison</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Supprime une ligne dans la page des combinaisons</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._remove_combinaison">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_combi_coef"></a><span class="summary-sig-name">_changed_combi_coef</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Ev&#232;nement li&#233; au changement de la valeur d'un coef d'une combi</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_combi_coef">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_changed_combi_name"></a><span class="summary-sig-name">_changed_combi_name</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>)</span><br />
+      Ev&#232;nement li&#233; &#224; la modification du nom d'une combinaison Pas de 
+      solution simple trouv&#233;e pour connaitre la valeur du nom de la combi 
+      avant l'&#233;v&#232;nement donc on lit toute la page pour recr&#233;er le 
+      dictionnaire - &#224; voir</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._changed_combi_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_show_combi_error"></a><span class="summary-sig-name">_show_combi_error</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">errors</span>)</span><br />
+      Permet de visualiser les noms de combi qui sont pr&#233;sents en double</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._show_combi_error">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_combis"></a><span class="summary-sig-name">get_combis</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Retourne la liste des noms des combis</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.get_combis">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_cases"></a><span class="summary-sig-name">get_cases</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Retourne la liste des noms des combis</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.get_cases">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save_study"></a><span class="summary-sig-name">save_study</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">study</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.save_study">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_is_changed"></a><span class="summary-sig-name">set_is_changed</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">changed</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.set_is_changed">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_editor_title"></a><span class="summary-sig-name">update_editor_title</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">changed</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.update_editor_title">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="dialog_exit"></a><span class="summary-sig-name">dialog_exit</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Retourne la liste des num&#233;ros des &#233;tudes ayant &#233;t&#233; modifi&#233;es</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.dialog_exit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_quit"></a><span class="summary-sig-name">_quit</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Action sur le bouton quitter - Emet un signal de fermeture</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._quit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_destroy"></a><span class="summary-sig-name">on_w2_destroy</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Destruction de la fenetre de l'&#233;diteur et w5 en r&#233;percussion</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_destroy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_help"></a><span class="summary-sig-name">on_w2_help</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Fen&#234;tre d'aide</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_help">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_show_doc"></a><span class="summary-sig-name">_show_doc</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">page</span>)</span><br />
+      Affiche la documentation de l'&#233;diteur de donn&#233;es</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._show_doc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w5_destroy"></a><span class="summary-sig-name">on_w5_destroy</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w5_destroy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_combo"></a><span class="summary-sig-name">_update_combo</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">combobox</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Rend actif le combo pour la valeur val</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._update_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="on_w2_change_page"></a><span class="summary-sig-name">on_w2_change_page</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">dummy</span>,
+        <span class="summary-sig-arg">pagenum</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor.on_w2_change_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_hide_tool"></a><span class="summary-sig-name">_hide_tool</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">toolbar</span>,
+        <span class="summary-sig-arg">isHide</span>)</span><br />
+      Cache ou affiche les boutons ajouter et supprimer des barres d'outils
+      pour les pages noeuds, barres, carac</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._hide_tool">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_widget_line"></a><span class="summary-sig-name">_get_widget_line</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">child</span>)</span><br />
+      Retourne le num&#233;ro de ligne du widget contenue dans le hbox child</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classEditor-pysrc.html#Editor._get_widget_line">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">study</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classEditor-pysrc.html#Editor.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_ini_case_page"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_ini_case_page</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">case</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classEditor-pysrc.html#Editor._ini_case_page">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Cr&#233;e un onglet dans le notebook des cas de charge. Retourne une 
+  scrolled window</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="classEditor-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Jan  1 19:34:25 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

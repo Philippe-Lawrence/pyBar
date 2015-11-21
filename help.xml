@@ -1,0 +1,172 @@
+<help>
+	<theme>
+		<name>Unités</name>
+		<content>*Unités et conventions
+Choisir les unités parmis les unités disponibles.
+
+Remarques: certaines unités comme les angles ne sont pas paramétrables.
+
+Attention, si le bouton "Convertir les valeurs numériques" est coché, un changement d'une unité changera toutes les valeurs numériques de votre étude. Vous pouvez commencer par saisir vos valeurs et régler vos unités par la suite.
+
+Le bouton "Enregistrer comme valeurs par défaut" enregistre les unités dans les préférences pour vos nouvelles études.
+
+Le bouton "Convention inversée" change la convention de signe pour les sollicitations
+
+</content>
+	</theme>
+	<theme>
+		<name>Noeud</name>
+		<content>*Page des noeuds
+**Ajouter des noeuds
+Les nouveaux noeuds de la structure sont ajoutés à l'aide du bouton "Ajouter" de la barre d'outils supérieure.
+Pour un noeud, les champs à renseigner sont les suivants:
+1) Le nom du noeud (ou accepter la valeur par défaut).
+2) Une liste à choix (optionnelle) intitulée [Nom Relatif] pour interpréter les coordonnées soit en coordonnées absolues, soit en coordonnées relatives : si un noeud est choisi, les coordonnées du noeud courant deviennent des coordonnées relatives (par rapport au noeud choisi). Le premier noeud ne peut donc pas être relatif.
+3) Première coordonnée : x pour les coordonnées cartésiennes ou une longueur (rayon) en coordonnées polaires.
+4) Deuxième coordonnée : y pour les coordonnées cartésiennes ou l'angle en degré pour les coordonnées polaires.
+5) Bouton à cocher pour choisir les coordonnées cartésiennes ou polaires. Les coordonnées sont par défaut cartésiennes.
+**Supprimer des noeuds
+Les noeuds peuvent être supprimés à l'aide du bouton "Supprimer" de la barre d'outil supérieure, après les avoir cochés (bouton à cocher en début de la ligne du noeud).
+
+</content>
+	</theme>
+	<theme>
+		<name>Barre</name>
+		<content>*Page des barres
+**Ajouter des barres
+Les nouvelles barres sont ajoutées à l'aide du bouton "Ajouter" de la barre d'outils supérieure.
+Pour une barre, les champs à renseigner sont les suivants:
+1) Le nom de la barre (ou accepter la valeur par défaut).
+2) Choisir dans la liste déroulante le noeud origine de la barre.
+3) Si l'origine de la barre est relaxée, cocher le champ qui suit le nom du noeud
+4) Choisir dans la liste déroulante le noeud extrémité de la barre.
+5) Si l'extrémité de la barre est relaxée, cocher le champ qui suit le nom du noeud
+Le choix de l'origine de la barre et de sa fin permet d'orienter la barre.
+**Supprimer des barres
+Les barres peuvent être supprimées à l'aide du bouton "Supprimer", après les avoir cochées (première case à cocher sur la ligne des barres).
+
+</content>
+	</theme>
+
+	<theme>
+		<name>Liaisons</name>
+		<content>*Liaisons et affaissements d'appui
+Cette page contient trois onglets :
+- Pour la saisie des liaisons,
+- Pour la saisie des affaissements d'appuis (optionnel). Les affaissements d'appuis seront pris en compte pour tous les cas de charge,
+- Pour les rotules élastiques (optionnel).
+**Onglet des liaisons
+1) Ajouter des liaisons à la structure en cliquant sur le bouton "Ajouter".
+2) Choisir le noeud et la liaison correspondante (encastrement, rotule, appui simple et appui élastique)
+Si l'appui simple est choisi, il est possible de définir un angle d'inclinaison entre -90 et +90°.
+Si l'appui élastique est choisi, il faut indiquer les rigidités de l'appui, en translation (2 valeurs kx et ky) et en rotation kz. 
+Les rigidités sont positives. Trois cas sont possibles pour les valeurs des rigidités :
+
+1) 0 : déplacement libre
+2) k>0 : F = -k u (u déplacement du point en mètre)
+3) inf : blocage complet (saisir le mot clé inf pour rigidité infinie)
+
+Remarque : en jouant sur les rigidités, il est possible de créer des symétries dans la structure étudiée.
+**Onglet des affaissements d'appui
+Dans le deuxième onglet, indiquer les affaissements d'appuis (uniquement verticaux).
+1) Ajouter un affaissement.
+2) Indiquer le noeud.
+3) Saisir la valeur de l'affaissement, généralement négative.
+**Onglet des rotules élastiques
+</content>
+	</theme>
+
+	<theme>
+		<name>Carac</name>
+		<content>*Caractéristiques des sections droites
+**Ajouter des caractéristiques
+1) Ajouter les nouvelles barres avec le bouton ajouter de la barre d'outils supérieure.
+2) Saisir le nom des barres. Il est possible de mettre plusieurs barres par ligne, en les séparant par une virgule. Le survol du champ vous inidiquera les format possibles.
+Si plusieurs ou toutes les barres sont identiques, le symbole * inséré dans le champ du nom des barres signifie toutes les barres (autres que celles définies dans les lignes précédentes ou suivantes).
+Par exemple, pour une structure avec n barres identiques et une barre B1 différente, on utilise 2 lignes avec * pour la première, B1 pour la seconde (ou l'inverse).
+
+Pour la suite, il est possible de s'aider de la librairie des profilés en cliquant sur le bouton "Librairie". L'affectation d'un profilé pour une ligne s'effectue en cliquant sur le bouton à gauche du nom de la barre.
+
+3) Surface de la section droite (obligatoire)
+4) Nom du profil : champ optionnel, automatiquement rempli si on utilise la librairie.
+5) Moment quadratique IG = IGz (obligatoire)
+6) Hauteur h de la section droite (optionnel pour les charges thermiques et les contraintes normales)
+7) Distance v entre le centre de gravité de la section droite et la fibre supérieure (optionnel pour le calcul des contraintes normales)
+**Supprimer des caractéristiques
+Cocher la ligne devant être supprimée, puis cliquer sur le bouton supprimer.
+
+</content>
+	</theme>
+	<theme>
+		<name>Geo</name>
+		<content>*Caractéristiques des matériaux
+Contient trois onglets :
+1) Module d'Young ou élastique (obligatoire)
+2) Masse volumique (optionnelle pour la prise en compte du poids propre)
+3) Coefficient de dilatation thermique (optionnel pour les charges thermiques)
+Les trois onglets étant synchronisés, on ne peut modifier les barres que depuis le premier onglet "Module élastique".
+</content>
+	</theme>
+	<theme>
+		<name>Chargements</name>
+		<content>*Cas de charges et charges
+Les chargements sont rangés dans des cas de charges. On peut créer des nouveaux cas de charges (boutons ajouter à droite des onglets des cas),  les supprimer (bouton Supprimer de l'onglet correspondant) ou les renommer (double-clic sur l'onglet du cas de charge).
+Les chargements sont ajoutés en cliquant sur une icone de chargement.
+- Les charges nodales
+- Les charges uniformément répartie par morceau
+- Les charges triangulaires
+- Les charges ponctuelles sur les barres
+- Les charges thermiques (dilatation homogène ou gradient)
+
+**Efforts appliqués sur les noeuds :
+Les efforts sont donnés dans le repère global, en coordonnées cartésiennes ou polaires.
+Fx : composante horizontale de la force
+Fy : composante verticale de la force
+Mz : moment suivant z
+
+**Efforts appliqués sur les barres :
+Les efforts peuvent être :
+- Des charges uniformément réparties.
+- Des charges triangulaires.
+- Des charges ponctuelles : forces ou moments.
+- Des charges thermiques.
+
+***Cas des charges uniformément réparties 
+1) Ajouter une charge.
+2) Saisir le nom de la barre (ou des barres en les séparant par une virgule). * peut aussi être employé pour signifier toutes les barres.
+3) Choisir Abs (repère global) ou Rel (repère local de la barre)
+4) Indiquer les composantes de la charge. qx : composante suivant x, qy suivant y.
+5) Optionnel pour les charges partielles, indiquer le début d'application de la charge (x0) et la fin (x1) soit en % (bouton coché) ou dans l'unité de longueur.
+***Cas des charges triangulaires ou trapézoidales
+1) Ajouter une charge ponctuelle. 
+2) Choisir la barre
+3) Choisir Abs (repère global) ou Rel (repère local de la barre)
+4) Indiquer la valeur de la charge au début (q1) et à la fin (q2).
+5) Indiquer l'angle (par défaut 90°)
+5) Optionnel pour les charges partielles, indiquer le début d'application de la charge (x0) et la fin (x1) soit en % (bouton coché) ou dans l'unité de longueur.
+***Cas des charges ponctuelles
+1) Ajouter une charge ponctuelle. 
+2) Choisir la barre
+3) Choisir Abs (repère global) ou Rel (repère local de la barre)
+4) Choisir coordonnées polaires ou cartésiennes
+5) renseigner l'abscisse x : position de la charge sur la barre dans l'unité choisie ou en %, la valeur doit être comprise entre 0 et la longueur de la barre (Une information est disponible en survolant le champ).
+6) Indiquer les composantes de la charge. Fx : composante suivant x, Fy suivant y (ou F et téta), Mz : moment ponctuel
+Il est possible d'avoir plusieurs charges ponctuelles appliquées sur une même barre en ajoutant plusieurs chargements.
+
+***Cas des charges thermiques
+1) Ajouter une charge thermique
+2) Choisir la barre
+3) Indiquer Ts la température de la fibre supérieure de la barre.
+4) Indiquer Ti la température de la fibre inférieure de la barre.
+</content>
+	</theme>
+	<theme>
+		<name>Combinaisons</name>
+		<content>*Définition des combinaisons
+Permet de définir ses propres combinaisons d'actions.
+1) Ajouter une combinaison,
+2) Indiquer son nom,
+3) Remplir les coefficients (0 par défaut voulant dire que le cas n'intervient pas dans la combinaison). Les valeurs attendues sont de l'ordre de 1 à 3, mais pas 1000!
+</content>
+	</theme>
+</help>

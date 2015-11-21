@@ -1,0 +1,1441 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>classDrawing.SigmaDrawing</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="classDrawing-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="classDrawing-module.html">Module&nbsp;classDrawing</a> ::
+        Class&nbsp;SigmaDrawing
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="classDrawing.SigmaDrawing-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class SigmaDrawing</h1><p class="nomargin-top"><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_classdra_27" name="uml_class_diagram_for_classdra_27">
+<area shape="rect" id="node1_32" href="classDrawing.SigmaDrawing-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,505,293,524"/>
+<area shape="rect" id="node1_33" href="classDrawing.SigmaDrawing-class.html#set_status" title="Blocage du status pour ce type de dessin" alt="" coords="17,524,293,543"/>
+<area shape="rect" id="node1_34" href="classDrawing.SigmaDrawing-class.html#get_menu_options" title="Retourne les options du menu contextuel" alt="" coords="17,543,293,561"/>
+<area shape="rect" id="node1_35" href="classDrawing.SigmaDrawing-class.html#set_drawing_prefs" title="Initialise les pr&#233;f&#233;rences du dessin" alt="" coords="17,561,293,580"/>
+<area shape="rect" id="node1_36" href="classDrawing.SigmaDrawing-class.html#update_s_data" title="Met &#224; jour s_case, s_cases, s_bar, s_curve" alt="" coords="17,580,293,599"/>
+<area shape="rect" id="node1_37" href="classDrawing.SigmaDrawing-class.html#get_is_sigma_drawing" title="Retourne vrai si le dessin est une instance de SigmaDrawing" alt="" coords="17,599,293,617"/>
+<area shape="rect" id="node1_38" href="classDrawing.SigmaDrawing-class.html#get_xml_prefs" title="Cr&#233;e le noeud xml pour les pr&#233;f&#233;rences communes aux dessins pour la &#160;sauvegarde des pr&#233;f&#233;rences" alt="" coords="17,617,293,636"/>
+<area shape="rect" id="node1_39" href="classDrawing.SigmaDrawing-class.html#set_xml_prefs" title="Cr&#233;e les attribues pour les pr&#233;f&#233;rences communes aux dessins pour la &#160;sauvegarde des pr&#233;f&#233;rences" alt="" coords="17,636,293,655"/>
+<area shape="rect" id="node1_40" href="classDrawing.SigmaDrawing-class.html#get_combi_view" title="Retourne la vue des boutons des cas et combinaisons" alt="" coords="17,655,293,673"/>
+<area shape="rect" id="node1_41" href="classDrawing.SigmaDrawing-class.html#expose_drawing" title="Lance la cr&#233;ation des pattern" alt="" coords="17,673,293,692"/>
+<area shape="rect" id="node1_42" href="classDrawing.SigmaDrawing-class.html#paint_drawing" title="Dessine la structure pour tous les patterns" alt="" coords="17,692,293,711"/>
+<area shape="rect" id="node1_43" href="classDrawing.SigmaDrawing-class.html#paint_drawing4" title="Dessine tous les patterns sauf le pattern des legendes des courbes" alt="" coords="17,711,293,729"/>
+<area shape="rect" id="node1_44" href="classDrawing.SigmaDrawing-class.html#adjust_drawing2" title="Calcule une nouvelle &#233;chelle pour que la structure tienne dans la page et &#160;d&#233;place &#233;ventuellement l&#39;origine du dessin" alt="" coords="17,729,293,748"/>
+<area shape="rect" id="node1_45" href="classDrawing.SigmaDrawing-class.html#draw_new_bar" title="Redessine le diagramme d&#39;une barre" alt="" coords="17,767,293,785"/>
+<area shape="rect" id="node1" href="classDrawing.SigmaDrawing-class.html" title="classDrawing.SigmaDrawing" alt="" coords="5,473,305,791"/>
+<area shape="rect" id="node2_46" href="classDrawing.ChildDrawing-class.html#get_bar_drawings" title="Retourne les identifiants des dessins de barres" alt="" coords="87,391,225,409"/>
+<area shape="rect" id="node2_47" href="classDrawing.ChildDrawing-class.html#get_char_drawing" title="Retourne l&#39;identifiant du dessin de chargement ou None" alt="" coords="87,409,225,428"/>
+<area shape="rect" id="node2_48" href="classDrawing.ChildDrawing-class.html#get_is_parent" title="Retourne vrai si le dessin est une instance de BarreDrawing" alt="" coords="87,428,225,447"/>
+<area shape="rect" id="node2" href="classDrawing.ChildDrawing-class.html" title="classDrawing.ChildDrawing" alt="" coords="75,358,237,453"/>
+<area shape="rect" id="node3_49" href="classDrawing.Drawing-class.html#class_counter" title="classDrawing.Drawing.class_counter" alt="" coords="36,31,276,49"/>
+<area shape="rect" id="node3_50" href="classDrawing.Drawing-class.html#get_is_bar_drawing" title="Retourne vrai si le dessin est une instance de BarreDrawing" alt="" coords="36,52,276,71"/>
+<area shape="rect" id="node3_51" href="classDrawing.Drawing-class.html#get_is_empty_drawing" title="Retourne vrai si le dessin est une instance de SigmaDrawing" alt="" coords="36,71,276,89"/>
+<area shape="rect" id="node3_52" href="classDrawing.Drawing-class.html#get_drawing_type" title="Retourne le type de classe du dessin" alt="" coords="36,89,276,108"/>
+<area shape="rect" id="node3_53" href="classDrawing.Drawing-class.html#get_is_char_drawing" title="Retourne vrai si le dessin est une instance de CharDrawing" alt="" coords="36,108,276,127"/>
+<area shape="rect" id="node3_54" href="classDrawing.Drawing-class.html#set_title_visibility" title="classDrawing.Drawing.set_title_visibility" alt="" coords="36,127,276,145"/>
+<area shape="rect" id="node3_55" href="classDrawing.Drawing-class.html#set_series_visibility" title="classDrawing.Drawing.set_series_visibility" alt="" coords="36,145,276,164"/>
+<area shape="rect" id="node3_56" href="classDrawing.Drawing-class.html#update_drawing_data" title="Met &#224; jour la config du dessin par rapport &#224; son parent" alt="" coords="36,164,276,183"/>
+<area shape="rect" id="node3_57" href="classDrawing.Drawing-class.html#test_user_values" title="Teste la syntaxe du dictionnaire des valeurs utilisateur" alt="" coords="36,183,276,201"/>
+<area shape="rect" id="node3_58" href="classDrawing.Drawing-class.html#delete_value" title="Efface une valeur ou la masque si valeur automatique" alt="" coords="36,201,276,220"/>
+<area shape="rect" id="node3_59" href="classDrawing.Drawing-class.html#set_hide_value" title="Ajoute un &#233;l&#233;ment dans le dictionnaire des valeurs cach&#233;es" alt="" coords="36,220,276,239"/>
+<area shape="rect" id="node3_60" href="classDrawing.Drawing-class.html#restore_values" title="Supprime dans le dictionnaire des valeurs cach&#233;es les &#233;lements pour la &#160;courbe n" alt="" coords="36,239,276,257"/>
+<area shape="rect" id="node3_61" href="classDrawing.Drawing-class.html#del_patterns" title="Supprime tous les patterns du drawing" alt="" coords="36,257,276,276"/>
+<area shape="rect" id="node3_62" href="classDrawing.Drawing-class.html#push_w3_group" title="u en m" alt="" coords="36,276,276,295"/>
+<area shape="rect" id="node3_63" href="classDrawing.Drawing-class.html#push_w4_group" title="x en %" alt="" coords="36,313,276,332"/>
+<area shape="rect" id="node3" href="classDrawing.Drawing-class.html" title="classDrawing.Drawing" alt="" coords="24,6,288,338"/>
+</map>
+  <img src="uml_class_diagram_for_classdra_27.png" alt='' usemap="#uml_class_diagram_for_classdra_27" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">mapping</span>,
+        <span class="summary-sig-arg">id_study</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">prefs</span>)</span><br />
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#set_status" class="summary-sig-name">set_status</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">status</span>)</span><br />
+      Blocage du status pour ce type de dessin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.set_status">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#get_menu_options" class="summary-sig-name">get_menu_options</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Retourne les options du menu contextuel</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_menu_options">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#set_drawing_prefs" class="summary-sig-name">set_drawing_prefs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prefs</span>)</span><br />
+      Initialise les pr&#233;f&#233;rences du dessin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.set_drawing_prefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#update_s_data" class="summary-sig-name">update_s_data</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rdm</span>,
+        <span class="summary-sig-arg">barres</span>)</span><br />
+      Met &#224; jour s_case, s_cases, s_bar, s_curve</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.update_s_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#get_is_sigma_drawing" class="summary-sig-name">get_is_sigma_drawing</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Retourne vrai si le dessin est une instance de SigmaDrawing</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_is_sigma_drawing">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#get_xml_prefs" class="summary-sig-name">get_xml_prefs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>)</span><br />
+      Cr&#233;e le noeud xml pour les pr&#233;f&#233;rences communes aux dessins pour la 
+      sauvegarde des pr&#233;f&#233;rences</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_xml_prefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#set_xml_prefs" class="summary-sig-name">set_xml_prefs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">node</span>)</span><br />
+      Cr&#233;e les attribues pour les pr&#233;f&#233;rences communes aux dessins pour la 
+      sauvegarde des pr&#233;f&#233;rences</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.set_xml_prefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#get_combi_view" class="summary-sig-name">get_combi_view</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rdm</span>,
+        <span class="summary-sig-arg">is_info</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Retourne la vue des boutons des cas et combinaisons</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_combi_view">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#expose_drawing" class="summary-sig-name">expose_drawing</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">study</span>)</span><br />
+      Lance la cr&#233;ation des pattern</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.expose_drawing">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#_push_title_group" class="summary-sig-name" onclick="show_private();">_push_title_group</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">study</span>,
+        <span class="summary-sig-arg">cr</span>)</span><br />
+      Cr&#233;e le pattern pour le titre du dessin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._push_title_group">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_draw_error_chart"></a><span class="summary-sig-name">_draw_error_chart</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">study</span>,
+        <span class="summary-sig-arg">unit_C</span>,
+        <span class="summary-sig-arg">size</span>)</span><br />
+      Dessine le graphe en cas d'erreur dans les donn&#233;es</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_error_chart">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_push_error_group"></a><span class="summary-sig-name">_push_error_group</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">unit_C</span>)</span><br />
+      Cr&#233;e les pattern pour le graphe non disponible</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._push_error_group">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_push_chart_group"></a><span class="summary-sig-name">_push_chart_group</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">dec_x</span>,
+        <span class="summary-sig-arg">dec_y</span>,
+        <span class="summary-sig-arg">factor_C</span>,
+        <span class="summary-sig-arg">unit_C</span>)</span><br />
+      G&#232;re l'ensemble des fonctions du trac&#233; des contraintes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._push_chart_group">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#_draw_axis" class="summary-sig-name" onclick="show_private();">_draw_axis</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">x_axe1</span>,
+        <span class="summary-sig-arg">y_axe1</span>,
+        <span class="summary-sig-arg">x_axe2</span>,
+        <span class="summary-sig-arg">y_axe2</span>,
+        <span class="summary-sig-arg">unit_C</span>)</span><br />
+      Dessine les axes du rep&#232;re et leur l&#233;gende</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_axis">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_draw_one_axis"></a><span class="summary-sig-name">_draw_one_axis</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>,
+        <span class="summary-sig-arg">size</span>,
+        <span class="summary-sig-arg">angle</span>)</span><br />
+      Dessine un axe de centre x, y avec fl&#232;che</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_one_axis">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_draw_sigma"></a><span class="summary-sig-name">_draw_sigma</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">dec_y</span>,
+        <span class="summary-sig-arg">factor_C</span>)</span><br />
+      Dessine les fl&#232;ches de contrainte</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_sigma">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_draw_values"></a><span class="summary-sig-name">_draw_values</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">dec_y</span>,
+        <span class="summary-sig-arg">factor_C</span>)</span><br />
+      Dessine les textes des valeurs des contraintes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_values">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_draw_attache"></a><span class="summary-sig-name">_draw_attache</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">dec_y</span>)</span><br />
+      Dessine la ligne qui relie sigma sup et inf</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_attache">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#_draw_arrow" class="summary-sig-name" onclick="show_private();">_draw_arrow</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">x0</span>,
+        <span class="summary-sig-arg">sig</span>,
+        <span class="summary-sig-arg">y</span>)</span><br />
+      Dessine une fl&#232;che de contrainte</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_arrow">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#paint_drawing" class="summary-sig-name">paint_drawing</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">alpha</span>=<span class="summary-sig-default">1.0</span>)</span><br />
+      Dessine la structure pour tous les patterns</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.paint_drawing">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#paint_drawing4" class="summary-sig-name">paint_drawing4</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cr</span>,
+        <span class="summary-sig-arg">alpha</span>=<span class="summary-sig-default">1.0</span>)</span><br />
+      Dessine tous les patterns sauf le pattern des legendes des courbes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.paint_drawing4">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#adjust_drawing2" class="summary-sig-name">adjust_drawing2</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">struct</span>,
+        <span class="summary-sig-arg">sw_w</span>,
+        <span class="summary-sig-arg">sw_h</span>)</span><br />
+      Calcule une nouvelle &#233;chelle pour que la structure tienne dans la 
+      page et d&#233;place &#233;ventuellement l'origine du dessin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.adjust_drawing2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_axe_x"></a><span class="summary-sig-name">get_axe_x</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">s1</span>,
+        <span class="summary-sig-arg">s2</span>)</span><br />
+      Retourne les largeurs du graphe c&#244;t&#233; n&#233;gatif et positif</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_axe_x">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_sigma"></a><span class="summary-sig-name">get_sigma</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rdm</span>)</span><br />
+      Retourne les valeurs des contraintes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_sigma">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#_get_mapping_data" class="summary-sig-name" onclick="show_private();">_get_mapping_data</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x1_d</span>,
+        <span class="summary-sig-arg">y1_d</span>,
+        <span class="summary-sig-arg">x2_d</span>,
+        <span class="summary-sig-arg">y2_d</span>)</span><br />
+      Calcule les points et barres pour le mapping</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._get_mapping_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#get_max_scale" class="summary-sig-name">get_max_scale</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">study</span>)</span><br />
+      V&#233;rifie si la nouvelle &#233;chelle des y n'est pas trop grande</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_max_scale">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="dim_chart_scale"></a><span class="summary-sig-name">dim_chart_scale</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">size</span>)</span><br />
+      Redimensionne l'&#233;chelle du graphe si trop grande ou trop petite</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.dim_chart_scale">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_max_scale2"></a><span class="summary-sig-name">get_max_scale2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">study</span>)</span><br />
+      V&#233;rifie si la nouvelle &#233;chelle des contraintes n'est pas trop grande</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_max_scale2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="classDrawing.SigmaDrawing-class.html#draw_tools" class="summary-sig-name">draw_tools</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">study</span>,
+        <span class="summary-sig-arg">tab</span>)</span><br />
+      Dessine la barre d'outils du dessin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.draw_tools">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="draw_new_bar"></a><span class="summary-sig-name">draw_new_bar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tab</span>,
+        <span class="summary-sig-arg">struct</span>,
+        <span class="summary-sig-arg">new</span>)</span><br />
+      Redessine le diagramme d'une barre</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.draw_new_bar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="classDrawing.ChildDrawing-class.html">ChildDrawing</a></code></b>:
+      <code><a href="classDrawing.ChildDrawing-class.html#get_bar_drawings">get_bar_drawings</a></code>,
+      <code><a href="classDrawing.ChildDrawing-class.html#get_char_drawing">get_char_drawing</a></code>,
+      <code><a href="classDrawing.ChildDrawing-class.html#get_is_parent">get_is_parent</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="classDrawing.Drawing-class.html">Drawing</a></code></b>:
+      <code><a href="classDrawing.Drawing-class.html#area_expose_barre">area_expose_barre</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_char">area_expose_char</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_defo">area_expose_defo</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_influ">area_expose_influ</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_moving">area_expose_moving</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_noeud">area_expose_noeud</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_reac">area_expose_reac</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#area_expose_soll">area_expose_soll</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#del_patterns">del_patterns</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#delete_value">delete_value</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#draw_circle">draw_circle</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_drawing_type">get_drawing_type</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_first_case">get_first_case</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_influ_message">get_influ_message</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_interpolation_bars">get_interpolation_bars</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_is_bar_drawing">get_is_bar_drawing</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_is_char_drawing">get_is_char_drawing</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#get_is_empty_drawing">get_is_empty_drawing</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#paint_drawing2">paint_drawing2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#paint_drawing3">paint_drawing3</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#paint_info">paint_info</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#paint_value">paint_value</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#push_w3_group">push_w3_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#push_w4_group">push_w4_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#restore_values">restore_values</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#set_cases">set_cases</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#set_hide_value">set_hide_value</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#set_series_visibility">set_series_visibility</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#set_title_visibility">set_title_visibility</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#test_user_values">test_user_values</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#update_drawing_data">update_drawing_data</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="classDrawing.Drawing-class.html">Drawing</a></code></b> (private):
+      <code><a href="classDrawing.Drawing-class.html#_add_info_prefs" onclick="show_private();">_add_info_prefs</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_adjust_drawing" onclick="show_private();">_adjust_drawing</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_c_draw_legend_position" onclick="show_private();">_c_draw_legend_position</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_delete_node_val" onclick="show_private();">_delete_node_val</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_all_bars_influ" onclick="show_private();">_draw_all_bars_influ</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arc_char0" onclick="show_private();">_draw_arc_char0</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arc_char1" onclick="show_private();">_draw_arc_char1</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arc_char2" onclick="show_private();">_draw_arc_char2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arc_char_fp" onclick="show_private();">_draw_arc_char_fp</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arc_char_therm" onclick="show_private();">_draw_arc_char_therm</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arc_curve" onclick="show_private();">_draw_arc_curve</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arrow2" onclick="show_private();">_draw_arrow2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arrow3" onclick="show_private();">_draw_arrow3</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_arrow_legend" onclick="show_private();">_draw_arrow_legend</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_bar_name" onclick="show_private();">_draw_bar_name</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_bars" onclick="show_private();">_draw_bars</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_bind" onclick="show_private();">_draw_bind</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_bind_dep" onclick="show_private();">_draw_bind_dep</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_char_bar_fp" onclick="show_private();">_draw_char_bar_fp</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_char_bar_q" onclick="show_private();">_draw_char_bar_q</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_char_node" onclick="show_private();">_draw_char_node</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_char_therm" onclick="show_private();">_draw_char_therm</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_clumping" onclick="show_private();">_draw_clumping</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_cross" onclick="show_private();">_draw_cross</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_elastic_support" onclick="show_private();">_draw_elastic_support</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_end_bar_debug" onclick="show_private();">_draw_end_bar_debug</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_hinge" onclick="show_private();">_draw_hinge</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_influ_position" onclick="show_private();">_draw_influ_position</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_legend_position" onclick="show_private();">_draw_legend_position</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_ligne_attache1" onclick="show_private();">_draw_ligne_attache1</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_ligne_attache2" onclick="show_private();">_draw_ligne_attache2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_ligne_attache3" onclick="show_private();">_draw_ligne_attache3</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_moment" onclick="show_private();">_draw_moment</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_node_name" onclick="show_private();">_draw_node_name</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_nodes" onclick="show_private();">_draw_nodes</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_one_bar_defo" onclick="show_private();">_draw_one_bar_defo</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_one_relax" onclick="show_private();">_draw_one_relax</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_qu_attache" onclick="show_private();">_draw_qu_attache</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_relax" onclick="show_private();">_draw_relax</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_relax_defo" onclick="show_private();">_draw_relax_defo</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_scale" onclick="show_private();">_draw_scale</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_selected_barre" onclick="show_private();">_draw_selected_barre</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_simple_support" onclick="show_private();">_draw_simple_support</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_single_bar_curve" onclick="show_private();">_draw_single_bar_curve</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_draw_sun" onclick="show_private();">_draw_sun</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_bezier_list" onclick="show_private();">_get_bezier_list</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_clumping_angle" onclick="show_private();">_get_clumping_angle</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_combi_view1" onclick="show_private();">_get_combi_view1</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_combi_view2" onclick="show_private();">_get_combi_view2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_control_points" onclick="show_private();">_get_control_points</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_curve_points" onclick="show_private();">_get_curve_points</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_device_point" onclick="show_private();">_get_device_point</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_device_point2" onclick="show_private();">_get_device_point2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_influ_data" onclick="show_private();">_get_influ_data</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_scale" onclick="show_private();">_get_scale</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_text_pos" onclick="show_private();">_get_text_pos</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_user_value" onclick="show_private();">_get_user_value</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_user_values" onclick="show_private();">_get_user_values</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_get_user_values2" onclick="show_private();">_get_user_values2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_print_controls_point" onclick="show_private();">_print_controls_point</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_bind_group" onclick="show_private();">_push_bind_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_char_group" onclick="show_private();">_push_char_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_defo_group" onclick="show_private();">_push_defo_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_influ_group" onclick="show_private();">_push_influ_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_legends_group" onclick="show_private();">_push_legends_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_legends_group2" onclick="show_private();">_push_legends_group2</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_moving_group" onclick="show_private();">_push_moving_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_node_group" onclick="show_private();">_push_node_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_reac_group" onclick="show_private();">_push_reac_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_scale_group" onclick="show_private();">_push_scale_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_selected_barre" onclick="show_private();">_push_selected_barre</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_series_group" onclick="show_private();">_push_series_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_soll_group" onclick="show_private();">_push_soll_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_push_struct_group" onclick="show_private();">_push_struct_group</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_curve_values_arc" onclick="show_private();">_set_curve_values_arc</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_defo_values" onclick="show_private();">_set_defo_values</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_influ_values" onclick="show_private();">_set_influ_values</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_s_case" onclick="show_private();">_set_s_case</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_s_cases" onclick="show_private();">_set_s_cases</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_soll_values" onclick="show_private();">_set_soll_values</a></code>,
+      <code><a href="classDrawing.Drawing-class.html#_set_user_values" onclick="show_private();">_set_user_values</a></code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="classDrawing.Drawing-class.html">Drawing</a></code></b>:
+      <code><a href="classDrawing.Drawing-class.html#class_counter">class_counter</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">mapping</span>,
+        <span class="sig-arg">id_study</span>,
+        <span class="sig-arg">parent</span>,
+        <span class="sig-arg">prefs</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="set_status"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_status</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">status</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.set_status">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Blocage du status pour ce type de dessin</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#set_status">Drawing.set_status</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_menu_options"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_menu_options</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_menu_options">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Retourne les options du menu contextuel</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#get_menu_options">Drawing.get_menu_options</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="set_drawing_prefs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_drawing_prefs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">prefs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.set_drawing_prefs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Initialise les pr&#233;f&#233;rences du dessin</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#set_drawing_prefs">Drawing.set_drawing_prefs</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="update_s_data"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">update_s_data</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rdm</span>,
+        <span class="sig-arg">barres</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.update_s_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Met &#224; jour s_case, s_cases, s_bar, s_curve</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#update_s_data">Drawing.update_s_data</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_is_sigma_drawing"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_is_sigma_drawing</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_is_sigma_drawing">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Retourne vrai si le dessin est une instance de SigmaDrawing</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#get_is_sigma_drawing">Drawing.get_is_sigma_drawing</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_xml_prefs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_xml_prefs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_xml_prefs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Cr&#233;e le noeud xml pour les pr&#233;f&#233;rences communes aux dessins pour la 
+  sauvegarde des pr&#233;f&#233;rences</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#get_xml_prefs">Drawing.get_xml_prefs</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="set_xml_prefs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_xml_prefs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">node</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.set_xml_prefs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Cr&#233;e les attribues pour les pr&#233;f&#233;rences communes aux dessins pour la 
+  sauvegarde des pr&#233;f&#233;rences</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#set_xml_prefs">Drawing.set_xml_prefs</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_combi_view"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_combi_view</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rdm</span>,
+        <span class="sig-arg">is_info</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_combi_view">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Retourne la vue des boutons des cas et combinaisons</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#get_combi_view">Drawing.get_combi_view</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="expose_drawing"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">expose_drawing</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cr</span>,
+        <span class="sig-arg">study</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.expose_drawing">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Lance la cr&#233;ation des pattern</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#expose_drawing">Drawing.expose_drawing</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_push_title_group"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_push_title_group</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">study</span>,
+        <span class="sig-arg">cr</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._push_title_group">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Cr&#233;e le pattern pour le titre du dessin</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#_push_title_group" onclick="show_private();">Drawing._push_title_group</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_draw_axis"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_draw_axis</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cr</span>,
+        <span class="sig-arg">x_axe1</span>,
+        <span class="sig-arg">y_axe1</span>,
+        <span class="sig-arg">x_axe2</span>,
+        <span class="sig-arg">y_axe2</span>,
+        <span class="sig-arg">unit_C</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_axis">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Dessine les axes du rep&#232;re et leur l&#233;gende</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#_draw_axis" onclick="show_private();">Drawing._draw_axis</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_draw_arrow"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_draw_arrow</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cr</span>,
+        <span class="sig-arg">x0</span>,
+        <span class="sig-arg">sig</span>,
+        <span class="sig-arg">y</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._draw_arrow">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Dessine une fl&#232;che de contrainte</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#_draw_arrow" onclick="show_private();">Drawing._draw_arrow</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="paint_drawing"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">paint_drawing</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cr</span>,
+        <span class="sig-arg">alpha</span>=<span class="sig-default">1.0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.paint_drawing">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Dessine la structure pour tous les patterns</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#paint_drawing">Drawing.paint_drawing</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="paint_drawing4"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">paint_drawing4</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cr</span>,
+        <span class="sig-arg">alpha</span>=<span class="sig-default">1.0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.paint_drawing4">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Dessine tous les patterns sauf le pattern des legendes des courbes</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#paint_drawing4">Drawing.paint_drawing4</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="adjust_drawing2"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">adjust_drawing2</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">struct</span>,
+        <span class="sig-arg">sw_w</span>,
+        <span class="sig-arg">sw_h</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.adjust_drawing2">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calcule une nouvelle &#233;chelle pour que la structure tienne dans la page
+  et d&#233;place &#233;ventuellement l'origine du dessin</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#adjust_drawing2">Drawing.adjust_drawing2</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_get_mapping_data"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_get_mapping_data</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">x1_d</span>,
+        <span class="sig-arg">y1_d</span>,
+        <span class="sig-arg">x2_d</span>,
+        <span class="sig-arg">y2_d</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing._get_mapping_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calcule les points et barres pour le mapping</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#_get_mapping_data" onclick="show_private();">Drawing._get_mapping_data</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_max_scale"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_max_scale</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">study</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.get_max_scale">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>V&#233;rifie si la nouvelle &#233;chelle des y n'est pas trop grande</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#get_max_scale">Drawing.get_max_scale</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="draw_tools"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">draw_tools</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">study</span>,
+        <span class="sig-arg">tab</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="classDrawing-pysrc.html#SigmaDrawing.draw_tools">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Dessine la barre d'outils du dessin</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="classDrawing.Drawing-class.html#draw_tools">Drawing.draw_tools</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="classDrawing-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Mar 19 09:56:19 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
