@@ -440,10 +440,13 @@ class Structure(object):
       #print("det", det)
       #print(numpy.rank(matK))
       #print(numpy.linalg.slogdet(matK) )
-      if matK == []:
-        return []
-      elif abs(numpy.linalg.det(matK)/numpy.trace(matK)) < 1: 
-        # revoir le critère, risque d'overflow, voir si il ne faut pas mettre un try
+      if matK.size == 0:
+        return matK
+      #print(numpy.linalg.det(matK))
+      det = numpy.linalg.slogdet(matK)[1] # evite un overflow
+      trace = numpy.trace(matK)
+      trace = math.log(trace)
+      if abs(det/trace < 1):
         self.PrintError("Matrice non inversible\nLe système présente trop de degré de liberté \nou ne peut être résolu selon l'hypothèse des petits déplacements", 0)
         return None # tester
       try:
@@ -3169,7 +3172,7 @@ class Structure(object):
     self._MakeLiDDL()
     size = self.n_ddl
     if size == 0:
-      return []
+      return numpy.empty(0)
     # initialisation rigidity matrix
     matK = numpy.zeros((size, size))
     noeuds = self.Nodes
@@ -3629,7 +3632,7 @@ class CasCharge(object):
       struct.PrintError("Les valeurs des degrés de liberté sont excessives dans \"%s\".\nVérifier le degré d'Hyperstaticité de la structure ou que\nle chargement n'est pas trop grand par rapport à la rigidité des barres." % self.name, 0)
       self.r_status = 0
       return 
-    if MatK == []:
+    if MatK.size == 0:
       self._DdlEmpty()
       self._GetRotationIso()
       self.r_status = 1
@@ -3642,6 +3645,7 @@ class CasCharge(object):
     if self._TestInfiniteDep() == False:
       struct.PrintError("Les valeurs des degrés de liberté sont excessives dans \"%s\".\nVérifier le degré d'Hyperstaticité de la structure ou que\nle chargement n'est pas trop grand par rapport à la rigidité des barres." % self.name, 0)
       self.r_status = 0
+      self._DdlEmpty()
       return 
     self._GetEndBarSol()
     self.GetReac()
@@ -4786,10 +4790,13 @@ class CasCharge(object):
 
   # si la matrice de rigidité est vide, crée une liste de ddl nul
   def _DdlEmpty(self):
+    struct = self.struct
     self.RelaxBarRotation = {}
     self.ddlValue = {}
     for noeud in self.struct.Nodes:
       self.ddlValue[noeud] = [0, 0, 0]
+    for barre in struct.Barres:
+      self.RelaxBarRotation[barre] = {1 : 0, 2 : 0}
 
   def _TestInfiniteDep(self):
     """Vérifie si il n'y a pas de degrè de liberté trop grand"""

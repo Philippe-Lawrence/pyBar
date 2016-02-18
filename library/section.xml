@@ -227,14 +227,14 @@
 		<profil h="105.6" id="HE 1000 x 584" igz="1246100" m="584" s="743.7"/>
 	</group>
 	<group id="Profilé HD ">
-		<profil h="24.4" id="HD 260 x 54,1" igz="7981" m="54.1" s="69"/>
-		<profil h="25" id="HD 260 x 68,2" igz="10450" m="68.2" s="86.8"/>
-		<profil h="26" id="HD 260 x 93,0" igz="14920" m="93" s="118.4"/>
+		<profil h="24.4" id="HD 260 x 54.1" igz="7981" m="54.1" s="69"/>
+		<profil h="25" id="HD 260 x 68.2" igz="10450" m="68.2" s="86.8"/>
+		<profil h="26" id="HD 260 x 93.0" igz="14920" m="93" s="118.4"/>
 		<profil h="26.8" id="HD 260 x 114" igz="18910" m="114" s="145.7"/>
 		<profil h="27.8" id="HD 260 x 142" igz="24330" m="142" s="180.3"/>
 		<profil h="29" id="HD 260 x 172" igz="31310" m="172" s="219.6"/>
-		<profil h="30.1" id="HD 320 x 74,2" igz="16450" m="74.2" s="94.6"/>
-		<profil h="31" id="HD 320 x 97,6" igz="22930" m="97.6" s="124.4"/>
+		<profil h="30.1" id="HD 320 x 74.2" igz="16450" m="74.2" s="94.6"/>
+		<profil h="31" id="HD 320 x 97.6" igz="22930" m="97.6" s="124.4"/>
 		<profil h="32" id="HD 320 x 127" igz="30820" m="127" s="161.3"/>
 		<profil h="33" id="HD 320 x 158" igz="39640" m="158" s="201.2"/>
 		<profil h="34.3" id="HD 320 x 198" igz="51900" m="198" s="252.3"/>
@@ -295,5 +295,204 @@
 		<profil h="110" id="HL 1100 B" igz="1005000" m="390" s="497"/>
 		<profil h="110.8" id="HL 1100 M" igz="1126000" m="433" s="551.2"/>
 		<profil h="111.8" id="HL 1100 R" igz="1294000" m="499" s="635.2"/>
+	</group>
+	<group id="Cornières L ">
+		<profil h="2" id="L 20 x 20 x 3" igz="0.388" m="0.88" s="1.12"/>
+		<profil h="2.5" id="L 25 x 25 x 3" igz="0.796" m="1.12" s="1.42"/>
+		<profil h="2.5" id="L 25 x 25 x 4" igz="1.01" m="1.45" s="1.85"/>
+		<profil h="3" id="L 30 x 30 x 3" igz="1.40" m="1.36" s="1.74"/>
+		<profil h="3" id="L 30 x 30 x 4" igz="1.80" m="1.78" s="2.27"/>
+		<profil h="3.5" id="L 35 x 35 x 4" igz="2.95" m="2.09" s="2.67"/>
+		<profil h="3.5" id="L 35 x 35 x 5" igz="3.56" m="2.57" s="3.28"/>
+		<profil h="4" id="L 40 x 40 x 4" igz="4.47" m="2.42" s="3.08"/>
+		<profil h="4" id="L 40 x 40 x 5" igz="5.43" m="2.97" s="3.79"/>
+		<profil h="4" id="L 40 x 40 x 6" igz="6.31" m="3.52" s="4.48"/>
+		<profil h="4.5" id="L 45 x 45 x 3" igz="4.93" m="2.09" s="2.66"/>
+		<profil h="4.5" id="L 45 x 45 x 4" igz="6.43" m="2.74" s="3.49"/>
+		<profil h="4.5" id="L 45 x 45 x 4.5" igz="7.15" m="3.06" s="3.90"/>
+		<profil h="4.5" id="L 45 x 45 x 5" igz="7.84" m="3.38" s="4.30"/>
+		<profil h="4.5" id="L 45 x 45 x 6" igz="9.16" m="4.00" s="5.09"/>
+		<profil h="4.5" id="L 45 x 45 x 7" igz="10.40" m="4.60" s="5.86"/>
+		<profil h="5" id="L 50 x 50 x 4" igz="8.97" m="3.06" s="3.89"/>
+		<profil h="5" id="L 50 x 50 x 5" igz="10.96" m="3.77" s="4.80"/>
+		<profil h="5" id="L 50 x 50 x 6" igz="12.84" m="4.47" s="5.69"/>
+		<profil h="5" id="L 50 x 50 x 7" igz="14.61" m="5.15" s="6.56"/>
+		<profil h="5" id="L 50 x 50 x 8" igz="16.28" m="5.82" s="7.41"/>
+		<profil h="5" id="L 50 x 50 x 9" igz="17.86" m="6.47" s="8.24"/>
+		<profil h="5.5" id="L 55 x 55 x 4" igz="12.00" m="3.38" s="4.31"/>
+		<profil h="5.5" id="L 55 x 55 x 5" igz="14.71" m="4.18" s="5.32"/>
+		<profil h="5.5" id="L 55 x 55 x 6" igz="17.29" m="4.95" s="6.31"/>
+		<profil h="6" id="L 60 x 60 x 4" igz="15.78" m="3.70" s="4.71"/>
+		<profil h="6" id="L 60 x 60 x 5" igz="19.37" m="4.57" s="5.82"/>
+		<profil h="6" id="L 60 x 60 x 6" igz="22.79" m="5.42" s="6.91"/>
+		<profil h="6" id="L 60 x 60 x 7" igz="26.05" m="6.26" s="7.98"/>
+		<profil h="6" id="L 60 x 60 x 8" igz="29.15" m="7.09" s="9.03"/>
+		<profil h="6" id="L 60 x 60 x 10" igz="34.93" m="8.69" s="11.10"/>
+		<profil h="6.3" id="L 63 x 63 x 5" igz="22.429" m="4.82" s="6.14"/>
+		<profil h="6.3" id="L 63 x 63 x 6" igz="26.44" m="5.72" s="7.29"/>
+		<profil h="6.3" id="L 63 x 63 x 6.5" igz="28.37" m="6.17" s="7.85"/>
+		<profil h="6.5" id="L 65 x 65 x 4" igz="20.09" m="4.02" s="5.13"/>
+		<profil h="6.5" id="L 65 x 65 x 5" igz="24.74" m="4.97" s="6.34"/>
+		<profil h="6.5" id="L 65 x 65 x 6" igz="29.19" m="5.91" s="7.53"/>
+		<profil h="6.5" id="L 65 x 65 x 7" igz="33.43" m="6.83" s="8.70"/>
+		<profil h="6.5" id="L 65 x 65 x 8" igz="37.49" m="7.73" s="9.85"/>
+		<profil h="6.5" id="L 65 x 65 x 9" igz="41.37" m="8.62" s="11.0"/>
+		<profil h="6.5" id="L 65 x 65 x 10" igz="45.083" m="9.49" s="12.1"/>
+		<profil h="6.5" id="L 65 x 65 x 11" igz="48.64" m="10.30" s="13.2"/>
+		<profil h="7" id="L 70 x 70 x 5" igz="31.24" m="5.37" s="6.84"/>
+		<profil h="7" id="L 70 x 70 x 6" igz="36.88" m="6.38" s="8.13"/>
+		<profil h="7" id="L 70 x 70 x 7" igz="42.30" m="7.38" s="9.40"/>
+		<profil h="7" id="L 70 x 70 x 8" igz="47.27" m="8.37" s="10.7"/>
+		<profil h="7" id="L 70 x 70 x 9" igz="52.47" m="9.32" s="11.9"/>
+		<profil h="7" id="L 70 x 70 x 9" igz="57.24" m="10.3" s="13.1"/>
+		<profil h="7.5" id="L 75 x 75 x 4" igz="31.43" m="4.65" s="5.93"/>
+		<profil h="7.5" id="L 75 x 75 x 5" igz="38.77" m="5.76" s="7.34"/>
+		<profil h="7.5" id="L 75 x 75 x 6" igz="45.83" m="6.85" s="8.73"/>
+		<profil h="7.5" id="L 75 x 75 x 7" igz="52.61" m="7.93" s="10.1"/>
+		<profil h="7.5" id="L 75 x 75 x 8" igz="59.13" m="8.99" s="11.4"/>
+		<profil h="7.5" id="L 75 x 75 x 9" igz="65.40" m="10.0" s="12.8"/>
+		<profil h="7.5" id="L 75 x 75 x 10" igz="71.43" m="11.1" s="14.1"/>
+		<profil h="8" id="L 80 x 80 x 5" igz="47.14" m="6.17" s="7.86"/>
+		<profil h="8" id="L 80 x 80 x 6" igz="55.82" m="7.34" s="9.35"/>
+		<profil h="8" id="L 80 x 80 x 7" igz="64.19" m="8.49" s="10.8"/>
+		<profil h="8" id="L 80 x 80 x 8" igz="72.25" m="9.63" s="12.3"/>
+		<profil h="8" id="L 80 x 80 x 9" igz="80.01" m="10.8" s="13.7"/>
+		<profil h="8" id="L 80 x 80 x 10" igz="87.5" m="11.9" s="15.1"/>
+		<profil h="9" id="L 90 x 90 x 5" igz="67.67" m="6.97" s="8.88"/>
+		<profil h="9" id="L 90 x 90 x 6" igz="80.72" m="8.28" s="10.5"/>
+		<profil h="9" id="L 90 x 90 x 7" igz="92.55" m="9.61" s="12.2"/>
+		<profil h="9" id="L 90 x 90 x 8" igz="104.4" m="10.9" s="13.9"/>
+		<profil h="9" id="L 90 x 90 x 9" igz="115.8" m="12.2" s="15.5"/>
+		<profil h="9" id="L 90 x 90 x 10" igz="126.9" m="13.4" s="17.1"/>
+		<profil h="9" id="L 90 x 90 x 11" igz="137.6" m="14.7" s="18.7"/>
+		<profil h="9" id="L 90 x 90 x 16" igz="186.4" m="20.7" s="26.4"/>
+		<profil h="10" id="L 100 x 100 x 6" igz="111.1" m="9.26" s="11.8"/>
+		<profil h="10" id="L 100 x 100 x 7" igz="128.2" m="10.7" s="13.7"/>
+		<profil h="10" id="L 100 x 100 x 8" igz="144.8" m="12.2" s="15.5"/>
+		<profil h="10" id="L 100 x 100 x 9" igz="161.0" m="13.6" s="17.3"/>
+		<profil h="10" id="L 100 x 100 x 10" igz="176.7" m="15.0" s="19.2"/>
+		<profil h="10" id="L 100 x 100 x 11" igz="191.9" m="16.4" s="20.9"/>
+		<profil h="10" id="L 100 x 100 x 12" igz="206.7" m="17.8" s="22.7"/>
+		<profil h="10" id="L 100 x 100 x 14" igz="235.0" m="20.6" s="26.2"/>
+		<profil h="10" id="L 100 x 100 x 16" igz="261.7" m="23.2" s="29.6"/>
+		<profil h="11" id="L 110 x 110 x 6" igz="149.5" m="10.2" s="13.0"/>
+		<profil h="11" id="L 110 x 110 x 7" igz="172.7" m="11.8" s="15.1"/>
+		<profil h="11" id="L 110 x 110 x 8" igz="195.3" m="13.4" s="17.1"/>
+		<profil h="11" id="L 110 x 110 x 9" igz="217.3" m="15.0" s="19.1"/>
+		<profil h="11" id="L 110 x 110 x 10" igz="238.00" m="16.6" s="21.2"/>
+		<profil h="11" id="L 110 x 110 x 11" igz="258.8" m="18.2" s="23.2"/>
+		<profil h="11" id="L 110 x 110 x 12" igz="279.1" m="19.7" s="25.1"/>
+		<profil h="12" id="L 120 x 120 x 8" igz="255.43" m="14.7" s="18.7"/>
+		<profil h="12" id="L 120 x 120 x 10" igz="312.94" m="18.2" s="23.2"/>
+		<profil h="12" id="L 120 x 120 x 11" igz="340.64" m="19.9" s="25.4"/>
+		<profil h="12" id="L 120 x 120 x 12" igz="367.67" m="21.6" s="27.5"/>
+		<profil h="12" id="L 120 x 120 x 13" igz="394.04" m="23.3" s="29.7"/>
+		<profil h="12" id="L 120 x 120 x 15" igz="444.89" m="26.6" s="33.9"/>
+		<profil h="12" id="L 120 x 120 x 16" igz="469.4" m="28.3" s="36"/>
+		<profil h="13" id="L 130 x 130 x 10" igz="401.12" m="19.8" s="25.2"/>
+		<profil h="13" id="L 130 x 130 x 12" igz="472.17" m="23.5" s="30"/>
+		<profil h="13" id="L 130 x 130 x 13" igz="506.5" m="25.4" s="32.3"/>
+		<profil h="13" id="L 130 x 130 x 14" igz="540.06" m="27.2" s="34.7"/>
+		<profil h="13" id="L 130 x 130 x 16" igz="604.96" m="30.8" s="39.3"/>
+		<profil h="15" id="L 150 x 150 x 10" igz="624.04" m="23" s="29.3"/>
+		<profil h="15" id="L 150 x 150 x 12" igz="736.91" m="27.3" s="34.8"/>
+		<profil h="15" id="L 150 x 150 x 13" igz="791.7" m="29.5" s="37.6"/>
+		<profil h="15" id="L 150 x 150 x 14" igz="845.4" m="31.6" s="40.3"/>
+		<profil h="15" id="L 150 x 150 x 15" igz="898.05" m="33.8" s="43"/>
+		<profil h="15" id="L 150 x 150 x 16" igz="949.7" m="35.9" s="45.7"/>
+		<profil h="15" id="L 150 x 150 x 18" igz="1049.97" m="40.1" s="51"/>
+		<profil h="15" id="L 150 x 150 x 20" igz="1146" m="44.2" s="56.3"/>
+		<profil h="16" id="L 160 x 160 x 14" igz="1033.78" m="33.9" s="43.2"/>
+		<profil h="16" id="L 160 x 160 x 15" igz="1098.83" m="36.2" s="46.1"/>
+		<profil h="16" id="L 160 x 160 x 16" igz="1162.7" m="38.4" s="49"/>
+		<profil h="16" id="L 160 x 160 x 17" igz="1225.4" m="40.7" s="51.8"/>
+		<profil h="18" id="L 180 x 180 x 13" igz="1396.09" m="35.7" s="45.5"/>
+		<profil h="18" id="L 180 x 180 x 14" igz="1493.12" m="38.3" s="48.8"/>
+		<profil h="18" id="L 180 x 180 x 15" igz="1588.56" m="40.9" s="52.1"/>
+		<profil h="18" id="L 180 x 180 x 16" igz="1682.43" m="43.5" s="55.4"/>
+		<profil h="18" id="L 180 x 180 x 17" igz="1774.77" m="46" s="58.7"/>
+		<profil h="18" id="L 180 x 180 x 18" igz="1865.6" m="48.6" s="61.9"/>
+		<profil h="18" id="L 180 x 180 x 19" igz="1954.96" m="51.1" s="65.1"/>
+		<profil h="18" id="L 180 x 180 x 20" igz="2042.88" m="53.7" s="68.3"/>
+		<profil h="20" id="L 200 x 200 x 15" igz="2209.25" m="45.6" s="58.1"/>
+		<profil h="20" id="L 200 x 200 x 16" igz="2341.36" m="48.5" s="61.8"/>
+		<profil h="20" id="L 200 x 200 x 17" igz="2471.51" m="51.4" s="65.5"/>
+		<profil h="20" id="L 200 x 200 x 18" igz="2599.74" m="54.2" s="69.1"/>
+		<profil h="20" id="L 200 x 200 x 19" igz="2726.09" m="57.1" s="72.7"/>
+		<profil h="20" id="L 200 x 200 x 20" igz="2850.58" m="59.9" s="76.3"/>
+		<profil h="20" id="L 200 x 200 x 21" igz="2973.26" m="62.8" s="79.9"/>
+		<profil h="20" id="L 200 x 200 x 22" igz="3094.14" m="65.6" s="83.5"/>
+		<profil h="20" id="L 200 x 200 x 23" igz="3213.27" m="68.3" s="87.1"/>
+		<profil h="20" id="L 200 x 200 x 24" igz="3330.66" m="71.1" s="90.6"/>
+		<profil h="20" id="L 200 x 200 x 25" igz="3446.36" m="73.9" s="94.1"/>
+		<profil h="20" id="L 200 x 200 x 26" igz="3560.4" m="76.6" s="97.6"/>
+		<profil h="25" id="L 250 x 250 x 20" igz="5742.57" m="75.6" s="96.3"/>
+		<profil h="25" id="L 250 x 250 x 21" igz="5997.15" m="79.2" s="100.9"/>
+		<profil h="25" id="L 250 x 250 x 22" igz="6248.72" m="82.8" s="105.5"/>
+		<profil h="25" id="L 250 x 250 x 23" igz="6497.32" m="86.4" s="110.1"/>
+		<profil h="25" id="L 250 x 250 x 24" igz="6743.00" m="90.0" s="114.6"/>
+		<profil h="25" id="L 250 x 250 x 25" igz="6985.79" m="93.5" s="119.1"/>
+		<profil h="25" id="L 250 x 250 x 26" igz="7225.74" m="97.0" s="123.6"/>
+		<profil h="25" id="L 250 x 250 x 27" igz="7462.88" m="100.5" s="128.1"/>
+		<profil h="25" id="L 250 x 250 x 28" igz="7697.25" m="104" s="132.5"/>
+		<profil h="25" id="L 250 x 250 x 35" igz="9263.55" m="128" s="163.1"/>
+	</group>
+	<group id="Tubes Carrés ">
+		<profil h="2" id="C 20 x 20 x 1.5" igz="0.58" m="0.8" s="1.0"/>
+		<profil h="2" id="C 20 x 20 x 2" igz="0.69" m="1.0" s="1.3"/>
+		<profil h="2.5" id="C 25 x 25 x 2" igz="1.48" m="1.4" s="1.7"/>
+		<profil h="2.5" id="C 25 x 25 x 2.5" igz="1.69" m="1.6" s="2.1"/>
+		<profil h="2.5" id="C 25 x 25 x 3" igz="1.84" m="1.9" s="2.4"/>
+		<profil h="3" id="C 30 x 30 x 1.5" igz="2.2" m="1.3" s="1.6"/>
+		<profil h="3" id="C 30 x 30 x 2" igz="2.72" m="1.7" s="2.1"/>
+		<profil h="3" id="C 30 x 30 x 2.5" igz="3.16" m="2" s="2.6"/>
+		<profil h="3" id="C 30 x 30 x 3" igz="3.5" m="2.4" s="3"/>
+		<profil h="3.5" id="C 35 x 35 x 2" igz="4.51" m="2" s="2.5"/>
+		<profil h="3.5" id="C 35 x 35 x 2.5" igz="5.29" m="2.4" s="3.1"/>
+		<profil h="3.5" id="C 35 x 35 x 3" igz="5.95" m="2.8" s="3.6"/>
+		<profil h="4" id="C 40 x 40 x 2" igz="6.94" m="2.3" s="2.9"/>
+		<profil h="4" id="C 40 x 40 x 2.5" igz="8.21" m="2.8" s="3.6"/>
+		<profil h="4" id="C 40 x 40 x 3" igz="9.32" m="3.3" s="4.2"/>
+		<profil h="4" id="C 40 x 40 x 4" igz="11.08" m="4.2" s="5.3"/>
+		<profil h="4" id="C 40 x 40 x 5" igz="12.3" m="5" s="6.4"/>
+		<profil h="4.5" id="C 45 x 45 x 2" igz="10.1" m="2.6" s="3.3"/>
+		<profil h="4.5" id="C 45 x 45 x 2.5" igz="12.1" m="3.2" s="4.1"/>
+		<profil h="4.5" id="C 45 x 45 x 3" igz="13.8" m="3.8" s="4.8"/>
+		<profil h="4.5" id="C 45 x 45 x 4" igz="16.6" m="4.8" s="6.2"/>
+		<profil h="5" id="C 50 x 50 x 2" igz="14.15" m="2.9" s="3.7"/>
+		<profil h="5" id="C 50 x 50 x 2.5" igz="16.94" m="3.6" s="4.6"/>
+		<profil h="5" id="C 50 x 50 x 3" igz="19.47" m="4.3" s="5.4"/>
+		<profil h="5" id="C 50 x 50 x 4" igz="23.74" m="5.5" s="6.9"/>
+		<profil h="5" id="C 50 x 50 x 5" igz="27.04" m="6.6" s="8.4"/>
+		<profil h="6" id="C 60 x 60 x 2" igz="25.14" m="3.6" s="4.5"/>
+		<profil h="6" id="C 60 x 60 x 3" igz="35.13" m="5.2" s="6.6"/>
+		<profil h="6" id="C 60 x 60 x 4" igz="43.55" m="6.7" s="8.6"/>
+		<profil h="6" id="C 60 x 60 x 5" igz="50.5" m="8.1" s="10.4"/>
+		<profil h="7" id="C 70 x 70 x 2" igz="40.7" m="4.2" s="5.3"/>
+		<profil h="7" id="C 70 x 70 x 3" igz="57.52" m="6.1" s="7.8"/>
+		<profil h="7" id="C 70 x 70 x 4" igz="72.12" m="8" s="10.2"/>
+		<profil h="7" id="C 70 x 70 x 5" igz="84.63" m="9.7" s="12.4"/>
+		<profil h="8" id="C 80 x 80 x 2" igz="61.7" m="4.8" s="6.1"/>
+		<profil h="8" id="C 80 x 80 x 3" igz="87.84" m="7.1" s="9"/>
+		<profil h="8" id="C 80 x 80 x 4" igz="99.8" m="8.2" s="10.4"/>
+		<profil h="8" id="C 80 x 80 x 5" igz="111.04" m="9.2" s="11.8"/>
+		<profil h="8" id="C 80 x 80 x 5" igz="131.44" m="11.3" s="14.4"/>
+		<profil h="8" id="C 80 x 80 x 6" igz="149.18" m="13.2" s="16.8"/>
+		<profil h="9" id="C 90 x 90 x 3" igz="127.28" m="8" s="10.2"/>
+		<profil h="9" id="C 90 x 90 x 4" igz="161.91" m="10.5" s="13.4"/>
+		<profil h="9" id="C 90 x 90 x 5" igz="192.92" m="12.8" s="16.4"/>
+		<profil h="9" id="C 90 x 90 x 6" igz="220.47" m="15.1" s="19.2"/>
+		<profil h="10" id="C 100 x 100 x 3" igz="177.04" m="9" s="11.4"/>
+		<profil h="10" id="C 100 x 100 x 4" igz="226.34" m="11.7" s="15"/>
+		<profil h="10" id="C 100 x 100 x 5" igz="271.09" m="14.4" s="18.4"/>
+		<profil h="10" id="C 100 x 100 x 6" igz="311.46" m="17" s="21.6"/>
+		<profil h="10" id="C 100 x 100 x 7" igz="337" m="19.1" s="24.4"/>
+		<profil h="12" id="C 120 x 120 x 3" igz="312.33" m="10.8" s="13.8"/>
+		<profil h="12" id="C 120 x 120 x 4" igz="402.26" m="14.2" s="18.2"/>
+		<profil h="12" id="C 120 x 120 x 5" igz="485.45" m="17.6" s="22.4"/>
+		<profil h="12" id="C 120 x 120 x 6" igz="562.13" m="20.8" s="16.4"/>
+		<profil h="12" id="C 120 x 120 x 7" igz="617" m="23.5" s="30"/>
+		<profil h="14" id="C 140 x 140 x 3" igz="503" m="12.7" s="16.2"/>
+		<profil h="14" id="C 140 x 140 x 4" igz="651.59" m="16.8" s="21.4"/>
 	</group>
 </data>

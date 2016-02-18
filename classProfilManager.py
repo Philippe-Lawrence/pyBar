@@ -36,11 +36,16 @@ def delete_as_ok_func(name):
     return True
   return False
 
+
+
 class Singleton(object):
   def __new__(cls, *args, **kwargs):
     if '_inst' not in vars(cls):
-      cls._inst = object.__new__(cls, *args, **kwargs)
+      cls._inst = object.__new__(cls)
     return cls._inst
+
+
+class Manager(Singleton):
 
   # close the window and quit
   def destroy(self):
@@ -277,7 +282,8 @@ class Singleton(object):
     
 
 
-class MaterialManager(Singleton):
+
+class MaterialManager(Manager):
 
   TARGETS = [('text/plain', Gtk.TargetFlags.SAME_WIDGET, 0)]
   NCOLS = 5 # nombre de colomnes
@@ -401,7 +407,6 @@ class MaterialManager(Singleton):
 
     # make it searchable
     self.treeview.set_search_column(0)
-    # XXX inutile??
 
     # Allow sorting on the column # XXX revoir
     self.column1.set_sort_column_id(0) # attention : 0 devient la colonne visible 
@@ -412,7 +417,6 @@ class MaterialManager(Singleton):
     # active l'élément sélectionné
     self.window.set_focus(self.treeview)
     self._active_selected()
-    #self.treeview.set_flags(Gtk.CAN_FOCUS)
 
     sw = Gtk.ScrolledWindow()
     sw.add(self.treeview)
@@ -420,6 +424,7 @@ class MaterialManager(Singleton):
     vbox.pack_start(sw, True, True, 0)
     self.window.add(vbox)
     self.window.show_all()
+
 
   def send_data(self, widget=None):
     """Retourne la liste des caractéristiques d'un matériau"""
@@ -569,7 +574,7 @@ class MaterialManager(Singleton):
 
 
 
-class ProfilManager(Singleton):
+class ProfilManager(Manager):
 
   TARGETS = [('text/plain', Gtk.TargetFlags.SAME_WIDGET, 0)]
   NCOLS = 7 # nombre de colomnes
@@ -924,11 +929,9 @@ class ProfilManager(Singleton):
 
 # ----------------
 
-def main():
-  Gtk.main()
 
 if __name__ == "__main__":
-  #manager = ProfilManager("IPN 120")
-  manager = MaterialManager("AcierC32")
+  manager = ProfilManager("IPN 100")
+  #manager = MaterialManager("AcierC32")
   manager.window.connect("delete_event", manager.main_delete_event)
-  main()
+  Gtk.main()

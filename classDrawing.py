@@ -2117,7 +2117,9 @@ class Drawing(object):
     mode = struct.IsHorizontal() and 1 or 2
     crit = max(struct.width, struct.height)/1e8
     if chart_scale == 0.:
-      chart_scale = 1. # evite une cairo invalid matrix
+      chart_scale = 1 # evite une cairo invalid matrix
+      #self.p_curves = cr.pop_group()
+      #return
     if self.status in self.chart_zoom:
       chart_scale = chart_scale*self.chart_zoom[self.status]
     self.chart_scale = chart_scale

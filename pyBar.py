@@ -84,7 +84,10 @@ class CombiButton(Gtk.CheckButton):
 def About():
     dialog = Gtk.AboutDialog()
     dialog.set_icon_from_file("glade/logo.png")
-    dialog.set_name(Const.SOFT)
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("glade/logo.png", 25, 25)
+    dialog.set_logo(pixbuf)
+
+    dialog.set_program_name(Const.SOFT)
     dialog.set_version(Const.VERSION)
     dialog.set_authors([Const.AUTHOR])
     dialog.set_website(Const.SITE_URL)

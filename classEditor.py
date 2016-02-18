@@ -6233,13 +6233,6 @@ class DataEditor(object):
       if combi.name == name:
         del(self.combis[i])
 
-# supprimer
-  def update_combi_coefsauv(self, combi_name, case_name, coef):
-    """Met à jour le coef d'une combi et d'un cas"""
-    combi = self.get_combi(combi_name)
-    di = combi.coef
-    di[case_name] = coef
-    combi.coef = di
 
   def del_case_in_combis(self, name):
     """Supprime un cas dans le dictionnaire des combinaisons"""
