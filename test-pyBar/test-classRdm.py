@@ -23,7 +23,7 @@ class barreSimpleTestCase(unittest.TestCase) :
 		<barre start="N1" end="N2" id="B1"/>
 	</elem>
 	<elem id="geo">
-		<barre h="0.3" id="*" igz="1e-8" s="10" v="0.15"/>
+		<barre h="0.3" id="*" igz="1e-4" s="10" v="0.15"/>
 	</elem>
 	<elem id="material">
 		<barre id="*" mv="7.8" young="200000000.0"/>
