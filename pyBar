@@ -6,5 +6,5 @@ BASEDIR=${BASEDIR%/*}
 
 
 cd $BASEDIR
-/usr/bin/python $BASEDIR/pyBar.py
+/usr/bin/python3 $BASEDIR/pyBar.py
 cd -
