@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Copyright 2007 Philippe LAWRENCE
@@ -666,7 +666,8 @@ class MCurveB(object):
       Char = rdm.GetCharByNumber(n_case)
       val = rdm.GetValue(barre, pos, Char, drawing.status)
       valx, valy = val
-      text = function.PrintValue(valy, unit_conv['L'])
+      text = (valx**2+valy**2)**0.5
+      text = function.PrintValue(text, unit_conv['L'])
     elif drawing.status == 8:
       rdm = study.influ_rdm
       unit_conv = rdm.struct.units
@@ -8718,7 +8719,6 @@ class Tab(object):
     self._fg.set_color_by_name(cr, "white")
     cr.rectangle(0, 0, self.area_w, self.area_h)
     cr.fill()
-    #cr.stroke()
     cr.restore()
 
   def set_surface(self, w, h):
