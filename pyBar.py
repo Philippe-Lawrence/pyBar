@@ -231,9 +231,14 @@ class MainWindow(object):
     #print("expose_first_page", cr)
     cr.set_source_surface(self.surface, 0, 0)
     cr.paint()
+    #w_alloc = widget.get_allocated_width()
+    #h_alloc = widget.get_allocated_height()
+    #widget.move(self.tools, 200, 500)
+    #self.draw_first_tools(widget, x+20, max(h_alloc-70, 0))
 
   def configure_first_page(self, widget, event):
     """Méthode configure-event pour le drawingarea du lancement"""
+    print("configure_first_page")
     w_alloc = widget.get_allocated_width()
     h_alloc = widget.get_allocated_height()
     self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w_alloc, h_alloc)
@@ -257,9 +262,10 @@ class MainWindow(object):
     cr.show_text(Const.VERSION)
     cr.stroke()
     cr.restore()
-    self.draw_first_tools(widget, x+20, max(h_alloc-70, 0))
+    self.draw_first_tools(widget, int(x+20), max(h_alloc-70, 0))
 
   def draw_first_tools(self, layout, x, y):
+    print("draw_first_tools", x, y)
     if hasattr(self, 'tools'):
       layout.move(self.tools, x, y)
       return
@@ -277,10 +283,6 @@ class MainWindow(object):
     layout.put(hbox, x, y)
     hbox.show_all()
     self.tools = hbox
-    #layout.queue_draw()
-
-    #event = Gdk.Event(Gdk.EventType.EXPOSE)
-    #layout.emit("configure-event", event)
 
 
   def _ini_first_page(self):
@@ -296,8 +298,8 @@ class MainWindow(object):
     sizes = self.UP.get_w1_size()
     if sizes is None:
       height = Gdk.Screen.height()
-      if height > 880:
-        self.window.resize(700, 700)
+      width = Gdk.Screen.width()
+      self.window.resize(int(0.6*width), int(0.8*height))
     else:
       w, h = sizes
       self.window.resize(w, h)
@@ -306,9 +308,9 @@ class MainWindow(object):
     #layout.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse("#f3f3f3"))
     layout.connect("size-allocate", self.configure_first_page)
     layout.connect("draw", self.expose_first_page)
-    layout.show()
     self.main_box.add(layout)
     self.draw_first_tools(layout, 0, 0)
+    layout.show()
 
     # new version search
     opt = self.UP.get_version()

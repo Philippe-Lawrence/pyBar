@@ -1804,6 +1804,17 @@ class Structure(object):
             self.Youngs[barre] = young
           continue
         self.Youngs[elem] = young
+    self._YoungValidate()
+
+  def _YoungValidate(self):
+    if "*" in self.Youngs:
+      return
+    for barre in self.UserBars:
+      if not barre in self.Youngs:
+        self.PrintError("La barre %s n'a pas de module élastique" % barre, 0)
+        self.status = 0
+        return False
+
 
   def _GetYoung(self, barre):
     """Retourne la valeur du modue d'Young"""
@@ -3870,6 +3881,8 @@ class CasCharge(object):
       angle = sb.get_angle()
       l = sb.get_size(lengths)
       is_super_bar = True
+    else:
+      return False
     data = self._GetTriContent(content, l, angle)
     if data is False:
       return False
