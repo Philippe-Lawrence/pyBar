@@ -101,19 +101,19 @@ class CMenuNode1(object):
       uimanager.add_ui(id, '/popup', '1', '1', Gtk.UIManagerItemType.MENUITEM, False)
       id = uimanager.new_merge_id()
       uimanager.add_ui(id, '/popup/clear', 'separator',
-		None, Gtk.UIManagerItemType.SEPARATOR, False)
+        None, Gtk.UIManagerItemType.SEPARATOR, False)
       actiongroup.add_radio_actions([
-	('0', None, 'Position relative à la corde', None, None, 0),
-	('1', None, 'Position relative à l\'arc', None, None, 1)
-		], node.pos_on_curve, node.update_type_coor, (Main, node))
+    ('0', None, 'Position relative à la corde', None, None, 0),
+    ('1', None, 'Position relative à l\'arc', None, None, 1)
+        ], node.pos_on_curve, node.update_type_coor, (Main, node))
     uimanager.insert_action_group(actiongroup)
 
     actiongroup.add_toggle_actions([
-	('Rel', None, 'Relaxer', None, None, node._update_relax, node.rel)
+    ('Rel', None, 'Relaxer', None, None, node._update_relax, node.rel)
     ], Main)
 
     actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, node.on_delete)
+    ('Clear', None, 'Supprimer', None, None, node.on_delete)
     ], (Main, node.id))
     Main.popup_menu = uimanager.get_widget('/popup')
     Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
@@ -134,7 +134,7 @@ class CMenuNode2(object):
     Main.w2.add_accel_group(accelgroup)
     actiongroup = Gtk.ActionGroup('settings')
     actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, node.on_delete)
+    ('Clear', None, 'Supprimer', None, None, node.on_delete)
     ], (Main, node.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
@@ -175,12 +175,12 @@ class CMenuS(object):
     except AttributeError:
       tag2 = 0 
     actiongroup.add_toggle_actions([
-	('Name', None, 'Définir le nom', None, None, S.on_add_name, tag0),
-	('H', None, 'Définir la hauteur', None, None, S.on_add_h, tag1),
-	('V', None, 'Définir la distance v', None, None, S.on_add_v, tag2)
+    ('Name', None, 'Définir le nom', None, None, S.on_add_name, tag0),
+    ('H', None, 'Définir la hauteur', None, None, S.on_add_h, tag1),
+    ('V', None, 'Définir la distance v', None, None, S.on_add_v, tag2)
     ], Main)
     actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, S.on_delete)
+    ('Clear', None, 'Supprimer', None, None, S.on_delete)
     ], (Main, S.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
@@ -222,12 +222,12 @@ class CMenuMat(object):
     except AttributeError:
       tag2 = 0 
     actiongroup.add_toggle_actions([
-	('Name', None, 'Définir le nom', None, None, Mat.on_add_name, tag0),
-	('MV', None, 'Définir la masse volumique', None, None, Mat.on_add_mv, tag1),
-	('Alpha', None, 'Définir le coefficient de dilatation', None, None, Mat.on_add_alpha, tag2)
+    ('Name', None, 'Définir le nom', None, None, Mat.on_add_name, tag0),
+    ('MV', None, 'Définir la masse volumique', None, None, Mat.on_add_mv, tag1),
+    ('Alpha', None, 'Définir le coefficient de dilatation', None, None, Mat.on_add_alpha, tag2)
     ], Main)
     actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, Mat.on_delete)
+    ('Clear', None, 'Supprimer', None, None, Mat.on_delete)
     ], (Main, Mat.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
@@ -345,10 +345,10 @@ class CMenuNode3(object):
     Main.w2.add_accel_group(accelgroup)
     actiongroup = Gtk.ActionGroup('settings')
     actiongroup.add_toggle_actions([
-	('R0', None, 'Relaxer l\'origine', None, None, b._update_relax, b.R0),
-	('R1', None, 'Relaxer l\'extrémité', None, None, b._update_relax, b.R1),
-	#('k0', None, 'Rotation élastique de l\'origine', None, None, b.update_k_widget, k0),
-	#('k1', None, 'Rotation élastique de l\'extrémité', None, None, b.update_k_widget, k1)
+    ('R0', None, 'Relaxer l\'origine', None, None, b._update_relax, b.R0),
+    ('R1', None, 'Relaxer l\'extrémité', None, None, b._update_relax, b.R1),
+    #('k0', None, 'Rotation élastique de l\'origine', None, None, b.update_k_widget, k0),
+    #('k1', None, 'Rotation élastique de l\'extrémité', None, None, b.update_k_widget, k1)
     ], Main)
     if isinstance(b, Barre):
       if b.R0 and b.R1:
@@ -365,7 +365,7 @@ class CMenuNode3(object):
       uimanager.add_ui(id, '/popup', 'N-', 'N-', Gtk.UIManagerItemType.MENUITEM, False)
       id = uimanager.new_merge_id()
       uimanager.add_ui(id, '/popup/clear', 'separator',
-		None, Gtk.UIManagerItemType.SEPARATOR, False)
+        None, Gtk.UIManagerItemType.SEPARATOR, False)
       action = Gtk.ToggleAction("N+", 'Traction seulement', None, None)
       action.set_sensitive(is_sensitive)
       action.set_active(b.mode == 1 and True or False)
@@ -386,7 +386,7 @@ class CMenuNode3(object):
       action.connect('activate', b.update_k_widget, Main)
       actiongroup.add_action(action)
     actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, b.on_delete)
+    ('Clear', None, 'Supprimer', None, None, b.on_delete)
     ], (Main, b.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
@@ -420,22 +420,22 @@ class CMenuChar1(object):
     Main.w2.add_accel_group(accelgroup)
     actiongroup = Gtk.ActionGroup('settings')
     actiongroup.add_radio_actions([
-	('0', None, 'Linéique', None, None, 0),
-	('1', None, 'Projetée', None, None, 1),
-	('2', None, 'Radiale', None, None, 2)
-		], char.proj, char.update_arc_type, Main)
+    ('0', None, 'Linéique', None, None, 0),
+    ('1', None, 'Projetée', None, None, 1),
+    ('2', None, 'Radiale', None, None, 2)
+        ], char.proj, char.update_arc_type, Main)
 
     uimanager.insert_action_group(actiongroup)
     start = not char.d['x1'] == 0.
     end = not char.d['x2'] == 1.
     actiongroup.add_toggle_actions([
-	('Unif', None, 'Charge uniforme', None, None, char.update_unif, char.unif),
-	('Start', None, 'Ajouter un point de départ', None, None, char.add_start_point, start),
-	('End', None, 'Ajouter un point de fin', None, None, char.add_end_point, end)
+    ('Unif', None, 'Charge uniforme', None, None, char.update_unif, char.unif),
+    ('Start', None, 'Ajouter un point de départ', None, None, char.add_start_point, start),
+    ('End', None, 'Ajouter un point de fin', None, None, char.add_end_point, end)
     ], Main)
     actiongroup.add_actions([
-	('Copy', None, 'Copier', None, None, char.copy_char),
-	('Clear', None, 'Supprimer', None, None, char.on_delete),
+    ('Copy', None, 'Copier', None, None, char.copy_char),
+    ('Clear', None, 'Supprimer', None, None, char.on_delete),
     ], Main)
     Main.popup_menu = uimanager.get_widget('/popup')
     Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
@@ -684,7 +684,7 @@ class ArcNode(AbstractNode):
       self.y = None
       return
     label.set_text("%s = (%s,%s)" % (self.name, function.PrintValue(x),
-		function.PrintValue(y)))
+        function.PrintValue(y)))
     self.x = x
     self.y = y
 
@@ -947,7 +947,7 @@ class Node(AbstractNode):
     label = widgets[7]
     if coors:
       label.set_text("%s = (%s,%s)" % (self.name, function.PrintValue(coors[0]),
-		function.PrintValue(coors[1])))
+        function.PrintValue(coors[1])))
       self.x = coors[0]
       self.y = coors[1]
     else:
@@ -2540,7 +2540,7 @@ class Section(object):
   def _set_profil(self, widget, Main):
     """Affecte les valeurs données par la librairie des profilés"""
     if not hasattr(Main, 'profil_manager') \
-		or Main.profil_manager.window.get_window() is None:
+        or Main.profil_manager.window.get_window() is None:
       return
     data = Main.profil_manager.send_data()
     if data is None:
@@ -3030,7 +3030,7 @@ class Material(object):
   def _set_profil(self, widget, Main):
     """Affecte les valeurs données par la librairie des matériaux"""
     if not hasattr(Main, 'mat_manager') \
-		or Main.mat_manager.window.get_window() is None:
+        or Main.mat_manager.window.get_window() is None:
       return
     data = Main.mat_manager.send_data()
     if data is None:
@@ -6106,7 +6106,8 @@ class DataEditor(object):
     status = False
     first_case_name = XML["char"].find('case').get("id")
     pp = XML["char"].find('case').find('pp')
-    if pp:
+    
+    if pp is not None:
       status = pp.get("d")
       if status == 'true':
         status = True
@@ -6707,15 +6708,15 @@ class Editor(object):
 
   def _ini_di_methode(self):
     di = {
-		0: self._update_units_page,
-		1: self._ini_node_page,
-		2: self._ini_barre_page,
-		3: self._ini_appuis_page,
-		4: self._ini_sections_page,
-		5: self._ini_material_page,
-		6: self._ini_cases_book,
-		7: self._ini_combi_page,
-	}
+        0: self._update_units_page,
+        1: self._ini_node_page,
+        2: self._ini_barre_page,
+        3: self._ini_appuis_page,
+        4: self._ini_sections_page,
+        5: self._ini_material_page,
+        6: self._ini_cases_book,
+        7: self._ini_combi_page,
+    }
     self._fct = di
 
   def ini_box_dict(self):
@@ -6802,13 +6803,13 @@ class Editor(object):
     """Remplit la zone pour les unités avec les labels et combobox vides"""
     combo_box = Gtk.VBox(False, 0)
     texts = {'L': "Longueur",
-		'S': "Section droite",
-		'E': "Module élastique",
-		'I': "Moment quadratique",
-		'F': "Force",
-		'C': "Contrainte normale",
-		'M': "Masse volumique"
-		}
+        'S': "Section droite",
+        'E': "Module élastique",
+        'I': "Moment quadratique",
+        'F': "Force",
+        'C': "Contrainte normale",
+        'M': "Masse volumique"
+        }
     for name, text in texts.items():
       hbox = Gtk.HBox(False, 0)
       label = Gtk.Label(label="%s :" % text)
@@ -7241,10 +7242,10 @@ class Editor(object):
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
-		| Gdk.EventMask.BUTTON_PRESS_MASK
-		| Gdk.EventMask.BUTTON_RELEASE_MASK
-		| Gdk.EventMask.KEY_PRESS_MASK
-		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        | Gdk.EventMask.BUTTON_PRESS_MASK
+        | Gdk.EventMask.BUTTON_RELEASE_MASK
+        | Gdk.EventMask.KEY_PRESS_MASK
+        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
     vbox = Gtk.VBox(False, 0)
     vbox.set_border_width(20)
@@ -7508,10 +7509,10 @@ class Editor(object):
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
-		| Gdk.EventMask.BUTTON_PRESS_MASK
-		| Gdk.EventMask.BUTTON_RELEASE_MASK
-		| Gdk.EventMask.KEY_PRESS_MASK
-		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        | Gdk.EventMask.BUTTON_PRESS_MASK
+        | Gdk.EventMask.BUTTON_RELEASE_MASK
+        | Gdk.EventMask.KEY_PRESS_MASK
+        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
     vbox = Gtk.VBox(False, 0)
     vbox.set_border_width(20)
@@ -8187,10 +8188,10 @@ class Editor(object):
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
-		| Gdk.EventMask.BUTTON_PRESS_MASK
-		| Gdk.EventMask.BUTTON_RELEASE_MASK
-		| Gdk.EventMask.KEY_PRESS_MASK
-		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        | Gdk.EventMask.BUTTON_PRESS_MASK
+        | Gdk.EventMask.BUTTON_RELEASE_MASK
+        | Gdk.EventMask.KEY_PRESS_MASK
+        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
     vbox = Gtk.VBox(False, 0)
     vbox.set_border_width(20)
@@ -8289,10 +8290,10 @@ class Editor(object):
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
-		| Gdk.EventMask.BUTTON_PRESS_MASK
-		| Gdk.EventMask.BUTTON_RELEASE_MASK
-		| Gdk.EventMask.KEY_PRESS_MASK
-		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        | Gdk.EventMask.BUTTON_PRESS_MASK
+        | Gdk.EventMask.BUTTON_RELEASE_MASK
+        | Gdk.EventMask.KEY_PRESS_MASK
+        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
     vbox = Gtk.VBox(False, 0)
     vbox.set_border_width(20)
@@ -8434,10 +8435,10 @@ class Editor(object):
     #sw.connect("event", self.onCMenu)
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
-		| Gdk.EventMask.BUTTON_PRESS_MASK
-		| Gdk.EventMask.BUTTON_RELEASE_MASK
-		| Gdk.EventMask.KEY_PRESS_MASK
-		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        | Gdk.EventMask.BUTTON_PRESS_MASK
+        | Gdk.EventMask.BUTTON_RELEASE_MASK
+        | Gdk.EventMask.KEY_PRESS_MASK
+        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
     vbox = Gtk.VBox(False, 0)
     vbox.set_border_width(10)
@@ -8766,10 +8767,10 @@ class Editor(object):
     sw = Gtk.ScrolledWindow()
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
-		| Gdk.EventMask.BUTTON_PRESS_MASK
-		| Gdk.EventMask.BUTTON_RELEASE_MASK
-		| Gdk.EventMask.KEY_PRESS_MASK
-		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+        | Gdk.EventMask.BUTTON_PRESS_MASK
+        | Gdk.EventMask.BUTTON_RELEASE_MASK
+        | Gdk.EventMask.KEY_PRESS_MASK
+        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
     #debug_get_props(sw)
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
