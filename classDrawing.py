@@ -697,8 +697,8 @@ class MCurveB(object):
     drawing._fg.set_color_by_name(cr, color)
     cr.save()
     cr.set_font_size(Const.FONT_SIZE)
-    cr.move_to(x, y-10)
-    cr.rotate(angle)
+    cr.move_to(x, y-20)
+    #cr.rotate(angle)
     cr.show_text("%s" % text)
     cr.restore()
     drawing._draw_legend_position(cr, rdm.struct, barre, pos, val)
@@ -3042,6 +3042,8 @@ class Drawing(object):
   def paint_drawing(self, cr, alpha=1.):
     """Dessine la structure pour tous les patterns"""
     #print("paint_drawing", self.status)
+    if not hasattr(self, 'p_struct'): 
+      return
     cr.save()
     cr.set_source(self.p_struct)
     cr.paint_with_alpha(alpha)
@@ -4610,7 +4612,7 @@ class Drawing(object):
 
 
   def _draw_char_bar_fp(self, cr, x0, y0, barre, study, char, struct_scale, nodes=None, color=None):
-    """Dessine le chargement de type force dur les barres"""
+    """Dessine le chargement de type force sur les barres"""
     rdm = study.rdm
     unit_conv = rdm.struct.units
     angleBarre = -rdm.struct.Angles[barre]
@@ -4632,6 +4634,9 @@ class Drawing(object):
 
     legends = []
     for alpha, char in char.items():
+      rotate = 0
+      if alpha == 0: rotate = 1.57
+      elif alpha == 1: rotate = -1.57
       u = alpha*l*struct_scale
       fpu = char[0]
       fpv = char[1]
@@ -4647,7 +4652,7 @@ class Drawing(object):
 		angle, mirror=mirror)
         legends.append((xlegend, ylegend, text))
       if not mz == 0:
-        xlegend, ylegend = self._draw_moment(cr, u, 0, radius=20, end=3.1, middle=True)
+        xlegend, ylegend = self._draw_moment(cr, u, 0, radius=20, end=3.1, rotate=rotate, middle=True)
         text = function.PrintValue(mz, unit_conv['F'])
         legends.append((xlegend, ylegend, text))
 
@@ -4978,7 +4983,7 @@ class Drawing(object):
 
 
   def _draw_moment(self, cr, x, y, start=0.1, end=1.4, radius=25, rotate=0, middle=False, color=None):
-    """Dessin d'une flèche de moment - start=axe horiz, tourne sens anti-trigo"""
+    """Dessin d'une flèche de moment - start=axe horiz, tourne sens anti-trigo"""   
     cr.save()
     cr.set_line_width(2)
     if not color is None:
@@ -5000,10 +5005,7 @@ class Drawing(object):
     cr.arc(0, y_top, radius, start, end)
     cr.stroke()
     cr.move_to(x_top, y_top)
-    #cr.move_to(radius, 0)
-    #d = radius/4
     d = 7
-    #print("d=", d, radius)
     cr.rel_line_to(d, d)
     cr.rel_line_to(-2*d, 0)
     cr.close_path()
@@ -7844,6 +7846,7 @@ class Tab(object):
     a = struct.GetAngle(barre)
     if a is None:
       return ("Non disponible", 0)
+    a = a/math.pi*180
     if abs(a) < crit:
       a = 0
     text = "%s : l = %s %s, S = %s %s, Igz = %s %s, Angle = %s°" % (name,

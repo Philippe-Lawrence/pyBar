@@ -48,7 +48,6 @@ class fakeRdm(R_Structure) :
     self.SolveCombis()
 
   def Solve(self, struct, Char):
-    print('oooo')
     struct.status = 1
     matK = struct.GetInvMatK()
     Char.Solve(struct, matK)

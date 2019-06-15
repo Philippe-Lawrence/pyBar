@@ -103,7 +103,7 @@
                             <property name="limit">10</property>
                             <property name="show_not_found">False</property>
                             <property name="sort_type">mru</property>
-                            <signal name="item-activated" handler="on_test" swapped="no"/>
+                            <signal name="item-activated" handler="on_recents" swapped="no"/>
                           </object>
                         </child>
                       </object>

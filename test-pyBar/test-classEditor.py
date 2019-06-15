@@ -82,7 +82,7 @@ string = """<?xml version='1.0' encoding='UTF-8'?>
     <rot_elast barre="B5" kz="1000" node="N4" />
   </elem>
   <elem id="geo">
-    <barre h="0.4" id="B5" igz="0.0001" profil="" s="0.0091" v="0.2" />
+    <barre h="0.4" id="B5" igz="0.0001" file="/home/plawrence/python/pyBarProject/trunk/section0.xml" s="0.0091" v="0.2" />
     <barre h="0.3" id="B1,B2,B3,B4" igz="0.00045" profil="" s="0.06" v="0.15" />
     <barre id="Parabole6" igz="2" s="1" />
   </elem>
@@ -91,7 +91,7 @@ string = """<?xml version='1.0' encoding='UTF-8'?>
   </elem>
   <elem id="char">
     <case id="cas 1">
-      <pp d="false" />
+      <pp d="true" />
       <barre id="B2" qu="@,%0.30,%0.60,0.0,-100.0" />
       <barre fp="1,0.0,10.0,10.0" id="B3" />
       <barre id="B2" tri="@,%0,%1,-10.0,-20.0,90.0" />
@@ -285,7 +285,7 @@ class fakeStudy(object):
 
 def main():
     Gtk.main()
-    return 0
+    #return 0
 
 if __name__ == "__main__":
 

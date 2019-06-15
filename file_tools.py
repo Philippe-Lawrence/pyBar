@@ -287,11 +287,11 @@ def file_save(path, ext=".dat", preselect=None):
 #
 #-------------------------------------------------------
 
-def file_selection(path):
+def file_selection(path, window):
   """Return selected file name or None"""
   # Create a new file selection widget
   dialog = Gtk.FileChooserDialog("Choisir un fichier",
-				   None,
+				   window,
 				   Gtk.FileChooserAction.OPEN,
 				   (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 
 					Gtk.STOCK_OPEN, Gtk.ResponseType.OK))

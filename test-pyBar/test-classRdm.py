@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #from time import sleep
 from fakeclassRdm import fakeRdm, fakeReadXMLString

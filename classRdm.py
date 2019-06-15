@@ -2097,7 +2097,7 @@ class Structure(object):
           for barre in range(b0, b1+1):
             self.Alphas[barre] = alpha
           continue
-        if elem in self.nuperBars:
+        if elem in self.SuperBars:
           arc = self.SuperBars[elem]
           b0, b1 = arc.b0, arc.b1
           for barre in range(b0, b1+1):
@@ -3317,9 +3317,10 @@ class ArcCharPP(object):
 class ArcCharFp(object):
   """Classe pour les chargements ponctuels sur un arc"""
 
-  def __init__(self, struct, Char, du, b, alpha, fpx, fpy, mz):
+  def __init__(self, struct, Char, dl, b, alpha, fpx, fpy, mz):
+    print("init ArcChar" , dl, b, alpha, fpx, fpy, mz)
     self.values = {}
-    self.add(struct, Char, du, b, alpha, fpx, fpy, mz)
+    self.add(struct, Char, dl, b, alpha, fpx, fpy, mz)
 
   def add(self, struct, Char, dl, b, alpha, fpx, fpy, mz):
     barres = struct.Barres
@@ -3822,6 +3823,7 @@ class CasCharge(object):
       if node in self.charNode:
         self.charNode[node][0] += char[0]
         self.charNode[node][1] += char[1]
+        self.charNode[node][2] += char[2] # ajout 6/2/2019
       else:
         self.charNode[node] = char
     del(self._charArcNode)
@@ -4004,7 +4006,7 @@ class CasCharge(object):
 
   def _ReadArcCharFp(self, name, content):
     """Traite le contenu d'une charge ponctuelle sur un arc"""
-    #print("_ReadArcCharFp")
+    print("_ReadArcCharFp", name, content)
     struct = self.struct
     if not name in struct.Curves:
       return False
@@ -4076,7 +4078,7 @@ class CasCharge(object):
       self.charBarFp[barre][alpha] = char
       return True
     self.charBarFp[barre][alpha] = [fpx, fpy, mz]
-    #print("charFp=", self.charBarFp)
+    #print("charBarFp=", self.charBarFp)
     return True
 
   def GetFpContent(self, content, barre, l, angle):
@@ -4125,46 +4127,46 @@ class CasCharge(object):
     fpx, fpy, mz = fpx*unit, fpy*unit, mz*unit
     # si alpha = a/l vaut 1 ou 0, on transforme le chargement de la barre
     # en chargement nodal
-    if alpha == 0:
-      # on repasse dans le repère global
-      if barre in struct.Barres:
-        noeud = struct.Barres[barre][0]
-      elif barre in struct.SuperBars:
-        b = struct.SuperBars[barre]
-        noeud = b.user_nodes[0].name
-      elif barre in struct.Curves:
-        arc = struct.Curves[barre]
-        noeud = arc.user_nodes[0].name
-      else:
-        print("debug in FpContent")
-        return False
-      if tagRelatif and not angle == 0:
-        fpx, fpy = ProjL2GCoors(fpx, fpy, angle)
-      if noeud in self.charNode:
-        char = self.charNode[noeud]
-        char[0] += fpx
-        char[1] += fpy
-        char[2] += mz
-        self.charNode[noeud] = char
-      else:
-        self.charNode[noeud] = [fpx, fpy, mz]
-      return True 
-    elif alpha == 1:
-      if barre in struct.Barres:
-        noeud = struct.Barres[barre][1]
-      else:
-        noeud = barre.user_nodes[-1].name
-      if tagRelatif and not angle == 0:
-        fpx, fpy = ProjL2GCoors(fpx, fpy, angle)
-      if noeud in self.charNode:
-        char = self.charNode[noeud]
-        char[0] += fpx
-        char[1] += fpy
-        char[2] += mz
-        self.charNode[noeud] = char
-      else:
-        self.charNode[noeud] = [fpx, fpy, mz]
-      return True
+#    if alpha == 1: # debug 6/2/2019
+#      # on repasse dans le repère global
+#      if barre in struct.Barres:
+#        noeud = struct.Barres[barre][0]
+#      elif barre in struct.SuperBars:
+#        b = struct.SuperBars[barre]
+#        noeud = b.user_nodes[0].name
+#      elif barre in struct.Curves:
+#        arc = struct.Curves[barre]
+#        noeud = arc.user_nodes[0].name
+#      else:
+#        print("debug in FpContent")
+#        return False
+#      if tagRelatif and not angle == 0:
+#        fpx, fpy = ProjL2GCoors(fpx, fpy, angle)
+#      if noeud in self.charNode:
+#        char = self.charNode[noeud]
+#        char[0] += fpx
+#        char[1] += fpy
+#        char[2] += mz
+#        self.charNode[noeud] = char
+#      else:
+#        self.charNode[noeud] = [fpx, fpy, mz]
+#      return True 
+#    elif alpha == 1: # debug
+#      if barre in struct.Barres:
+#        noeud = struct.Barres[barre][1]
+#      else:
+#        noeud = barre.user_nodes[-1].name
+#      if tagRelatif and not angle == 0:
+#        fpx, fpy = ProjL2GCoors(fpx, fpy, angle)
+#      if noeud in self.charNode:
+#        char = self.charNode[noeud]
+#        char[0] += fpx
+#        char[1] += fpy
+#        char[2] += mz
+#        self.charNode[noeud] = char
+#      else:
+#        self.charNode[noeud] = [fpx, fpy, mz]
+#      return True
     if not tagRelatif:
       if not angle == 0:
         fpx, fpy = ProjG2LCoors(fpx, fpy, angle)
@@ -5131,6 +5133,9 @@ class CasCharge(object):
       resu.append(value)
     else:
       value = 0.
+      #if barre in self.charBarFp and (1 in self.charBarFp[barre]):
+# XXX provisoire 6/2/2019
+        #value = self.charBarFp[barre][1][2]
 # faut il mettre cette partie ici? XXX
       if noeud2 in RotulePlast:
         if RotulePlast[noeud2][0] == barre \
@@ -5195,6 +5200,9 @@ class CasCharge(object):
       resu.append(value)
     else:
       value = 0.
+# XXX provisoire 6/2/2019
+      #if barre in self.charBarFp and (0 in self.charBarFp[barre]):
+       # value = self.charBarFp[barre][0][2]
 # XXX provisoire
       if noeud1 in RotulePlast:
         if RotulePlast[noeud1][0] == barre \
@@ -5735,6 +5743,7 @@ class R_Structure(object):
       for i, cas in enumerate(self.Cases):
         Char = self.Chars[cas]
         MatChar = Char.GetMatChar()
+        #print(MatChar)
         InvMatK = struct.InvMatK
         Char.Solve(struct, InvMatK, MatChar)
         if Char.r_status == 0 or Char.status == 0:
@@ -6301,6 +6310,7 @@ class R_Structure(object):
     if not is_coef:
       li.append((pt0, ))
     for i, alpha in enumerate(positions):
+      if alpha==0  : continue
       #print("u=", alpha, barre, 'deg=', deg)
       u = alpha*l
       deltaU = u-uprec
@@ -6440,6 +6450,7 @@ class R_Structure(object):
     #self.bar_values[barre] = values
     if is_coef:
       return li2
+    #print("DefoBarre=",barre, li)
     return li
 
 
@@ -6744,7 +6755,8 @@ class R_Structure(object):
       valy = val0y + (val1y-val0y)*pos
       valxp = valx*math.cos(angle)+valy*math.sin(angle)
       valyp = -valx*math.sin(angle)+valy*math.cos(angle)
-      text = function.PrintValue(valyp, unit_conv['L'])
+      dep = (valxp**2+valyp**2)**0.5
+      text = function.PrintValue(dep, unit_conv['L'])
       val = (valxp, valyp)
     else:
       print("debug in GetArcValue")
@@ -6790,6 +6802,7 @@ class R_Structure(object):
 
   def GetArcDefoValues(self, name, Char, n_soll, crit):
     """Retourne les valeurs remarquables d'une courbe donnée par Char"""
+    return {}
     precision = crit*1e5
     struct = self.struct
     arc = struct.Curves[name]
@@ -6803,16 +6816,21 @@ class R_Structure(object):
     bmaxi, bmini = None, None
     lmaxi, lmini = 0., 0.
     l = 0.
+    #print(Char.ddlValue)
     for barre in range(b0, b1+1):
       angle = Angles[barre]
       N0 = barres[barre][0]
+      #if barre == 99:#XXX 
+      #  N0 = barres[barre][1]
       u, v = Char.ddlValue[N0][0:2]
       beta = function.get_vector_angle((0, 0), (u, v))
       if beta is None:
         continue
       dep = (u**2+v**2)**0.5
       alpha = beta-(angle+math.pi/2)
+      #val = dep
       val = dep*math.cos(alpha)
+      print(barre, val, beta, angle, alpha)
       if val > maxi:
         maxi = val
         bmaxi = barre
@@ -6826,6 +6844,7 @@ class R_Structure(object):
       resu[bmaxi] = (maxi, lmaxi)
     if not bmini is None:
       resu[bmini] = (mini, lmini)
+    print(resu)
     return resu
 
   def GetValue(self, barre, x, Char, status):
@@ -7059,7 +7078,11 @@ class R_Structure(object):
         elif fp != 0 and u/l > alpha:
           mf0 += -fp*l*alpha*(1-u/l)
         if Mp != 0 :
-          if u/l <= alpha:
+          if alpha==0:
+            mf0 += -Mp*(1-u/l)
+          elif alpha==1:
+            mf0 += Mp/l*u
+          elif u/l <= alpha:
             mf0 += Mp/l*u
           else:
             mf0 += -Mp*(1-u/l)
@@ -7082,7 +7105,6 @@ class R_Structure(object):
       is_line = True
     else:
       is_line = False 
-
     li, li2 = [], []
     values = {} # format {u: {0:valG ou continue, 1: valD}}
 
@@ -7361,6 +7383,7 @@ class R_Structure(object):
 
   def _get_linear_coef(self, x1, y1, x2, y2):
     """Retourne les coefficients de la droite y = ax+b"""
+    #if x1 == x2:
     a = (y2-y1)/(x2-x1)
     b = y1-a*x1
     if a == 0.:

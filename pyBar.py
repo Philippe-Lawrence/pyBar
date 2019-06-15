@@ -1630,7 +1630,7 @@ class MainWindow(object):
       self._ini_drawing_page(0)
     
     path = self.UP.get_default_path()
-    path = file_tools.file_selection(path)
+    path = file_tools.file_selection(path, self.window)
     #print(path)
     self._on_open_study(path)
     #self._update_titles()
@@ -1702,8 +1702,8 @@ class MainWindow(object):
       self._update_combi_box()
       rdm_status = rdm.status
       self._set_buttons_rdm(rdm_status)
-      if not rdm_status in [-1, 0]:
-        self._write_save_file('%s.dat~' % path[:-4])
+      #if not rdm_status in [-1, 0]:
+      #  self._write_save_file('%s.dat~' % path[:-4])
       self._show_message(rdm.errors)
     else:
       file_tools.open_as_ok_func(path)

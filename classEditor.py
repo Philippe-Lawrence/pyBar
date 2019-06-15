@@ -29,7 +29,8 @@ import Const
 import classDialog
 import classProfilManager
 import classPrefs
-#import classRdm
+import classSectionEditor
+import classSection
 import copy
 import file_tools
 import function
@@ -116,7 +117,7 @@ class CMenuNode1(object):
 	('Clear', None, 'Supprimer', None, None, node.on_delete)
     ], (Main, node.id))
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 class CMenuNode2(object):
   """Classe pour les menus contextuels d'un noeud simple"""
@@ -138,7 +139,7 @@ class CMenuNode2(object):
     ], (Main, node.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 class CMenuS(object):
   """Classe pour les menus contextuels d'une section"""
@@ -148,11 +149,14 @@ class CMenuS(object):
              <menuitem action="Name"/>
              <menuitem action="H"/>
              <menuitem action="V"/>
+             <menuitem action="Add1"/>
+             <menuitem action="Add2"/>
+             <menuitem action="Open"/>
              <menuitem action="Clear" />
          </popup>
          </ui>'''
 
-  def __init__(self, Main, S, event):
+  def __init__(self, Main, S, widget, event):
     ui =CMenuS.ui
     uimanager = Gtk.UIManager()
     uimanager.add_ui_from_string(ui)
@@ -179,12 +183,37 @@ class CMenuS(object):
 	('H', None, 'Définir la hauteur', None, None, S.on_add_h, tag1),
 	('V', None, 'Définir la distance v', None, None, S.on_add_v, tag2)
     ], Main)
-    actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, S.on_delete)
-    ], (Main, S.id))
+    action = Gtk.Action("Add1", "Affecter le profilé", None, None)
+    if hasattr(Main, 'profil_manager'):
+      action.set_sensitive(True)
+    else:
+      action.set_sensitive(False)
+    action.connect('activate', S.on_set_profil, Main)
+    actiongroup.add_action(action)
+    action = Gtk.Action("Add2", "Affecter la section", None, None)
+    if hasattr(Main, 'section_manager'):
+      action.set_sensitive(True)
+    else:
+      action.set_sensitive(False)
+    action.connect('activate', S.on_set_section, Main)
+    actiongroup.add_action(action)
+
+
+    action = Gtk.Action("Open", "Ouvrir l'éditeur", None, None)
+    if hasattr(S, "file"): 
+      action.connect('activate', Main.on_open_section_ed, S.file)
+      action.set_sensitive(True)
+    else:
+      action.set_sensitive(False)
+    actiongroup.add_action(action)
+
+    action = Gtk.Action("Clear", "Supprimer", None, None)
+    action.set_sensitive(False)
+    action.connect('activate', S.on_delete, Main, S.id)
+    actiongroup.add_action(action)
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1] , event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 
 class CMenuMat(object):
@@ -231,7 +260,7 @@ class CMenuMat(object):
     ], (Main, Mat.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 
 
@@ -314,7 +343,7 @@ class CMenuEmpty(object):
     action.connect('activate', f)
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 
 class CMenuNode3(object):
@@ -391,7 +420,7 @@ class CMenuNode3(object):
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
     Main.cm_popup = True
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
     Main.popup_menu.connect("event", Main.popup_event)
 
 
@@ -438,7 +467,7 @@ class CMenuChar1(object):
 	('Clear', None, 'Supprimer', None, None, char.on_delete),
     ], Main)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 
 class CMenuChar2(object):
@@ -480,7 +509,7 @@ class CMenuChar2(object):
     action.connect('activate', Char.on_delete, Main)
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 class CMenuCombi(object):
   """Classe pour les menus contextuels d'une combinaison"""
@@ -516,7 +545,7 @@ class CMenuCombi(object):
     action.connect('activate', Combi.on_delete, (Main, Combi.id))
     uimanager.insert_action_group(actiongroup)
     Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup(None, None, None, None, event.get_button()[1], event.get_time())
+    Main.popup_menu.popup_at_pointer(event)
 
 
 class AbstractNode(object):
@@ -2351,6 +2380,8 @@ class Section(object):
       self.i = i
     if 'profil' in di:
       self.profil = di['profil'] # profil name
+    elif 'file' in di:
+      self.file = di['file'] # file name
     if 'h' in di:
       h = di['h']
       if len(h) >= 3 and h[-2:] == ".0":
@@ -2370,19 +2401,15 @@ class Section(object):
     button = Gtk.CheckButton()
     button.set_tooltip_text('Sélectionner')
     hbox.pack_start(button, False, False, 0)
-    image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON)
-    button = Gtk.Button()
-    button.add(image)
-    button.set_relief(Gtk.ReliefStyle.NONE)
-    button.set_focus_on_click(False)
-    if hasattr(Main, 'profil_manager'):
-      button.set_sensitive(True)
-    else:
-      button.set_sensitive(False)
-    button.set_tooltip_text('Affecter la section')
-    button.connect('clicked', self._set_profil, Main)
-    hbox.pack_start(button, False, False, 0)
+    #image = Gtk.Image()
+    #image.set_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON)
+    #button = Gtk.Button()
+    #button.add(image)
+    #button.set_relief(Gtk.ReliefStyle.NONE)
+    #button.set_focus_on_click(False)
+    #button.set_tooltip_text('Affecter la section')
+    #button.connect('clicked', self.set_profil, Main)
+    #hbox.pack_start(button, False, False, 0)
 
     label = Gtk.Label(label="Barre(s):")
     hbox.pack_start(label, False, False, 0)
@@ -2430,6 +2457,14 @@ class Section(object):
       self.boxes['p'] = in_hbox
     except AttributeError:
       pass
+    try:
+      p = os.path.basename(self.file)
+      label = Gtk.Label(label="Fichier: %s" % p)
+      hbox.pack_start(label, False, False, 0)
+      #self.boxes['p'] = in_hbox
+    except AttributeError:
+      pass
+
     self.hbox = hbox
     eventbox.add(hbox)
     eventbox.show_all()
@@ -2477,7 +2512,6 @@ class Section(object):
       entry.set_text(self.profil)
     entry.connect("changed", self.update_profil, Main)
     hbox.pack_start(entry, False, False, 0)
-    #hbox.set_name("profil")
     return hbox
 
   def _get_s_hbox(self, Main):
@@ -2537,7 +2571,17 @@ class Section(object):
     return hbox
 
 
-  def _set_profil(self, widget, Main):
+  def on_set_section(self, widget, Main):
+    #print(dir(Main.section_manager.win))
+    if not hasattr(Main, 'section_manager'):
+      return
+    data = Main.section_manager.send_data()
+    if data is None:
+      return
+    self.set_data(data, Main, "m")
+
+
+  def on_set_profil(self, widget, Main):
     """Affecte les valeurs données par la librairie des profilés"""
     if not hasattr(Main, 'profil_manager') \
 		or Main.profil_manager.window.get_window() is None:
@@ -2545,33 +2589,44 @@ class Section(object):
     data = Main.profil_manager.send_data()
     if data is None:
       return
+
     data = [i.replace(',', '.') for i in data]
+    self.set_data(data, Main, "cm")
+
+  def set_data(self, data, Main, unit):
+    if unit == "cm":
+      u = 100
+    elif unit == "m":
+      u = 1
+    else:
+      u = 1 # XXX finir
+
     hbox = self.hbox
     boxes = self.boxes
     # S
     entry = boxes["s"].get_children()[1]
     try:
-      val = str(float(data[1])/1e4/Main.data_editor.unit_conv['S'])
+      val = str(float(data[1])/u**2/Main.data_editor.unit_conv['S'])
     except:
-      print("Ed::set_profil unexpected error")
+      print("Ed::set_data unexpected error")
       val = ""
     entry.set_text(val)
     self.s = val
     # I
     entry = boxes["i"].get_children()[1]
     try:
-      val = str(float(data[2])/1e8/Main.data_editor.unit_conv['I'])
+      val = str(float(data[2])/u**4/Main.data_editor.unit_conv['I'])
     except:
-      print("Ed::set_profil unexpected error")
+      print("Ed::set_data unexpected error")
       val = ""
     entry.set_text(val)
     self.i = val
     # H
     try:
-      val = str(float(data[3])/100/Main.data_editor.unit_conv['L'])
+      val = str(float(data[3])/u/Main.data_editor.unit_conv['L'])
     except:
       val = ''
-      print("Ed::set_profil unexpected error")
+      print("Ed::set_data unexpected error")
     if not 'h' in boxes:
       self.h = val
       in_hbox = self._get_h_hbox(Main)
@@ -2586,12 +2641,12 @@ class Section(object):
     val = data[4]
     if val == '': # par défaut, section symétrique -> h/2
       try:
-        val = str(float(data[3])/200/Main.data_editor.unit_conv['L'])
+        val = str(float(data[3])/2/u/Main.data_editor.unit_conv['L'])
       except:
         val = ''
     else:
       try:
-        val = str(float(val)/100/Main.data_editor.unit_conv['L'])
+        val = str(float(val)/u/Main.data_editor.unit_conv['L'])
       except:
         val = ''
     if not 'v' in boxes:
@@ -2682,7 +2737,7 @@ class Section(object):
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       #print(dir(event))
       if event.get_button()[1] == 3:
-        CMenuS(Main, self, event)
+        CMenuS(Main, self, widget, event)
         return True # bloque la propagation du signal
     return False
     Main.set_is_changed()
@@ -2842,7 +2897,6 @@ class Material(object):
     entry.set_tooltip_text("Facultatif")
     entry.connect("changed", self.update_profil, Main)
     hbox.pack_start(entry, False, False, 0)
-    #hbox.set_name("profil")
     return hbox
 
   def _get_e_hbox(self, Main):
@@ -3000,6 +3054,7 @@ class Material(object):
     if new == old:
       return None
     self.a = new.replace(',', '.')
+    Main.set_is_changed()
 
   def onCMenu(self, widget, event, Main):
     """Affiche le menu contextuel d'un matériau"""
@@ -5240,16 +5295,6 @@ class DataEditor(object):
     combis = self._get_combis_from_xml()
     self.add_combis(combis)
 
-# inutile
-  def _get_cases_from_xml(self):
-    """Retourne la liste des cas"""
-    cases = []   
-    li_node = self.XMLNodes["char"].iter('case')
-    for case in li_node:
-      cases.append(case.get("id"))
-    return cases
-
-
   def _get_combis_from_xml(self):
     """Retourne le dictionnaire des combinaisons"""
     #print "_get_combis_from_xml"
@@ -5811,7 +5856,7 @@ class DataEditor(object):
         if a == '': # a tester
           li = ["2"]
         else:
-          li = ["2", a]
+          li = ["2", a.replace(",",".")]
       elif l == 3:
         kx = hbox.get_children()[4].get_text()
         ky = hbox.get_children()[6].get_text()
@@ -5970,6 +6015,10 @@ class DataEditor(object):
         node.set("profil", elem.profil)
       except AttributeError:
         pass
+      try:
+        node.set("file", elem.file)
+      except AttributeError:
+        pass
       value = elem.s
       node.set("s", value)
       value = elem.i
@@ -6002,6 +6051,10 @@ class DataEditor(object):
       profil = node.get("profil")
       if not profil is None:
         di["profil"] = profil
+      f = node.get("file")
+      if not f is None:
+        if os.path.isfile(f):
+          di["file"] = f
       s = node.get("s")
       if not s is None:
         di["s"] = s
@@ -6106,8 +6159,8 @@ class DataEditor(object):
     status = False
     first_case_name = XML["char"].find('case').get("id")
     pp = XML["char"].find('case').find('pp')
-    if pp:
-      status = pp.get("d")
+    status = pp.get("d")
+    if status:
       if status == 'true':
         status = True
       else:
@@ -6508,6 +6561,7 @@ class Editor(object):
 
   def _xml_exit(self):
     """Quitte le mode xml sans actualisation"""
+    print('_xml_exit')
     vbox = self.w2.get_children()[0]
     childs = vbox.get_children()
     sw = childs[1]
@@ -6520,7 +6574,7 @@ class Editor(object):
 
   def on_w2_xml(self, widget):
     """Basculement en mode xml ou normal"""
-    #print " on_w2_xml"
+    print ("on_w2_xml")
     vbox = self.w2.get_children()[0]
     childs = vbox.get_children()
     if isinstance(childs[1], Gtk.Notebook):
@@ -6622,11 +6676,10 @@ class Editor(object):
 
   def _on_xml_changed(self, buffer):
     """Changement du contenu du textview pour le xml"""
-    #print "_on_xml_changed"
+    #print ("_on_xml_changed", buffer)
     start = buffer.get_start_iter()
     end = buffer.get_end_iter()
-# provisoire en attendant mieux 
-    text = buffer.get_text(start, end).replace('\n', '').replace('\t', '')
+    text = buffer.get_text(start, end, True).replace('\n', '').replace('\t', '')
     message = ""
     try:
       self.data_editor.XML = ET.ElementTree(ET.fromstring(text))
@@ -8234,6 +8287,14 @@ class Editor(object):
       else:
         i += 1
 
+  def on_open_section_ed(self, widget=None, path=None):
+    if hasattr(self, 'section_manager'): 
+      self.section_manager.window.present()
+      return
+    self.section_manager = classSectionEditor.SectionWindow(path)
+    self.section_manager.window.connect("delete_event", self._close_section)
+    #self.set_selection_button(True, self.data_editor.sections)
+
   def on_open_lib1(self, widget=None):
     if hasattr(self, 'profil_manager'): 
       self.profil_manager.window.present()
@@ -8241,7 +8302,7 @@ class Editor(object):
 
     self.profil_manager = classProfilManager.ProfilManager()
     self.profil_manager.window.connect("delete_event", self._close_library1)
-    self.profil_manager.button = widget
+    #self.profil_manager.button = widget
     self.set_selection_button(True, self.data_editor.sections)
 
   def on_open_lib2(self, widget=None):
@@ -8251,23 +8312,28 @@ class Editor(object):
 
     self.mat_manager = classProfilManager.MaterialManager()
     self.mat_manager.window.connect("delete_event", self._close_library2)
-    self.mat_manager.button = widget
-    self.set_selection_button(True, self.data_editor.materials)
+    #self.mat_manager.button = widget
+    #self.set_selection_button(True, self.data_editor.materials)
 
   def set_selection_button(self, tag, lines):
     """Gère la sensibilité des boutons de choix d'un profil"""
     for s in lines:
       s.hbox.get_children()[1].set_sensitive(tag)
 
+  def _close_section(self, widget, event):
+    #self.section_manager.destroy()
+    self.section_manager.window = None
+    del(self.section_manager)
+    #self.set_selection_button(False, self.data_editor.sections)
+
   def _close_library1(self, widget, event):
-    #print "Editor::_close_library1"
+    #print ("Editor::_close_library1")
     self.profil_manager.destroy()
     self.profil_manager.window = None
     del(self.profil_manager)
     self.set_selection_button(False, self.data_editor.sections)
 
   def _close_library2(self, widget, event):
-    #print "Editor::_close_library1"
     self.mat_manager.destroy()
     self.mat_manager.window = None
     del(self.mat_manager)
@@ -8611,7 +8677,7 @@ class Editor(object):
       page = self._ini_case_page(case)
       tab_box = self._ini_tab(case_name, page)
       self.charbook.insert_page(page, tab_box, 0)
-      self.charbook.set_current_page(max(active-1, 0))
+    self.charbook.set_current_page(max(active-1, 0))
     self.set_is_changed(True)
 
 
@@ -8941,9 +9007,9 @@ class Editor(object):
     self.w2.emit("delete-event", event)
 
 
-  def on_w2_destroy(self, widget, event=None): # fedora : event exists ??
+  def on_w2_destroy(self, widget, event=None):
     """Destruction de la fenetre de l'éditeur et w5 en répercussion"""
-    #print "on_w2_destroy"
+    #print("on_w2_destroy")
     self.UP.save_w2_config(self._w, self._h)
     if hasattr(self, "w5"):
       self.w5.destroy()
@@ -8956,6 +9022,9 @@ class Editor(object):
       self.mat_manager.destroy()
       self.mat_manager.window = None
       del(self.mat_manager)
+    if hasattr(self, "section_manager"):
+      self.section_manager.window = None
+      del(self.section_manager)
 
   def on_w2_help(self, widget):
     """Fenêtre d'aide"""

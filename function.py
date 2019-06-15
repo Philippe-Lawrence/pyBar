@@ -100,9 +100,11 @@ def Str2NodeCoors(content, prec_nodes, prec_node=None, unit=1):
       elif not noeud_relatif in prec_nodes:
         #print "Erreur inattendue dans Str2NodeCoors", content
         return False
-      x = prec_nodes[noeud_relatif][0]
-      y = prec_nodes[noeud_relatif][1]
-        
+      try:
+        x = prec_nodes[noeud_relatif][0]
+        y = prec_nodes[noeud_relatif][1]
+      except IndexError:
+        return False  
       content = content[pos+1:]
     #recherche des coordonnées polaires
     pos1 = content.find("<")
