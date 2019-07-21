@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.3">
+  <elem id="node">
+    <node d="0,1" id="N1" liaison="0" />
+    <node d="2,0" id="N2" liaison="2" />
+    <arc d="0.5" id="N3" liaison="2" name="B1" pos_on_curve="true" r="0" />
+  </elem>
+  <elem id="barre">
+    <mbarre end="N2" id="B1" r0="0" r1="0" start="N1" />
+  </elem>
+  <elem id="geo">
+    <barre h="0.078" id="*" igz="6.438e-07" profil="IPE 80 A" s="0.000638" v="0.039" />
+  </elem>
+  <elem id="material">
+    <barre id="*" young="200e9" />
+  </elem>
+  <elem id="char">
+    <case id="cas 1">
+      <pp d="false" />
+      <depi d="0,0.01" id="N3" />
+    </case>
+  </elem>
+  <elem id="combinaison" />
+  <elem id="prefs">
+    <unit d="1.0" id="L" />
+    <unit d="1.0" id="C" />
+    <unit d="1.0" id="E" />
+    <unit d="1.0" id="F" />
+    <unit d="1.0" id="I" />
+    <unit d="1.0" id="M" />
+    <unit d="1.0" id="S" />
+    <const name="g" value="9.81" />
+    <const name="conv" value="1" />
+  </elem>
+  <draw id="prefs">
+    <drawing axis="false" bar_name="true" node_name="true" scale="383.5" scale_pos="56,-30,46,25" show_title="true" status="1" title="150,343.5,102,23,test" x0="100" y0="383.5" />
+  </draw>
+</data>

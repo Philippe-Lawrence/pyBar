@@ -18,7 +18,7 @@
 #    along with pyBar; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 class Singleton(object):
   def __new__(cls, *args, **kwargs):
@@ -48,7 +48,7 @@ class Message(Singleton):
       self._content = (text, ind)
     if self.has_changed is False:
       self.has_changed = True
-      GObject.idle_add(self._print_message)
+      GLib.idle_add(self._print_message)
 
   def ini_message(self, box):
     self.has_changed = False
@@ -71,13 +71,13 @@ class Message(Singleton):
     # icone 
     image = Gtk.Image()
     if type == 0:
-      image.set_from_stock(Gtk.STOCK_STOP, Gtk.IconSize.BUTTON)
+      image.set_from_icon_name('dialog-error', Gtk.IconSize.BUTTON)
     elif type == 1:
-      image.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.BUTTON)
+      image.set_from_icon_name('dialog-warning', Gtk.IconSize.BUTTON)
     elif type == 2:
-      image.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.BUTTON)
+      image.set_from_icon_name("dialog-information", Gtk.IconSize.BUTTON)
     elif type == 3:
-      image.set_from_stock(Gtk.STOCK_APPLY, Gtk.IconSize.BUTTON)
+      image.set_from_icon_name("dialog-information", Gtk.IconSize.BUTTON)
     image.show()
     box.pack_start(image, False, True, 0)
     box.set_spacing(10)
@@ -102,11 +102,11 @@ class Dialog:
     box.set_border_width(80)
     hbox = Gtk.HBox()
     image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_DIALOG_ERROR, Gtk.IconSize.DIALOG)
+    image.set_from_icon_name('dialog-error', Gtk.IconSize.DIALOG)
     hbox.pack_start(image, False, False, 0)
 
     label = Gtk.Label(label=text)
-    label.set_padding(20, 20)
+    label.set_margin_start(10)
     label.show()
     hbox.pack_start(label, False, False, 0)
     hbox.show_all()

@@ -52,6 +52,7 @@
     <conv conv="1.0" />
   </elem>
   <draw id="prefs">
-    <drawing axis="false" bar_name="true" node_name="true" scale="26.533333333333335" scale_pos="76,105,67,25" series="true,171,279,209,96" show_title="true" status="7,0,4,5,6,7,8,9" title="170,130,166,25,poutre4appuis" x0="120" y0="170" />
+    <drawing axis="false" bar_name="true" node_name="true" scale="25.566666666666666" scale_pos="56,85,70,25" show_title="true" status="6,0,1,2,3,4,5,6,8" title="150,110,118,25,poutre4appuis" x0="100" y0="150" />
+    <drawing axis="false" bar_name="true" node_name="true" scale="25.566666666666666" scale_pos="75,402,71,25" show_title="true" status="5,0,1,2,3,4,5,6,8" title="169,427,116,25,poutre4appuis" x0="119" y0="467" />
   </draw>
 </data>

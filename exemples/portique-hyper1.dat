@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.3">
   <elem id="node">
     <node d="0,0" id="N1" liaison="1" />
@@ -7,12 +7,12 @@
     <node d="4,0" id="N4" liaison="1" />
   </elem>
   <elem id="barre">
-    <barre end="N2" id="B1" r0="0" r1="0" start="N1" />
+    <barre end="N2" id="B1" r0="0" r1="1" start="N1" />
     <barre end="N3" id="B2" r0="0" r1="0" start="N2" />
     <barre end="N4" id="B3" r0="0" r1="0" start="N3" />
   </elem>
   <elem id="geo">
-    <barre h="0.14" id="*" igz="1.509e-05" profil="HE 140 B" s="0.0043" v="0.07" />
+    <barre h="0.14" id="*" igz="1.509e-5" profil="HE 140 B" s="0.0043" v="0.07" />
   </elem>
   <elem id="material">
     <barre alpha="1e-5" id="*" mv="7800" young="210000000000" />
@@ -22,8 +22,13 @@
       <pp d="false" />
       <node d="10.0,0.0,0.0" id="N2" />
     </case>
+    <case id="cas 2">
+      <node d="10,0,0" id="N3" />
+    </case>
   </elem>
-  <elem id="combinaison" />
+  <elem id="combinaison">
+    <combinaison d="1.0,1.0" id="Combinaison 1" />
+  </elem>
   <elem id="prefs">
     <unit d="1.0" id="E" />
     <unit d="1.0" id="M" />
@@ -32,7 +37,10 @@
     <unit d="1.0" id="I" />
     <unit d="1.0" id="S" />
     <unit d="1000.0" id="F" />
-    <const g="9.81" />
-    <conv conv="1.0" />
+    <const name="g" value="9.81" />
+    <const name="conv" value="1" />
   </elem>
+  <draw id="prefs">
+    <drawing axis="false" bar_name="true" node_name="true" scale="125.80717500000003" scale_pos="56.0,-30.0,74,25" show_title="true" status="6,2" title="150.0,535.25,128,25,portique-hyper1" x0="100.0" y0="575.25" />
+  </draw>
 </data>

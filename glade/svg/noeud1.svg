@@ -13,7 +13,7 @@
    height="24"
    id="svg3001"
    version="1.1"
-   inkscape:version="0.48.1 r9760"
+   inkscape:version="0.92.4 (unknown)"
    sodipodi:docname="noeud1.svg"
    inkscape:export-filename="/home/philippe/python/pyBarProject/trunk/glade/noeud1.png"
    inkscape:export-xdpi="90"
@@ -28,17 +28,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="14.584077"
-     inkscape:cx="0.48242432"
+     inkscape:cx="-15.425336"
      inkscape:cy="10.607664"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
-     inkscape:window-width="1240"
-     inkscape:window-height="731"
-     inkscape:window-x="27"
-     inkscape:window-y="42"
-     inkscape:window-maximized="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
      showguides="false">
     <inkscape:grid
        type="xygrid"
@@ -47,56 +47,70 @@
        visible="true"
        enabled="true"
        snapvisiblegridlinesonly="true"
-       spacingx="0.5px"
-       spacingy="0.5px" />
+       spacingx="0.5"
+       spacingy="0.5"
+       originx="0"
+       originy="0" />
     <sodipodi:guide
        position="0,0"
        orientation="0,16"
-       id="guide3013" />
+       id="guide3013"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="16,0"
        orientation="-16,0"
-       id="guide3015" />
+       id="guide3015"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="16,16"
        orientation="0,-16"
-       id="guide3017" />
+       id="guide3017"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="0,16"
        orientation="16,0"
-       id="guide3019" />
+       id="guide3019"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="0,0"
        orientation="0,16"
-       id="guide3021" />
+       id="guide3021"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="16,0"
        orientation="-16,0"
-       id="guide3023" />
+       id="guide3023"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="16,16"
        orientation="0,-16"
-       id="guide3025" />
+       id="guide3025"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="0,16"
        orientation="16,0"
-       id="guide3027" />
+       id="guide3027"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="0,0"
        orientation="0,16"
-       id="guide3029" />
+       id="guide3029"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="16,0"
        orientation="-16,0"
-       id="guide3031" />
+       id="guide3031"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="16,16"
        orientation="0,-16"
-       id="guide3033" />
+       id="guide3033"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="0,16"
        orientation="16,0"
-       id="guide3035" />
+       id="guide3035"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <metadata
      id="metadata3006">
@@ -106,7 +120,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

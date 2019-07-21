@@ -253,7 +253,7 @@ def DeleteEndingZero(x):
   if not x.find('.') == -1:
     p = re.compile('[0]+$')
     x = p.sub('', x)
-    p = re.compile('\.$')
+    p = re.compile('\\.$')
     x = p.sub('', x)
   return x
 
@@ -541,57 +541,6 @@ def GetCumulCharBarre(barre, Char):
       if qmax > maxi:
         maxi = qmax
     return di, maxi
-
-def add_icon_to_button(button, id):
-    """Fonction pour ajouter un bouton fermer dans l'onglet du notebook"""
-    #création d'une boite horizontale
-    iconBox = Gtk.HBox(False, 0)
-    #Création d'une image vide
-    image = Gtk.Image()
-    #On récupère l'icone du bouton "fermer"
-    image.set_from_stock(id, Gtk.IconSize.MENU)
-    #On enlève le relief au bouton (donné en attribut)
-    Gtk.Button.set_relief(button, Gtk.ReliefStyle.NONE)
-    #On récupère les propriétés du bouton
-    settings = Gtk.Widget.get_settings(button)
-    #On affecte à w et h les dimensions
-    w, h = Gtk.icon_size_lookup_for_settings(settings, Gtk.IconSize.MENU)[1:]
-    #On modifie ces dimensions
-    Gtk.Widget.set_size_request(button, w + 8, h + 8)
-    image.show()
-    #On met l'image dans la boite
-    iconBox.pack_start(image, True, False, 0)
-    #On ajoute la boite dans le bouton
-    button.add(iconBox)
-    iconBox.show()
-
-def add_icon_to_button2(button, id, size=None):
-    """Fonction pour ajouter un bouton fermer dans l'onglet du notebook"""
-    #création d'une boite horizontale
-    if size is None:
-      size = Gtk.IconSize.MENU
-    elif size == "+":
-      size = Gtk.IconSize.DIALOG
-    iconBox = Gtk.HBox(False, 0)
-    #Création d'une image vide
-    image = Gtk.Image()
-    #On récupère l'icone du bouton "fermer"
-    image.set_from_stock(id, size)
-    #On enlève le relief au bouton (donné en attribut)
-    Gtk.Button.set_relief(button, Gtk.ReliefStyle.NONE)
-    #On récupère les propriétés du bouton
-    #settings = Gtk.Widget.get_settings(button)
-    #On affecte à w et h les dimensions
-    #(w, h) = Gtk.icon_size_lookup_for_settings(settings, Gtk.IconSize.MENU)
-    #On modifie ces dimensions
-    #Gtk.Widget.set_size_request(button, w + 8, h + 8)
-    image.show()
-    #On met l'image dans la boite
-    iconBox.pack_start(image, True, False, 0)
-    #On ajoute la boite dans le bouton
-    button.add(iconBox)
-    iconBox.show()
-
 
 
 # --------- Tools -------------------------

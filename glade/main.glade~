@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk+" version="3.18"/>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-page-setup</property>
   </object>
+  <object class="GtkImage" id="image10">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">ddl.png</property>
+  </object>
+  <object class="GtkImage" id="image11">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">equation.png</property>
+  </object>
+  <object class="GtkImage" id="image12">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">struct-error.png</property>
+  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">barre.xpm</property>
+    <property name="pixbuf">barre.png</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">chargement.xpm</property>
+    <property name="pixbuf">char.png</property>
   </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
@@ -25,27 +40,27 @@
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">normal.xpm</property>
+    <property name="pixbuf">normal.png</property>
   </object>
   <object class="GtkImage" id="image6">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">tranchant.xpm</property>
+    <property name="pixbuf">tranchant.png</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">moment.xpm</property>
+    <property name="pixbuf">moment.png</property>
   </object>
   <object class="GtkImage" id="image8">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">defo.xpm</property>
+    <property name="pixbuf">defo.png</property>
   </object>
   <object class="GtkImage" id="image9">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">ligne.xpm</property>
+    <property name="pixbuf">influ.png</property>
   </object>
   <object class="GtkRecentFilter" id="recentfilter1">
     <patterns>
@@ -60,6 +75,9 @@
     <signal name="configure-event" handler="on_w1_configure" swapped="no"/>
     <signal name="delete-event" handler="on_w1_destroy" swapped="no"/>
     <signal name="window-state-event" handler="on_state_event" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -507,22 +525,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="button_ddl">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Affiche les ddl et autres valeurs</property>
-                <property name="label" translatable="yes">DDL</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-execute</property>
-                <signal name="clicked" handler="on_edit_ddl" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToolButton" id="button_error">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -530,25 +532,8 @@
                 <property name="tooltip_text" translatable="yes">Affiche les erreurs</property>
                 <property name="label" translatable="yes">Erreurs</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-dialog-error</property>
+                <property name="icon_widget">image12</property>
                 <signal name="clicked" handler="on_edit_error" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="button_eq">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Calcule les équations des courbes
-pour les sollicitations et déformée</property>
-                <property name="label" translatable="yes">Equations</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-convert</property>
-                <signal name="clicked" handler="on_edit_eq" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -697,6 +682,39 @@ pour les sollicitations et déformée</property>
                 <property name="use_underline">True</property>
                 <property name="icon_widget">image8</property>
                 <signal name="clicked" handler="on_expose_defo" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="button_ddl">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Affiche les ddl et autres valeurs</property>
+                <property name="label" translatable="yes">DDL</property>
+                <property name="use_underline">True</property>
+                <property name="icon_widget">image10</property>
+                <signal name="clicked" handler="on_edit_ddl" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="button_eq">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Calcule les équations des courbes
+pour les sollicitations et déformée</property>
+                <property name="label" translatable="yes">Equations</property>
+                <property name="use_underline">True</property>
+                <property name="icon_widget">image11</property>
+                <signal name="clicked" handler="on_edit_eq" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -43,7 +43,7 @@ class LigneInfluBox(object):
     else:
       self.Barres = self.struct.GetBarsNames()
     # plus de tri ; tester"
-    self.vbox = Gtk.VBox(False, 5)
+    self.vbox = Gtk.Box(spacing=5, orientation=Gtk.Orientation.VERTICAL) # permet de controler la largeur du combo
     self.vbox.set_border_width(5)
     self._fill(main)
     self.vbox.set_name("influ")
@@ -52,9 +52,8 @@ class LigneInfluBox(object):
 
 
   def _fill(self, main):
-    label = Gtk.Label(label="Ligne d'influence:")
-    label.set_alignment(0., 0.5)
-    label.set_padding(5, 0)
+    label = Gtk.Label(label="Ligne d'influence:", xalign=0.)
+    label.set_margin_start(10)
     self.vbox.pack_start(label, False, False, 0)
     button = Gtk.RadioButton.new_with_label_from_widget(None, "Effort tranchant")
     button.set_name("1")
@@ -72,41 +71,38 @@ class LigneInfluBox(object):
     self.group = button.get_group()
 
     self.combobox1 = Gtk.ComboBoxText()
-    hbox = Gtk.HBox() # permet de controler la largeur du combo
+    hbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.HORIZONTAL) # permet de controler la largeur du combo
     label = Gtk.Label(label="Elément: ")
     hbox.pack_start(label, False, False, 0)
     self.combobox1.set_size_request(80, -1)
     hbox.pack_start(self.combobox1, False, False, 0)
     self.vbox.pack_start(hbox, False, False, 0)
-    #self.handler1 = self.combobox.connect("changed", main._get_one_value_influ)
 
-    hbox = Gtk.HBox()
+    hbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.HORIZONTAL) # permet de controler la largeur du combo
     label = self.spin_label1 = Gtk.Label(label="Position en %: ")
     hbox.pack_start(label, False, False, 0)
-    adjust = Gtk.Adjustment(0., 0., 100., 1., 5.)
+    adjust = Gtk.Adjustment(value=0., lower=0., upper=100., step_increment=1., page_increment=5.)
     spin = self.spin1 = Gtk.SpinButton.new(adjust, 5, 0)
     spin.connect("event", self._update)
     hbox.pack_start(spin, False, False, 0)
     self.vbox.pack_start(hbox, False, False, 0)
 
-    #hbox = Gtk.HBox()
-    b = self.check1 = Gtk.CheckButton("Longueur en m")
+    b = self.check1 = Gtk.CheckButton(label="Longueur en m")
     b.connect('clicked', self._set_length_unit)
-    #hbox.pack_start(b, False, False, 0)
     self.vbox.pack_start(b, False, False, 0)
 
     toolbar = Gtk.Toolbar()
-    b = Gtk.ToolButton(Gtk.STOCK_EXECUTE)
+    b = Gtk.ToolButton(icon_widget=Gtk.Image.new_from_file("glade/influ.png"))
     b.set_label("Calculer")
     b.set_tooltip_text("Calculer la ligne d'influence")
     b.connect("clicked", main.area_expose_influ)
     toolbar.insert(b, -1)
-    b = Gtk.ToolButton(Gtk.STOCK_ADD)
+    b = Gtk.ToolButton(icon_widget=Gtk.Image.new_from_file("glade/influ2.png"))
     b.set_label("Superposer")
     b.set_tooltip_text("Superposer une nouvelle ligne d'influence")
     b.connect("clicked", main.area_expose_influ, False)
     toolbar.insert(b, -1)
-    b = Gtk.ToolButton(Gtk.STOCK_CLEAR)
+    b = Gtk.ToolButton(icon_widget=Gtk.Image.new_from_file("glade/influ3.png"))
     b.set_label("Effacer")
     b.set_tooltip_text("Effacer les lignes d'influence")
     b.connect("clicked", main.on_del_influs)

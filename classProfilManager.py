@@ -12,10 +12,12 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 def exit_as_ok_func():
-  dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL,
-					Gtk.MessageType.QUESTION,
-					Gtk.ButtonsType.YES_NO,
-			"Les données ont été modifiées dans la librairie des profilés. Voulez-vous les enregistrer?")
+  dialog = Gtk.MessageDialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			message_type=Gtk.MessageType.QUESTION,
+			buttons=Gtk.ButtonsType.YES_NO,
+			text="Les données ont été modifiées dans la librairie des profilés. Voulez-vous les enregistrer?")
   dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
   result = dialog.run()
   dialog.destroy()
@@ -26,10 +28,12 @@ def exit_as_ok_func():
   return None
 
 def delete_as_ok_func(name):
-  dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL,
-				Gtk.MessageType.QUESTION,
-				Gtk.ButtonsType.YES_NO,
-		"Voulez-vous vraiment effacer \"%s\" et tout son contenu?" % name)
+  dialog = Gtk.MessageDialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			message_type=Gtk.MessageType.QUESTION,
+			buttons=Gtk.ButtonsType.YES_NO,
+			text="Voulez-vous vraiment effacer \"%s\" et tout son contenu?" % name)
   result = dialog.run()
   dialog.destroy()
   if result == Gtk.ResponseType.YES:
@@ -119,14 +123,14 @@ class Manager(Singleton):
     toolbar.set_border_width(5)
 
     toolitem = Gtk.ToolItem()
-    iconbox = Gtk.VBox(False, 0)
+    iconbox = Gtk.Box(spacing=6, orientation=Gtk.Orientation.VERTICAL)
     #toolitem.set_expand(False)
     toolitem.set_border_width(5)
     button = Gtk.Button()
     #button.unset_flags(Gtk.CAN_FOCUS)
     button.set_relief(Gtk.ReliefStyle.NONE)
     image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_SAVE, Gtk.IconSize.BUTTON)
+    image.set_from_icon_name('document-save', Gtk.IconSize.BUTTON)
     iconbox.pack_start(image, False, False, 0)
     label = Gtk.Label(label="Enregistrer")
     iconbox.pack_start(label, False, False, 0)
@@ -137,13 +141,13 @@ class Manager(Singleton):
     toolbar.insert(toolitem, 0)
 
     toolitem = Gtk.ToolItem()
-    iconbox = Gtk.VBox(False, 0)
+    iconbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     toolitem.set_border_width(5)
     button = Gtk.Button()
     #button.unset_flags(Gtk.CAN_FOCUS)
     button.set_relief(Gtk.ReliefStyle.NONE)
     image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON)
+    image.set_from_icon_name('list-add', Gtk.IconSize.BUTTON)
     iconbox.pack_start(image, False, False, 0)
     label = Gtk.Label(label=self.BUTTON_LABEL)
     iconbox.pack_start(label, False, False, 0)
@@ -154,13 +158,13 @@ class Manager(Singleton):
     toolbar.insert(toolitem, 1)
 
     toolitem = Gtk.ToolItem()
-    iconbox = Gtk.VBox(False, 0)
+    iconbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     toolitem.set_border_width(5)
     button = Gtk.Button()
     #button.unset_flags(Gtk.CAN_FOCUS)
     button.set_relief(Gtk.ReliefStyle.NONE)
     image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON)
+    image.set_from_icon_name('list-add', Gtk.IconSize.BUTTON)
     iconbox.pack_start(image, False, False, 0)
     label = Gtk.Label(label="Groupe")
     iconbox.pack_start(label, False, False, 0)
@@ -171,13 +175,13 @@ class Manager(Singleton):
     toolbar.insert(toolitem, 2)
 
     toolitem = Gtk.ToolItem()
-    iconbox = Gtk.VBox(False, 0)
+    iconbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     toolitem.set_border_width(5)
     button = Gtk.Button()
     #button.unset_flags(Gtk.CAN_FOCUS)
     button.set_relief(Gtk.ReliefStyle.NONE)
     image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_HOME, Gtk.IconSize.BUTTON)
+    image.set_from_icon_name('go-home', Gtk.IconSize.BUTTON)
     iconbox.pack_start(image, False, False, 0)
     label = Gtk.Label(label="Défaut")
     iconbox.pack_start(label, False, False, 0)
@@ -306,7 +310,7 @@ class MaterialManager(Manager):
     self.window.set_size_request(500, 500)
     self.window.set_destroy_with_parent(True)
 
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     vbox.show()
     hbox = self._ini_tools()
     vbox.pack_start(hbox, False, False, 0)
@@ -591,7 +595,7 @@ class ProfilManager(Manager):
     self.has_changed = False
     self.path = None
     # Create a new window
-    self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+    self.window = Gtk.Window()
     self.window.set_icon_from_file("glade/logo.png")
     self.window.set_title("Gestionnaire des profilés")
 
@@ -599,7 +603,7 @@ class ProfilManager(Manager):
     self.window.set_destroy_with_parent(True)
 
     #self.window.connect("delete_event", self.delete_event)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     vbox.show()
     hbox = self._ini_tools()
     vbox.pack_start(hbox, False, False, 0)
@@ -620,7 +624,7 @@ class ProfilManager(Manager):
     self._read_xml_file(file)
 
     # create the TreeView using treestore
-    self.treeview = Gtk.TreeView(self.treestore)
+    self.treeview = Gtk.TreeView.new_with_model(self.treestore)
     #self.treeview.set_reorderable(True)
     self.treeview.connect('event', self._event_handler)
     self.treeview.connect('cursor-changed', self._change_row)

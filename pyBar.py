@@ -25,10 +25,8 @@ import sys
 import gi
 gi.require_version('Gtk', '3.0')
 
-
-from gi.repository import Gtk, Gdk, Pango, GObject, GdkPixbuf
-#print Gtk.pygtk_version
-#print Gtk.gtk_version
+from gi.repository import Gio, Gtk, Gdk, Pango, GObject, GdkPixbuf, GLib
+print(Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION)
 import cairo
 #import gio # debug py2exe windows remettre?
 import classEditor
@@ -39,7 +37,6 @@ import classDialog
 import Const
 import classProfilManager
 import classPrefs
-import classCMenu
 import threading
 import copy
 import os
@@ -53,13 +50,15 @@ import xml.etree.ElementTree as ET
 #signal.signal(signal.SIGINT, signal.SIG_DFL)
 # -------------
 
+
+
 file_tools.set_user_dir()
 if Const.SYS == "win32":
   path = os.path.join(Const.PATH, "stdout.log")
   sys.stdout = open(path, "w")
   path = os.path.join(Const.PATH, "stderr.log")
   sys.stderr = open(path, "w")
-GObject.threads_init()
+#GObject.threads_init()
 
 
 
@@ -80,7 +79,7 @@ class CombiButton(Gtk.CheckButton):
   """Boutons à cocher des combinaisons"""
 
   def __init__(self, label):
-    Gtk.CheckButton.__init__(self, label)
+    Gtk.CheckButton.__init__(self, label=label)
     #self.n_type = n_type
 
 def About():
@@ -102,20 +101,20 @@ def About():
 
 class CombiBox(Gtk.VBox):
 # revoir main_win, study
-  def __init__(self, *args, **kwargs):
-    Gtk.VBox.__init__(self, *args, **kwargs)
+  def __init__(self, **kwargs):
+    Gtk.VBox.__init__(self, **kwargs)
     self.set_name("combi")
 
 
   def fill_box(self, study, main_win):
     self.handler_list = []
     rdm = study.rdm
-    try:
-      status = rdm.status
-    except AttributeError: # for EmptyRdm
-      status = -1
-    if status == -1:
-      return
+    #try:/
+    #  status = rdm.status
+    #except AttributeError: # for EmptyRdm
+    #  status = -1
+    #if status == -1:
+    #  return
     Cases = rdm.Cases
     n_cases = len(Cases)
     try:
@@ -128,7 +127,7 @@ class CombiBox(Gtk.VBox):
 
     # création de la liste des cas de charge
     label = Gtk.Label(label="Cas de charge:")
-    label.set_alignment(0.2, 0.7)
+    #label.set_alignment(0.2, 0.7)
     self.pack_start(label, False, False, 0)
 
     for i, val in enumerate(Cases):
@@ -142,7 +141,7 @@ class CombiBox(Gtk.VBox):
     # création de la liste des combinaisons
     if not n_combi == 0:
       label = Gtk.Label(label="Combinaisons:")
-      label.set_alignment(0.2, 0.7)
+      #label.set_alignment(0.2, 0.7)
       self.pack_start(label, False, False, 0)
     for i, val in enumerate(combis):
       button = CombiButton(val)
@@ -238,7 +237,7 @@ class MainWindow(object):
 
   def configure_first_page(self, widget, event):
     """Méthode configure-event pour le drawingarea du lancement"""
-    print("configure_first_page")
+    #print("configure_first_page")
     w_alloc = widget.get_allocated_width()
     h_alloc = widget.get_allocated_height()
     self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w_alloc, h_alloc)
@@ -265,18 +264,18 @@ class MainWindow(object):
     self.draw_first_tools(widget, int(x+20), max(h_alloc-70, 0))
 
   def draw_first_tools(self, layout, x, y):
-    print("draw_first_tools", x, y)
+    #print("draw_first_tools", x, y)
     if hasattr(self, 'tools'):
       layout.move(self.tools, x, y)
       return
-    hbox = Gtk.HBox(False, 10)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_OPEN, '+')
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
+    b = Gtk.Button.new_from_icon_name('document-open', Gtk.IconSize.DIALOG)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Ouvrir une étude existante")
     b.connect('clicked', self.on_open_file)
     hbox.pack_start(b, False, False, 0)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_NEW, '+')
+    b = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.DIALOG)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Ouvrir une nouvelle étude")
     b.connect('clicked', self.on_new_file)
     hbox.pack_start(b, False, False, 0)
@@ -305,7 +304,6 @@ class MainWindow(object):
       self.window.resize(w, h)
 
     layout = Gtk.Layout()
-    #layout.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse("#f3f3f3"))
     layout.connect("size-allocate", self.configure_first_page)
     layout.connect("draw", self.expose_first_page)
     self.main_box.add(layout)
@@ -316,7 +314,7 @@ class MainWindow(object):
     opt = self.UP.get_version()
     if opt == 0:
       try:
-        GObject.timeout_add(1000, self._get_info_version, opt) # destroy if callback return False
+        GLib.timeout_add(1000, self._get_info_version, opt) # destroy if callback return False
       except:
         pass
     else:
@@ -346,10 +344,9 @@ class MainWindow(object):
     book.set_scrollable(True)
     #book.set_show_tabs(False)
 
-# provisoire en attendant version 2.20 de gtk
-    b = Gtk.Button()
+    b = Gtk.Button.new_from_icon_name('list-add', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.connect('clicked', self.on_new_tab)
-    function.add_icon_to_button(b, Gtk.STOCK_ADD)
     page = Gtk.HBox()
     book.append_page(page, b)
     self.book = book
@@ -359,7 +356,6 @@ class MainWindow(object):
     hbox.set_size_request(-1, 40)
     hbox.set_property('border_width', 4)
     self.message.ini_message(hbox) # évite pb avec singleton
-    #self.bottom_info_box = hbox
     self.main_box.pack_start(book, True, True, 0)
     self.main_box.pack_start(hbox, False, True, 0)
     self.main_box.show_all()
@@ -402,8 +398,8 @@ class MainWindow(object):
     #print("Main::_add_book_page")
     tab = classDrawing.Tab(self)
     self.active_tab = tab
-    vbox = Gtk.VBox(False, 0)
-    w = self.window.get_allocated_width()-180
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
+    w = self.window.get_allocated_width()-280
     hpaned = Gtk.HPaned()
     hpaned.set_position(w)
     hpaned.add1(tab.sw)
@@ -419,14 +415,13 @@ class MainWindow(object):
     vbox.pack_start(hpaned, True, True, 0)
     vbox.show()
 
-    tab_box = Gtk.HBox(False, 2)
+    tab_box = Gtk.HBox(homogeneous=False, spacing=2)
 
     tab_label = Gtk.Label() # gérer en fonction de la longueur dispo
-    tab_label.set_padding(4, 0)
     tab.title = tab_label
-    close_b = Gtk.Button()
+    close_b = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    close_b.set_relief(Gtk.ReliefStyle.NONE)
     close_b.connect('clicked', self._on_remove_page, book, vbox)
-    function.add_icon_to_button(close_b, Gtk.STOCK_CLOSE)
     tab_box.pack_start(tab_label, False, True, 0)
     tab_box.pack_start(close_b, False, True, 0)
     tab_box.show_all()
@@ -506,11 +501,13 @@ class MainWindow(object):
 
   def on_switch_page(self, widget=None, page=None, n=0):
     """Gestionnaire des évènements lors du changement de page du notebook"""
-    #print 'Main::on_switch_page', n
     book = self.book
     n_pages = book.get_n_pages()
+    #print ('Main::on_switch_page', n, n_pages)
     if n == n_pages-1:
-      book.stop_emission("switch-page")
+# suppression 15/6/2019 debug -------
+    #  book.stop_emission("switch-page")
+#-----------------------------------
       return
     self.active_tab = tab = self._tabs[n]
     drawing = tab.active_drawing
@@ -531,7 +528,7 @@ class MainWindow(object):
     self._set_buttons_rdm(rdm_status)
     self._update_titles()
     self._show_message(errors, False)
-    
+
   # -----------------------------------------------------------
   #
   # Méthodes relatives aux évènements
@@ -555,8 +552,10 @@ class MainWindow(object):
     elif key == 'Escape':
       tab.is_selected = False
       tab.remove_tools_box()
-      watch = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-      tab.layout.get_root_window().set_cursor(watch)
+      watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+      screen = Gdk.Screen.get_default()
+      window = screen.get_root_window()
+      window.set_cursor(watch)
       tab.set_surface(tab.area_w, tab.area_h)
       cr = cairo.Context(tab.surface)
       tab.paint_all_struct(cr, None, 1.)
@@ -601,8 +600,10 @@ class MainWindow(object):
     tab.paint_all_struct(cr, None, 1.)
     layout.queue_draw()
     self.is_press = False
-    watch = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-    self.window.get_root_window().set_cursor(watch)
+    watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+    screen = Gdk.Screen.get_default()
+    window = screen.get_root_window()
+    window.set_cursor(watch)
 
 # Double clic : génére : press -> release -> press -> press -> 2Button -> release
   def button_press_event(self, widget, event):
@@ -613,7 +614,7 @@ class MainWindow(object):
     except AttributeError:
       obj_selected = False
     if event.type == Gdk.EventType.BUTTON_PRESS:
-      watch = Gdk.Cursor.new(Gdk.CursorType.FLEUR)
+      watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.FLEUR)
       if event.get_button()[1] == 1:
         self.is_press = (event.x, event.y)
         tab.motion = (0, 0) # provisoire, en attendant mieux
@@ -630,18 +631,20 @@ class MainWindow(object):
           tab.is_selected = ('draw', drawing)
           return
 
+        screen = Gdk.Screen.get_default()
+        window = screen.get_root_window()
         if obj_selected[0] == 'curve':
           self._select_curve(drawing, obj_selected[2])
           return
         elif obj_selected[0] == 'draw':
-          tab.layout.get_root_window().set_cursor(watch)
+          window.set_cursor(watch)
           self._select_drawing(obj_selected[1])
           return
         elif obj_selected[0] == 'info':
-          tab.layout.get_root_window().set_cursor(watch)
+          window.set_cursor(watch)
           return
         elif obj_selected[0] == 'value':
-          tab.layout.get_root_window().set_cursor(watch)
+          window.set_cursor(watch)
           return
         elif obj_selected[0] == 'node':
           content = tab.get_message()
@@ -665,7 +668,10 @@ class MainWindow(object):
             self._create_menu6(event, obj_selected[1], obj_selected[2], obj_selected[4])
             return
         if obj_selected[0] == 'node':
-            widget.get_root_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
+            watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+            screen = Gdk.Screen.get_default()
+            window = screen.get_root_window()
+            window.set_cursor(watch)
             node = obj_selected[2]
             # ajouter ici les menus pour les noeuds
             self._create_menu3(event, drawing, node)
@@ -760,7 +766,7 @@ class MainWindow(object):
       drawing.restore_values(n_curve)
     else:
       # provisoire : astuce pour remettre les valeurs de la courbe s_curve
-      if drawing.s_curve == n_curve: 
+      if drawing.s_curve == n_curve:
         drawing.restore_values(n_curve)
       try:
         drawing.s_values.remove(n_curve)
@@ -826,6 +832,7 @@ class MainWindow(object):
   def on_select_drawing(self, widget, drawing):
     """Sélectionne le diagramme"""
     #print "on_select_drawing"
+    drawing.options['Select'] = widget.get_active()
     self._select_drawing(drawing)
 
   def _select_drawing(self, drawing):
@@ -918,7 +925,7 @@ class MainWindow(object):
       drawing.s_case = drawing.parent.s_case
     else:
       drawing.s_cases = copy.copy(drawing.parent.s_cases)
-    
+
     self._do_new_drawing()
     self._fill_right_menu()
     self._update_combi_box()
@@ -1034,7 +1041,7 @@ class MainWindow(object):
     li = drawing.get_bar_drawings()
     for key in li:
       child = drawing.childs[key]
-      child.draw_new_bar(tab, study.rdm.struct, barre.name) 
+      child.draw_new_bar(tab, study.rdm.struct, barre.name)
     drawing.s_bar = barre.name
 
   def on_del_influ(self, widget, data):
@@ -1059,20 +1066,98 @@ class MainWindow(object):
 #
 # --------------------------------------------------
 
-# Modif GTK3 popup devient self.popup pour que ça marche ??
-# XXX tester s'il faut laisser self.popup plutot que menu_cont.popup
 
   def _create_menu1(self, event, drawing):
     """Crée et affiche le menu contextuel pour le survol zone drawing
  """
-    study = self.studies[drawing.id_study]
-    rdm = study.rdm
+    drawing = self.active_tab.active_drawing
+    options = drawing.get_menu_options()
+    menu1 = Gtk.Menu()
+    if 'Node' in options:
+      menuitem1 = Gtk.CheckMenuItem(label="Afficher les noeuds", active=options['Node'])
+      menuitem1.connect("activate", self.on_node_display, drawing)
+      menu1.append(menuitem1)
+    if 'Barre' in options:
+      menuitem2 = Gtk.CheckMenuItem(label="Afficher les barres", active=options['Barre'])
+      menuitem2.connect("activate", self.on_barre_display, drawing)
+    if 'Axis' in options:
+      menu1.append(menuitem2)
+      menuitem3 = Gtk.CheckMenuItem(label="Afficher les repères", active=options['Axis'])
+      menuitem3.connect("activate", self.on_axis_display, drawing)
+    if 'Title' in options:
+      menu1.append(menuitem3)
+      menuitem4 = Gtk.CheckMenuItem(label="Afficher le titre", active=options['Title'])
+      menuitem4.connect("activate", self.on_title_display, drawing)
+      menu1.append(menuitem4)
+    if 'Series' in options:
+      menuitem5 = Gtk.CheckMenuItem(label="Afficher les légendes", active=options['Series'])
+      menuitem5.connect("activate", self.on_series_display, drawing)
+      menu1.append(menuitem5)
+    if "Sync" in options:
+      menuitem6 = Gtk.CheckMenuItem(label="Synchroniser", active=options['Sync'])
+      menuitem6.connect("activate", self.on_synchronise, drawing)
+      menu1.append(menuitem6)
+    if 'Select' in options:
+      menuitem7 = Gtk.CheckMenuItem(label="Sélectionner le diagramme", active=options['Select'])
+      menuitem7.connect("activate", self.on_select_drawing, drawing)
+      menu1.append(menuitem7)
+    menuitem8 = Gtk.CheckMenuItem(label="Supprimer le diagramme", active=options['Select'])
+    menuitem8.connect("activate", self.on_del_drawing, drawing)
+    menu1.append(menuitem8)
+    if 'Save' in options:
+      menuitem9 = Gtk.CheckMenuItem(label="Fermer et enregistrer l\'étude", active=options['Save'])
+      menuitem9.connect("activate", self.on_save_drawings, drawing)
+      menu1.append(menuitem9)
+    if 'Add' in options:
+      menuitem10 = Gtk.MenuItem(label="Ajouter un diagramme")
+      menuitem10.connect("activate", self.on_add_drawing, drawing)
+      menu1.append(menuitem10)
+    if 'Sigma' in options:
+      menuitem11 = Gtk.MenuItem(label="Diagramme de contraintes")
+      menuitem11.connect("activate", self.on_add_sigma_drawing, drawing)
+      menu1.append(menuitem11)
+    if 'InfluB' in options:
+      menuitem12 = Gtk.MenuItem(label="Choix des barres")
+      menuitem12.connect("activate", self.on_select_bars, drawing)
+      menu1.append(menuitem12)
+    menu_button = self.builder.get_object("menu_cas")
+    if not menu_button.get_active():
+      menu1.append(Gtk.SeparatorMenuItem())
+      if 'Case' in options:
+        id_study = drawing.id_study
+        study = self.studies[id_study]
+        rdm = study.rdm
+        cases = rdm.Cases
+        CombiCoef = rdm.CombiCoef
+        combis = list(CombiCoef.keys())
+        combis.sort()
+        n_cases = len(cases)
+        n_combis = len(combis)
+        view = drawing.get_combi_view(rdm)
+        # case
+        for i, val in enumerate(cases):
+          etat = view[i]
+          if etat[1] == 0:
+            continue
+          menuitem = Gtk.CheckMenuItem(label=val, active=etat[0])
+          menuitem.connect("activate", self.event_menu_button, (drawing, i))
+          menu1.append(menuitem)
+   # combinaisons
+        if not n_combis == 0:
+          for i, val in enumerate(combis):
+            n = i + n_cases
+            etat = view[n]
+            if etat[1] == 0:
+              continue
+            menuitem = Gtk.CheckMenuItem(label=val, active=etat[0])
+            menuitem.connect("activate", self.event_menu_button, (drawing, n))
+            menu1.append(menuitem)
 
-    menu_cont = classCMenu.CMenu(self)
-    menu_cont.get_menu1(drawing, rdm)
-    #self.popup_menu = menu_cont.uimanager.get_widget('/popup')
-    self.popup.popup(None, None, None, None, event.get_button()[1], event.time)
+    menu1.show_all()
+    menu1.popup_at_pointer(event)
     return True
+
+
 
   def _create_menu2(self, event, barre):
     """Crée et affiche le menu contextuel survol barre"""
@@ -1081,19 +1166,20 @@ class MainWindow(object):
     id_study = drawing.id_study
     study = self.studies[id_study]
     rdm = study.rdm
-    menu_cont = classCMenu.CMenu(self)
-    menu_cont.menu2(barre, drawing, rdm)
-    self.popup.popup(None, None, None, None, event.get_button()[1], event.time)
+    n_barres = rdm.struct.GetBars()
+    menu1 = Gtk.Menu()
+    if not n_barres == 1:
+      menuitem1 = Gtk.MenuItem(label="Sélectionner la barre")
+      menuitem1.connect("activate", self.on_bar_select, barre)
+      menu1.append(menuitem1)
+      menu1.show_all()
+      menu1.popup_at_pointer(event)
     return True
 
   # désactivé, ne pas effacer
   def _create_menu3(self, event, drawing, node):
     """Menu contextuel survol des noeuds"""
-    menu_cont = classCMenu.CMenu(self)
-    menu_cont.get_menu3(node, drawing)
-    popup_menu = menu_cont.uimanager.get_widget('/popup')
-    if not popup_menu == None:
-      popup_menu.popup(None, None, None, None, event.get_button()[1], event.time)
+    pass
 
   def _create_menu4(self, event, chart):
     """Menu contextuel survol"""
@@ -1102,36 +1188,58 @@ class MainWindow(object):
 
   def _create_menu5(self, event):
     """Menu contextuel survol zone vide"""
-    menu_cont = classCMenu.CMenu(self)
-    menu_cont.get_menu5()
-    self.popup.popup(None, None, None, None, event.get_button()[1], event.time)
+    menu1 = Gtk.Menu()
+    menuitem1 = Gtk.MenuItem(label="Ouvrir une étude")
+    menuitem1.connect("activate", self.on_open_file)
+    menu1.append(menuitem1)
+    menuitem2 = Gtk.MenuItem(label="Nouvelle étude")
+    menuitem2.connect("activate", self.on_new_study)
+    menu1.append(menuitem2)
+    menu1.show_all()
+    menu1.popup_at_pointer(event)
     return True
 
   def _create_menu6(self, event, drawing, n_curve, curve):
     """Menu contextuel survol courbe"""
-    #print "menu6", n_curve, curve
-    status = drawing.status
-    menu_cont = classCMenu.CMenu(self)
-    if status == 8:
-      menu_cont.get_menu4(drawing, n_curve, curve)
+    menu1 = Gtk.Menu()
+    menuitem1 = Gtk.MenuItem(label="Sélectionner la courbe")
+    menuitem1.connect("activate", self.on_select_curve, (drawing, n_curve, curve))
+    menu1.append(menuitem1)
+    menuitem2 = Gtk.MenuItem(label="Ancrer une valeur")
+    menuitem2.connect("activate", self.on_set_anchor, (drawing, n_curve, curve))
+    menu1.append(menuitem2)
+
+    char_drawing_id = drawing.get_char_drawing()
+    if char_drawing_id is None:
+      menuitem3 = Gtk.MenuItem(label="Afficher le chargement")
+      menuitem3.connect("activate", self.on_display_char, (drawing, n_curve, curve))
+      menu1.append(menuitem3)
+    s_values = drawing.s_values
+    if n_curve in s_values or drawing.s_curve == n_curve:
+      has_values = True
     else:
-      menu_cont.get_menu6(drawing, n_curve, curve)
-    #popup_menu = menu_cont.uimanager.get_widget('/popup')
-    #if not popup_menu == None:
-    #  popup_menu.popup(None, None, None, None, event.get_button()[1], event.time)
-    self.popup.popup(None, None, None, None, event.get_button()[1], event.time)
+      has_values = False
+    menuitem4 = Gtk.CheckMenuItem(label="Afficher les valeurs", active=has_values)
+    menuitem4.connect("activate", self.on_display_value, (drawing, n_curve))
+    menu1.append(menuitem4)
+
+    menu1.show_all()
+    menu1.popup_at_pointer(event)
     return True
 
-# voir utilité des args
+
   def _create_menu7(self, event, drawing, n_curve, legend):
-    """Menu contextuel survol valeur courbe"""
-    menu_cont = classCMenu.CMenu(self)
-    menu_cont.menu7(drawing, n_curve, legend)
-    #popup_menu = menu_cont.uimanager.get_widget('/popup')
-    #if not popup_menu == None:
-    #  popup_menu.popup(None, None, None, None, event.get_button()[1], event.time)
-    self.popup.popup(None, None, None, None, event.get_button()[1], event.time)
+    menu1 = Gtk.Menu()
+    menuitem1 = Gtk.MenuItem(label="Masquer")
+    menuitem1.connect("activate", self.on_hide_value, (drawing, n_curve, legend))
+    menu1.append(menuitem1)
+    menuitem2 = Gtk.MenuItem(label="Supprimer")
+    menuitem2.connect("activate", self.on_delete_value, (drawing, n_curve, legend))
+    menu1.append(menuitem2)
+    menu1.show_all()
+    menu1.popup_at_pointer(event)
     return True
+
 
   # -----------------------------------------------------------
   #
@@ -1184,29 +1292,20 @@ class MainWindow(object):
       self._open_combi()
 
   def _make_combi_box(self, tab):
-    """Crée la boite pour les combi (sw, bouton fermeture, box pour contenu
-    Retourne la zone (box) pour le contenu"""
+    """Crée la boite pour les combi (sw, bouton fermeture, box pour contenu"""
     #print("_make_combi_box")
     sw = Gtk.ScrolledWindow()
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-    #color = Gdk.RGBA(0.6, 0.6, 1, 1)
-    #sw.override_background_color(Gtk.StateType.NORMAL, color)
-    pbox = Gtk.VBox(False, 0)
-    #pbox.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.5,.5,.5,1.))
+    pbox = Gtk.VBox(homogeneous=False, spacing=0)
 
-    #sw.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse("#ffffff"))
     # close button
-    align = Gtk.Alignment.new(1, 1, 0, 0)
-    image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_CLOSE, Gtk.IconSize.MENU)
-    button = Gtk.Button()
+    button = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    button.set_property('halign', Gtk.Align.END)
     button.set_relief(Gtk.ReliefStyle.NONE)
     button.connect('clicked', self._click_close_combi)
-    button.add(image)
-    align.add(button)
-    pbox.pack_start(align, False, False, 2)
+    pbox.pack_start(button, False, False, 2)
     # combi and cas in box
-    sw.add_with_viewport(pbox)
+    sw.add(pbox)
     sw.show_all()
     tab.right_menu = pbox
     return sw
@@ -1232,7 +1331,7 @@ class MainWindow(object):
 
   def _fill_combi_menu(self, tab, box):
     """Supprime et crée un nouveau contenu dans la boite des combinaisons"""
-    #print "_fill_combi_menu"
+    #print("_fill_combi_menu")
     drawing = tab.active_drawing
     childs = box.get_children()
     try:
@@ -1240,9 +1339,9 @@ class MainWindow(object):
       box.remove(child)
     except IndexError:
       pass
-    if drawing is None: 
+    if drawing is None:
       return
-    pbox = CombiBox(False, 0)
+    pbox = CombiBox(homogeneous=False, spacing=0)
     box.pack_start(pbox, False, False, 0)
     study = self.studies[drawing.id_study]
     pbox.fill_box(study, self)
@@ -1250,7 +1349,7 @@ class MainWindow(object):
 # renommer
   def _update_combi_box(self):
     """Positionne la sensibilité et l'activité des boutons des cas et combis en fonction du status et des erreurs rencontrées"""
-    #print "_update_combi_box"
+    #print("_update_combi_box")
     tab = self.active_tab
     drawing = tab.active_drawing
     if drawing is None:
@@ -1258,7 +1357,7 @@ class MainWindow(object):
     box = tab.right_menu
     if box is None:
       return
-    
+
     if drawing.status == 8:
       box.set_sensitive(True)
       return
@@ -1478,7 +1577,7 @@ class MainWindow(object):
 		"menu_error",
 		]
     # activation des boutons
-    if rdm_status == 2:
+    if rdm_status == 1:
       status = True
     else:
       status = False
@@ -1492,10 +1591,6 @@ class MainWindow(object):
     for item in items2:
       widget = self.builder.get_object(item)
       widget.set_sensitive(status)
-    if rdm_status == -1:
-      status = False
-    else:
-      status = True
     for item in items3:
       widget = self.builder.get_object(item)
       widget.set_sensitive(status)
@@ -1514,7 +1609,7 @@ class MainWindow(object):
     if not tab.status == 0:
       return
     drawing = tab.active_drawing
-    if drawing is None: 
+    if drawing is None:
       return
     study = self.studies[drawing.id_study]
     drawing.set_zoom("+")
@@ -1531,7 +1626,7 @@ class MainWindow(object):
     if not tab.status == 0:
       return
     drawing = tab.active_drawing
-    if drawing is None: 
+    if drawing is None:
       return
     status = drawing.status
     study = self.studies[drawing.id_study]
@@ -1561,7 +1656,7 @@ class MainWindow(object):
     if not tab.status == 0:
       return
     drawing = tab.active_drawing
-    if drawing is None: 
+    if drawing is None:
       return
     status = drawing.status
     study = self.studies[drawing.id_study]
@@ -1588,7 +1683,7 @@ class MainWindow(object):
     """Augmente ou diminue la valeur du zoom du graphe"""
     tab = self.active_tab
     drawing = tab.active_drawing
-    if drawing is None: 
+    if drawing is None:
       return
     #zoom = drawing.chart_zoom
     if tag == "more":
@@ -1614,7 +1709,7 @@ class MainWindow(object):
     p = urllib.parse.urlparse(path)
     path = os.path.abspath(os.path.join(p.netloc, p.path))
     path = urllib.parse.unquote(path)
-    GObject.idle_add(self._on_open_study, path) # permet à la zone de dessin de se mettre en place
+    GLib.idle_add(self._on_open_study, path) # permet à la zone de dessin de se mettre en place
 
   def _on_open_study(self, path):
     self._open_study(path)
@@ -1628,7 +1723,7 @@ class MainWindow(object):
       book = self.book
     except AttributeError:
       self._ini_drawing_page(0)
-    
+
     path = self.UP.get_default_path()
     path = file_tools.file_selection(path, self.window)
     #print(path)
@@ -1662,7 +1757,7 @@ class MainWindow(object):
       f = open(file, 'w')
       f.write(content)
       f.close()
-    except IOError as e: 
+    except IOError as e:
       content = ("%s" % e, 0) # formatage obligatoire
       classDialog.Message().set_message(content)
     except:
@@ -1702,15 +1797,12 @@ class MainWindow(object):
       self._update_combi_box()
       rdm_status = rdm.status
       self._set_buttons_rdm(rdm_status)
-      #if not rdm_status in [-1, 0]:
-      #  self._write_save_file('%s.dat~' % path[:-4])
       self._show_message(rdm.errors)
     else:
       file_tools.open_as_ok_func(path)
 
   def on_save(self, widget=None):
     """Evènement d'enregistrement d'une étude modifiée"""
-    #print "Main::_on_save"
     if not hasattr(self, 'editor'):
       content = ("Etude déjà enregistrée ou vide", 2)
       classDialog.Message().set_message(content)
@@ -1750,7 +1842,7 @@ class MainWindow(object):
       f = open(path, 'w')
       f.write(content)
       f.close()
-    except IOError as e: 
+    except IOError as e:
       content = ("%s" % e, 0) # formatage obligatoire
       classDialog.Message().set_message(content)
       return
@@ -1795,7 +1887,7 @@ class MainWindow(object):
       f = open(path, 'w')
       f.write(content)
       f.close()
-    except IOError as e: 
+    except IOError as e:
       content = ("%s" % e, 0)
       classDialog.Message().set_message(content)
 
@@ -1829,7 +1921,7 @@ class MainWindow(object):
       book = self.book
     except AttributeError:
       self._ini_drawing_page(0)
-    GObject.idle_add(self.on_new_study) # permet à la zone de dessin de se mettre en place
+    GLib.idle_add(self.on_new_study) # permet à la zone de dessin de se mettre en place
 
   def on_new_study(self, widget=None, x=None, y=None):
     """Ouverture d'une nouvelle étude dans l'onglet actif"""
@@ -1837,12 +1929,14 @@ class MainWindow(object):
     current_page = book.get_current_page()
     tab = self._tabs[current_page]
     study, drawing = tab.add_empty_study(self.options, x, y)
-    if hasattr(tab, "surface"):
+    #if hasattr(tab, "surface"):
       #tab.del_surface()
-      tab.configure_event(tab.layout)
-    else:
-      event = Gdk.Event(Gdk.EventType.CONFIGURE)
-      tab.layout.emit("configure-event", event)
+    #  tab.configure_event(tab.layout)
+    #else:
+    #  print("ooooo")
+      #event = Gdk.Event(Gdk.EventType.CONFIGURE)
+      #tab.layout.emit("configure-event", event)
+    GLib.idle_add(tab.configure_event, tab.layout)
 
     tab.layout.queue_draw()
     name = study.name
@@ -1875,7 +1969,7 @@ class MainWindow(object):
     if hasattr(self, 'editor') and not self.editor.w2 is None:
       self.editor.w2.present()
     else:
-  
+
       book = self.book
       n_pages = book.get_n_pages()
       current_page = book.get_current_page()
@@ -1980,7 +2074,7 @@ class MainWindow(object):
       drawable = area.bin_window
     except AttributeError:
       return
-    colormap = Gdk.colormap_get_system() 
+    colormap = Gdk.colormap_get_system()
     pixbuf.get_from_drawable(drawable, colormap, 0, 0, 0, 0, width, height)
     pixbuf.save(file, "jpeg", {"quality": str(reso)})
 
@@ -2011,8 +2105,10 @@ class MainWindow(object):
     format = data[1]
     if not file_tools.save_as_ok_func(file):
       return
-    watch = Gdk.Cursor.new(Gdk.CursorType.WATCH)
-    self.window.get_root_window().set_cursor(watch)
+    watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.WATCH)
+    screen = Gdk.Screen.get_default()
+    window = screen.get_root_window()
+    window.set_cursor(watch)
 
     if format == 'JPEG': # ne fonctionne plus
       reso = file_tools.open_dialog_resol()
@@ -2023,8 +2119,10 @@ class MainWindow(object):
       self._export_png(file)
     elif format == 'SVG':
       self._export_svg(file)
-    watch = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-    self.window.get_root_window().set_cursor(watch)
+    watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+    screen = Gdk.Screen.get_default()
+    window = screen.get_root_window()
+    window.set_cursor(watch)
 
   def on_about(self, widget):
     About()
@@ -2056,7 +2154,7 @@ class MainWindow(object):
     button.set_border_width(20)
     vbox = dialog.vbox
     vbox.add(button)
-    button = Gtk.CheckButton("Me le rappeler plus tard")
+    button = Gtk.CheckButton(label="Me le rappeler plus tard")
     button.connect('clicked', self._set_version_pref)
     vbox.add(button)
     vbox.show_all()
@@ -2085,7 +2183,7 @@ class MainWindow(object):
     """Affiche le degré d'hyperstaticité"""
     tab = self.active_tab
     drawing = tab.active_drawing
-    if drawing is None: 
+    if drawing is None:
       return
     study = self.studies[drawing.id_study]
     rdm = study.rdm
@@ -2130,9 +2228,9 @@ class MainWindow(object):
 
   def update_drawing(self, case_page=None):
     """Met à jour le dessin en status 0 depuis l'éditeur de données"""
+    #print ("update_drawing")
     if self.editor.data_editor.need_drawing == False:
       return
-    #print "update_drawing"
     tab = self.active_tab
     drawing = tab.active_drawing
     if not drawing.parent is None:
@@ -2302,7 +2400,7 @@ class MainWindow(object):
       tab = self.active_tab
     tab.status = 0
     sw = tab.sw
-    area = tab.layout 
+    area = tab.layout
     sw.add(area) # déclenche 1 configure_event
 
   def _add_textview(self):
@@ -2340,8 +2438,8 @@ class MainWindow(object):
 		size_points = 11.0)
     p = textbuffer.create_tag("p", weight = Pango.Weight.NORMAL,
 		size_points = 9.0)
-    id_image = {0 : Gtk.STOCK_STOP, 1 : Gtk.STOCK_DIALOG_WARNING, 2 : Gtk.STOCK_INFO, 3 : Gtk.STOCK_APPLY}
-    
+    id_image = {0 : 'dialog-error', 1 : 'dialog-warning', 2 : 'dialog-information', 3 : 'dialog-information'} # finir XXX
+
     tab = self.active_tab
     drawing = tab.active_drawing
     study = self.studies[drawing.id_study]
@@ -2380,7 +2478,7 @@ class MainWindow(object):
     for elem in li_anchor:
       code = elem[1]
       image = Gtk.Image()
-      image.set_from_stock(id_image[code], Gtk.IconSize.MENU)
+      image.set_from_icon_name(id_image[code], Gtk.IconSize.MENU)
       image.show()
       textview.add_child_at_anchor(image, elem[0])
     #textview.scroll_to_iter(end_iter, 0) fonctionne pas
@@ -2470,6 +2568,9 @@ class MainWindow(object):
     elif status == 7:
       type = "L"
     n_case = drawing.s_curve
+    if n_case is None:
+      textbuffer.insert_with_tags(end_iter, "Données indisponibles", h1)
+      return
     Char = rdm.GetCharByNumber(n_case)
     name = rdm.GetCharNameByNumber(n_case)
 
@@ -2571,7 +2672,7 @@ class MainWindow(object):
       textbuffer.insert_with_tags(end_iter, "Aucune valeur disponible", h1)
       return textbuffer
     Char = rdm.GetCharByNumber(case)
-    if Char.r_status == 0:
+    if Char.status == 0:
       textbuffer.insert_with_tags(end_iter, "Aucune valeur disponible", h1)
       return textbuffer
     factor_F = units['F']
@@ -2584,7 +2685,7 @@ class MainWindow(object):
     textbuffer.insert_with_tags(end_iter, text, h2)
     w_relax = Char.GetBarreRotation()
     texts = ['u', 'v', 'w']
-    if struct.n_ddl == 0:
+    if Char.KS.n_ddl == 0:
       text = '\tAucun degré de liberté non nul\n'
       textbuffer.insert(end_iter, text)
     for node in struct.Nodes:
@@ -2604,7 +2705,7 @@ class MainWindow(object):
             barre = RotuleElast[node][0]
             textbuffer.insert(end_iter, '\t\t%s=%s %s\n' % (name, ddl, unit))
             textbuffer.insert(end_iter, '\t\tw=%s %s (%s)\n' % (ddls[3], unit, barre))
-          
+
           elif node in w_relax:
             for barre, w in w_relax[node].items():
               textbuffer.insert(end_iter, '\t\tw=%s %s (%s)\n' % (w, unit, barre))
@@ -2819,7 +2920,7 @@ class MainWindow(object):
 
   def update_from_editor(self, widget=None):
     """Gère les évènements liés à l'enregistrement depuis l'éditeur"""
-    #print "Main::update_from_editor"
+    #print("Main::update_from_editor")
     tab = self.active_tab
     drawing = tab.active_drawing
     drawings = tab.drawings
@@ -2872,7 +2973,7 @@ class MainWindow(object):
     self.editor.set_is_changed
 
     rdm_status = rdm.status
-    if not rdm_status == 2:
+    if not rdm_status == 1:
       drawing.status = 0
       if tab.status == 1:
         tab.status = 2
@@ -2992,7 +3093,7 @@ class MainWindow(object):
       if id in must_save:
         self._set_name(id)
         self._save_rdm_instance(id)
-      else: 
+      else:
         self._restore_rdm_instance(id)
     for id in tab.drawings: # actualisation des dessins de l'onglet actif
       drawing = tab.drawings[id]
@@ -3010,7 +3111,7 @@ class MainWindow(object):
     self._update_titles()
     self._update_combi_box()
     #self._show_message(study.rdm.errors, False)
-    GObject.idle_add(self._bg_from_editor_update, changes)
+    GLib.idle_add(self._bg_from_editor_update, changes)
 
 
   def _bg_from_editor_update(self, changes):
@@ -3068,7 +3169,7 @@ class MainWindow(object):
     if rdm.status == -1: return
     for i in rdm.Chars:
       Char = rdm.Chars[i]
-      print("Case Name=%s Status lecture=%s Status Inv=%s" % (Char.name, Char.status, Char.r_status))
+      print("Case Name=%s Status lecture=%s Status Inv=%s" % (Char.name, Char.status, Char.status))
 
 class MyThread(threading.Thread):
 

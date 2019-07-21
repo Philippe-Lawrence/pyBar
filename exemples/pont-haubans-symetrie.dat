@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.3">
+  <elem id="node">
+    <node d="0,0" id="N1" liaison="1" />
+    <node d="1,0" id="N2" />
+    <node d="2,0" id="N3" />
+    <node d="3,0" id="N4" />
+    <node d="4,0" id="N5" />
+    <node d="5,0" id="N6" liaison="2" />
+    <node d="0,2" id="N7" liaison="3,inf,0.0,inf" />
+  </elem>
+  <elem id="barre">
+    <barre end="N7" id="B1" r0="0" r1="0" start="N1" />
+    <barre end="N6" id="B10" r0="0" r1="0" start="N5" />
+    <barre end="N2" id="B2" r0="1" r1="0" start="N1" />
+    <barre end="N3" id="B3" r0="0" r1="0" start="N2" />
+    <barre end="N4" id="B4" r0="0" r1="0" start="N3" />
+    <barre end="N5" id="B5" r0="0" r1="0" start="N4" />
+    <barre end="N2" id="B6" r0="1" r1="1" start="N7" />
+    <barre end="N3" id="B7" r0="1" r1="1" start="N7" />
+    <barre end="N4" id="B8" r0="1" r1="1" start="N7" />
+    <barre end="N5" id="B9" r0="1" r1="1" start="N7" />
+  </elem>
+  <elem id="geo">
+    <barre h="0.3" id="*" igz="8.03e-05" profil="UPN 300" s="0.00588" v="0.15" />
+    <barre h="0.08" id="B6,B7,B8,B9" igz="1.06e-06" profil="UPN 80" s="0.001102" v="0.04" />
+  </elem>
+  <elem id="material">
+    <barre id="*" young="200000000000" />
+  </elem>
+  <elem id="char">
+    <case id="cas 1">
+      <pp d="false" />
+      <barre id="B10" qu="%0,%1,0.0,-2000.0" />
+      <barre fp="%0.50,0.0,-1000.0,0.0" id="B2" />
+    </case>
+    <case id="cas 2">
+      <barre id="B2,B3,B4,B5,B10" qu=",,0.0,-1000.0" />
+    </case>
+  </elem>
+  <elem id="combinaison">
+    <combinaison d="1.0,0.0" id="Combinaison 1" />
+    <combinaison d="0.0,1.0" id="Combinaison 2" />
+    <combinaison d="1.0,1.0" id="Combinaison 3" />
+  </elem>
+  <elem id="prefs">
+    <unit d="1.0" id="I" />
+    <unit d="1.0" id="M" />
+    <unit d="1.0" id="L" />
+    <unit d="1.0" id="C" />
+    <unit d="1.0" id="E" />
+    <unit d="1.0" id="S" />
+    <unit d="1.0" id="F" />
+    <const g="9.81" />
+    <conv conv="1" />
+  </elem>
+  <draw id="prefs">
+    <drawing axis="false" bar_name="true" influ_bars="B2,B3,B4" node_name="true" scale="103.8" scale_pos="332.0,160.0,46,25" show_title="true" status="7,0,1" title="298.0,355.6,218,25,pont-haubans-symetrie" x0="248.0" y0="395.6">
+      <b_child axis="false" bar="B10" bar_name="true" node_name="true" scale="103.8" scale_pos="296.0,485.0,46,25" show_title="true" status="7,0,1" title="390.0,550.0,218,25,pont-haubans-symetrie" x0="340.0" y0="590.0" />
+    </drawing>
+  </draw>
+</data>

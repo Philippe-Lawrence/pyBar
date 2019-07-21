@@ -75,10 +75,12 @@ def recursive_file_select(path):
       recursive_file_select()
 
 def exit_as_ok_func(filename):
-    err = "Enregistrer le fichier '%s'?"  % filename
-    dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL,
-                                         Gtk.MessageType.QUESTION,
-                                         Gtk.ButtonsType.YES_NO, err)
+    dialog = Gtk.MessageDialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			message_type=Gtk.MessageType.QUESTION,
+			buttons=Gtk.ButtonsType.YES_NO,
+			text = "Enregistrer le fichier '%s'?"  % filename)
     dialog.add_button("Oui pour tous", 2)
     dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
     dialog.set_icon_from_file("glade/logo.png")
@@ -93,9 +95,12 @@ def exit_as_ok_func(filename):
     return 0
 
 def exit_as_ok_func2(message):
-    dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL,
-                                        Gtk.MessageType.QUESTION,
-                                        Gtk.ButtonsType.YES_NO, message)
+    dialog = Gtk.MessageDialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			message_type=Gtk.MessageType.QUESTION,
+			buttons=Gtk.ButtonsType.YES_NO,
+			text = message)
     dialog.set_icon_from_file("glade/logo.png")
     result = dialog.run()
     dialog.destroy()
@@ -109,10 +114,12 @@ def save_as_ok_func(filename):
     if filename is None:
       return
     if os.path.exists(filename):
-      err = "Ecraser le fichier '%s'?"  % filename
-      dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL,
-                                         Gtk.MessageType.QUESTION,
-                                         Gtk.ButtonsType.YES_NO, err)
+      dialog = Gtk.MessageDialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			message_type=Gtk.MessageType.QUESTION,
+			buttons=Gtk.ButtonsType.YES_NO,
+			text = "Ecraser le fichier '%s'?"  % filename)
       dialog.set_icon_from_file("glade/logo.png")
       result = dialog.run()
       dialog.destroy()
@@ -126,10 +133,12 @@ def open_as_ok_func(filename):
     if filename is None:
       return
     if os.path.exists(filename):
-      dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT,
-					Gtk.MessageType.INFO,
-					Gtk.ButtonsType.OK,
-			"Le fichier '%s' est déjà ouvert"  % filename)
+      dialog = Gtk.MessageDialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			message_type=Gtk.MessageType.INFO,
+			buttons=Gtk.ButtonsType.OK,
+			text = "Le fichier '%s' est déjà ouvert"  % filename)
       dialog.set_icon_from_file("glade/logo.png")
       result = dialog.run()
       dialog.destroy()
@@ -137,22 +146,22 @@ def open_as_ok_func(filename):
 
 def open_dialog_resol():
     """Fenêtre d'affichage de choix de la résolution"""
-    dialog = Gtk.Dialog("Exportation Bitmap",
-			None,
-			Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-			(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-			Gtk.STOCK_OK, Gtk.ResponseType.OK))
+    dialog = Gtk.Dialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			title = "Exportation bitmap")
+    dialog.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+    dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
     dialog.set_icon_from_file("glade/logo.png")
 
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     vbox.set_border_width(5)
 
     label = Gtk.Label(label="Choix de la résolution")
-    label.set_size_request(-1, 30)
-    label.set_alignment(0, 0.5)
+    label.set_size_request(-1, 30, xalign=0.)
     vbox.pack_start(label, False, True, 0)
 
-    adj = Gtk.Adjustment(50., 0., 100., 10., 20.0, 0.0)
+    adj = Gtk.Adjustment(value=50., lower=0., upper=100., step_increment=10., page_increment=20.0)
     spin = Gtk.SpinButton.new(adj, 0, 0)
     spin.set_size_request(30, -1)
     #spin.set_wrap(True) ???
@@ -168,26 +177,26 @@ def open_dialog_resol():
 
 def open_dialog_bars(bars, selected_bars):
     """Fenêtre d'affichage de sélection des barres actives"""
-    dialog = Gtk.Dialog("Choix des barres",
-			None,
-			Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-			(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-			Gtk.STOCK_OK, Gtk.ResponseType.OK))
+    dialog = Gtk.Dialog(transient_for=None,
+			modal=True,
+			destroy_with_parent=True,
+			title = "Choix des barres")
+    dialog.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+    dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
     dialog.set_icon_from_file("glade/logo.png")
 
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.Box(spacing=0, orientation=Gtk.Orientation.VERTICAL)
     vbox.set_border_width(5)
 
-    label = Gtk.Label(label="Choix des barres")
+    label = Gtk.Label(label="Choix des barres", xalign=0.)
     label.set_size_request(-1, 30)
-    label.set_alignment(0, 0.5)
     vbox.pack_start(label, False, True, 0)
 
     buttons = []
     keys = list(bars.keys())
     keys.sort()
     for bar in keys:
-      button = Gtk.CheckButton(bars[bar])
+      button = Gtk.CheckButton(label=bars[bar])
       buttons.append(button)
       if bar in selected_bars:
         button.set_active(True)
@@ -210,10 +219,12 @@ def open_dialog_bars(bars, selected_bars):
 def file_export(path, preselect=None):
   """Return selected file name or None"""
   # Create a new file selection widget
-  dialog = Gtk.FileChooserDialog("Enregistrer sous",
-		None, Gtk.FileChooserAction.SAVE,
-		(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-		Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+  dialog = Gtk.FileChooserDialog(
+    title="Enregistrer sous",
+    action=Gtk.FileChooserAction.SAVE,
+)
+  dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                   "Enregistrer", Gtk.ResponseType.OK)
   dialog.set_icon_from_file("glade/logo.png")
   dialog.set_current_folder(path)
   dialog.set_default_response(Gtk.ResponseType.OK)
@@ -252,10 +263,12 @@ def file_export(path, preselect=None):
 def file_save(path, ext=".dat", preselect=None):
   """Return selected file name or None"""
   # Create a new file selection widget
-  dialog = Gtk.FileChooserDialog("Enregistrer sous",
-		None, Gtk.FileChooserAction.SAVE,
-		(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-		Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+  dialog = Gtk.FileChooserDialog(
+    title="Enregistrer sous",
+    action=Gtk.FileChooserAction.SAVE,
+)
+  dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                   "Enregistrer", Gtk.ResponseType.OK)
   dialog.set_icon_from_file("glade/logo.png")
   dialog.set_current_folder(path)
   dialog.set_default_response(Gtk.ResponseType.OK)
@@ -289,12 +302,12 @@ def file_save(path, ext=".dat", preselect=None):
 
 def file_selection(path, window):
   """Return selected file name or None"""
-  # Create a new file selection widget
-  dialog = Gtk.FileChooserDialog("Choisir un fichier",
-				   window,
-				   Gtk.FileChooserAction.OPEN,
-				   (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 
-					Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+  dialog = Gtk.FileChooserDialog(
+    title="Sélectionner un fichier",
+    action=Gtk.FileChooserAction.OPEN,
+)
+  dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                   "Ouvrir", Gtk.ResponseType.OK)
   dialog.set_default_response(Gtk.ResponseType.OK)
   dialog.set_icon_from_file("glade/logo.png")
   script_path = os.path.dirname(os.path.realpath(__file__))

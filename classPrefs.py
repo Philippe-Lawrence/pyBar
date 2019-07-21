@@ -33,10 +33,12 @@ class UserPrefs(Singleton):
   def __init__(self):
     file = Const.FILEPREFS
     path = Const.PATH
-    self.config = configparser.SafeConfigParser()
+    self.config = configparser.ConfigParser()
     self.file = os.path.join(path, file)
     if os.path.exists(self.file):
-      self.config.read(self.file)
+      with open(self.file) as fp:
+        self.config.read_file(fp)
+        fp.close()
     else:
       self._ini_config_file()
  
@@ -87,7 +89,9 @@ class UserPrefs(Singleton):
     except KeyboardInterrupt:
       return
     try:
-      self.config.write(open(self.file, 'w'))
+      with open(self.file, "w") as fp:
+        self.config.write(fp)
+        fp.close()
     except IOError:
       print("Erreur d'écriture du fichier de préférence")
 
@@ -216,7 +220,9 @@ class UserPrefs(Singleton):
       has_axis = 'on'
     self.config.set('Section_w1', 'display_series', has_series)
     try:
-      self.config.write(open(self.file, 'w'))
+      with open(self.file, "w") as fp:
+        self.config.write(fp)
+        fp.close()
     except IOError:
       print("Erreur d'écriture du fichier de préférence")
 
@@ -233,7 +239,9 @@ class UserPrefs(Singleton):
     #print self.config.options('Section_units')
     #print self.config.getfloat('Section_units', u'l')
     try:
-      self.config.write(open(self.file, 'w'))
+      with open(self.file, "w") as fp:
+        self.config.write(fp)
+        fp.close()
     except IOError:
       print("Erreur d'écriture du fichier de préférence")
 
@@ -249,7 +257,9 @@ class UserPrefs(Singleton):
     self.config.set('Section_w3', 'w3_w', '%s' % w)
     self.config.set('Section_w3', 'w3_h', '%s' % h)
     try:
-      self.config.write(open(self.file, 'w'))
+      with open(self.file, "w") as fp:
+        self.config.write(fp)
+        fp.close()
     except IOError:
       print("Erreur d'écriture du fichier de préférence")
 

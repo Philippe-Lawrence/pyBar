@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkImage" id="barre1">
@@ -52,6 +52,21 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">arc-char0.png</property>
   </object>
+  <object class="GtkImage" id="char7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">depi.png</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">relax0.png</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">relax1.png</property>
+  </object>
   <object class="GtkImage" id="noeud1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -68,6 +83,9 @@
     <property name="icon">logo.ico</property>
     <signal name="configure-event" handler="on_w2_configure" swapped="no"/>
     <signal name="delete-event" handler="on_w2_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkVBox" id="vbox0">
         <property name="visible">True</property>
@@ -327,6 +345,46 @@
                         <property name="homogeneous">True</property>
                       </packing>
                     </child>
+                    <child>
+                      <object class="GtkSeparatorToolItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="relax0">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Relaxer l'ensemble des barres</property>
+                        <property name="label" translatable="yes">Relaxer</property>
+                        <property name="use_underline">True</property>
+                        <property name="icon_widget">image1</property>
+                        <signal name="clicked" handler="on_relax_all" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="relax1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Supprimer l'ensemble des relaxations</property>
+                        <property name="label" translatable="yes">Supprimer les relaxations</property>
+                        <property name="use_underline">True</property>
+                        <property name="icon_widget">image2</property>
+                        <signal name="clicked" handler="on_remove_relax" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -351,50 +409,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkNotebook" id="book2">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkVBox" id="vbox7">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
-                </child>
-                <child type="tab">
-                  <object class="GtkLabel" id="label9">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Appuis</property>
-                  </object>
-                  <packing>
-                    <property name="tab_fill">False</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkVBox" id="vbox8">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child type="tab">
-                  <object class="GtkLabel" id="label10">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Déplacements imposés</property>
-                  </object>
-                  <packing>
-                    <property name="position">1</property>
-                    <property name="tab_fill">False</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -617,6 +637,21 @@
                         <property name="use_underline">True</property>
                         <property name="icon_widget">char6</property>
                         <signal name="clicked" handler="on_w2_add_char_arc0" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="toolbutton9">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Ajouter un affaissement d'appui</property>
+                        <property name="label" translatable="yes">Arc</property>
+                        <property name="use_underline">True</property>
+                        <property name="icon_widget">char7</property>
+                        <signal name="clicked" handler="on_w2_add_depi" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

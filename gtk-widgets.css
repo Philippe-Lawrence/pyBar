@@ -1,6 +1,4 @@
 
-GtkLabel {
-}
 GtkHPaned {
     background-color: rgba(0.1, 0.1, 0.1, 0.1);
 }
@@ -9,7 +7,9 @@ GtkButton, GtkEntry {
     font: Comic Sans 12*/
 }
 
-MyButton {
-    /*color: #00ffea;
-    font: Comic Sans 8*/
+.css_error {
+    background-color: rgba(255, 0., 0., 0.5);
+}
+.css_hover {
+    background-color: rgba(125, 0.5, 0.5, 0.2);
 }

@@ -18,8 +18,8 @@
 #    along with pyBar; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from gi.repository import Gtk, Gdk, GObject, Pango, GdkPixbuf
-import math  
+from gi.repository import Gtk, Gdk, GObject,  GdkPixbuf
+import math
 import sys
 import os
 import copy
@@ -128,7 +128,7 @@ class FGColor(Singleton):
     """Définit les couleurs du drawing_area
     Les couleurs sont placées dans la propriété diColor"""
     # pixmap colors
-    #colormap = Gdk.colormap_get_system() 
+    #colormap = Gdk.colormap_get_system()
     #color = colormap.alloc_color("white", writeable=False, best_match=True)
     #self._white = color
     # cairo colors
@@ -162,10 +162,6 @@ class FGColor(Singleton):
       return
     cr.set_source_rgba(color[0], color[1], color[2], alpha)
 
-  def get_white_color(self,):
-    #return Gdk.Color(0.5, 0.5, 1)
-    parse, color = Gdk.Color.parse('white')
-    return color
 
   def get_random_color(self):
     pass
@@ -917,7 +913,7 @@ class AreaMapping(object):
     if not id in self.infos:
       self.infos[id] = {}
     self.infos[id][obj.id] = obj
-    
+
 
   def set_moved_info(self, id, info_id, box):
     """Position de la boite du contour d'une info"""
@@ -947,7 +943,7 @@ class AreaMapping(object):
     elif y > y1:
       y1 = y+Vm
       change = True
-      
+
     if change:
       self.box[id] = (int(x0), int(y0), int(x1-x0), int(y1-y0))
 
@@ -1025,7 +1021,7 @@ class AreaMapping(object):
     if y < y0 or y > y0+h:
       return False
     return (n_drawing, )
-    
+
 # faut il pas mieux avoir des entiers pour les coordonnées
   def select_node(self, x, y, n_drawing):
     """Retourne le nom d'un noeud sur lequel on clique
@@ -1184,23 +1180,23 @@ class Drawing(object):
     """Dessine la barre d'outils du dessin"""
     layout = tab.layout
     Main = tab._main
-    hbox = Gtk.HBox(False, 10)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_PAGE_SETUP)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
+    b = Gtk.Button.new_from_icon_name('zoom-in', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Modifier l'échelle")
     b.connect('clicked', tab.on_show_scale_box, self, "struct")
     hbox.pack_start(b, False, False, 0)
     dx = 70
     bdrawings = self.get_bar_drawings()
     if not bdrawings and len(study.rdm.struct.GetBars()) > 1:
-      b = Gtk.Button()
-      function.add_icon_to_button2(b, Gtk.STOCK_ZOOM_FIT)
+      b = Gtk.Button.new_from_icon_name('edit-find', Gtk.IconSize.MENU)
+      b.set_relief(Gtk.ReliefStyle.NONE)
       b.set_tooltip_text("Dessin des barres")
       b.connect('clicked', tab.add_bar_drawing, self, study)
       hbox.pack_start(b, False, False, 0)
       dx = 110
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_CLOSE)
+    b = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Fermer")
     b.connect('clicked', Main.on_del_drawing, self)
     hbox.pack_start(b, False, False, 0)
@@ -1357,10 +1353,8 @@ class Drawing(object):
     size = Const.DRAWING_SIZE
     struct = study.rdm.struct
     margin = Const.AREA_MARGIN
-    layout = tab.layout
-    #sw_w = int(sw.get_hadjustment().page_size) - 2*margin
-    sw_w = int(layout.get_hadjustment().get_page_size()) - 2*margin
-    sw_h = int(layout.get_vadjustment().get_page_size()) - 2*margin
+    sw_w = int(tab.sw.get_hadjustment().get_page_size()) - 2*margin
+    sw_h = int(tab.sw.get_vadjustment().get_page_size()) - 2*margin
     struct_w, struct_h = struct.width, struct.height
     scale = self._get_scale(struct_w, struct_h, sw_w, sw_h)
     if scale is None:
@@ -1508,7 +1502,7 @@ class Drawing(object):
         string = [str(obj.elem), str(obj.u), str(obj.status), str(obj.id)]
         string = ":".join(string)
         val.append(string)
-        
+
     val = ','.join(val)
     node.set("status", val)
     val = self.options['Barre'] and "true" or "false"
@@ -1580,7 +1574,7 @@ class Drawing(object):
               if not isinstance(tu[2], bool):
                 return False
     return True
-        
+
 
   def _add_info_prefs(self, prefs):
     """Ajoute les paramètres pour les pattern de type info"""
@@ -1766,7 +1760,7 @@ class Drawing(object):
     struct = study.rdm.struct
     cr.push_group()
     self._draw_bars(cr, struct, self.x0, self.y0, struct_scale, color='red', show_name=True, axis=True)
-    self._draw_nodes(cr, struct, self.x0, self.y0, struct_scale, 
+    self._draw_nodes(cr, struct, self.x0, self.y0, struct_scale,
 		symbol=1, color='blue')
     self.p_struct = cr.pop_group()
     self._push_title_group(study, cr)
@@ -1835,6 +1829,8 @@ class Drawing(object):
     UserNodes = struct.UserNodes
     UserBars = struct.UserBars
     cr.push_group()
+    #self.p_char = cr.pop_group()
+    #return
     n = self.s_case
     if n is None:
       n = self.s_case = 0
@@ -1845,6 +1841,9 @@ class Drawing(object):
       return
     x0, y0 = self.x0, self.y0
     Char = rdm.GetCharByNumber(n)
+    if Char is None :
+      self.p_char = cr.pop_group()
+      return
     barres = struct.GetBars()
     resu = function.GetCumulChar(barres, Char)
     di = resu[0]
@@ -1903,15 +1902,19 @@ class Drawing(object):
     self.p_char = cr.pop_group()
 
   def _push_reac_group(self, study, cr, color="grey"):
-    """Dessine tous les chargements d'une combi ou cas spécifié par n"""
+    """Dessine tous les inconnues de liaison pour le dessin principal"""
     #print(cr.get_matrix())
     rdm = study.rdm
     n = self.s_case
     if n is None:
-      #print("debug::_push_char_group")
       n = self.get_first_case(rdm)
     Char = rdm.GetCharByNumber(n)
-    maxi = Char.SearchReacMax()[0]
+    if Char is None :
+      cr.push_group()
+      self.p_reac = cr.pop_group()
+      return
+    tu = Char.SearchReacMax()
+    maxi = max(tu[0], tu[1])
     if maxi is None or maxi == 0.:
       cr.push_group()
       self.p_reac = cr.pop_group()
@@ -1954,7 +1957,7 @@ class Drawing(object):
         Fx = max(Fx*Const.ARROW_SIZE_MAX/maxi, Const.ARROW_SIZE_MIN)
         xlegend, ylegend = self._draw_arrow(cr, dx, 0, Fx,
 			angle, mirror=False)
-        
+
         if dx < 0:
           self.mapping.extend_box(self.id, xlegend-dlegend-30, ylegend+15)
           legends[noeud][0] = [[text, xlegend-dlegend, ylegend, 0, 0]]
@@ -1994,11 +1997,11 @@ class Drawing(object):
 
     self.mapping.set_curve_values(self, legends, self.s_case, "reac")
 
-  def _push_bind_group(self, struct, cr):
+  def _push_bind_group(self, study, cr):
     """Crée le pattern des appuis"""
     struct_scale = self.struct_scale
     cr.push_group()
-    self._draw_bind(cr, self.x0, self.y0, struct, struct_scale)
+    self._draw_bind(cr, self.x0, self.y0, study, struct_scale)
     self.p_bind = cr.pop_group()
 
   def _push_soll_group(self, study, cr, maxi):
@@ -2034,6 +2037,7 @@ class Drawing(object):
     for n_case in s_cases:
       color = self._fg.get_nth_color(n_case)
       Char = rdm.GetCharByNumber(n_case)
+      if Char.status == 0 : continue
       max_char = study.get_max(self, Char)
       if max_char < 1e-5: # XXX
         empty.append(Char.name)
@@ -2131,6 +2135,7 @@ class Drawing(object):
     for n_case in s_cases:
       color = self._fg.get_nth_color(n_case)
       Char = rdm.GetCharByNumber(n_case)
+      if Char.status == 0 : continue
       max_char = study.get_max(self, Char)
       if max_char < crit:
         empty.append(Char.name)
@@ -2151,7 +2156,7 @@ class Drawing(object):
       self._draw_bind_dep(cr, rdm, struct_scale, chart_scale, Char, color, 0.5)
       self._set_defo_values(cr, rdm, struct_scale, chart_scale, n_case, Char)
     self.p_curves = cr.pop_group()
-    
+
     if empty:
       text = "Déformée nulle ou très faible dans "
       text += ", ".join(empty)
@@ -2326,7 +2331,7 @@ class Drawing(object):
       b, pos1 = Arc.get_bar_and_pos(pos)
       val, text = rdm.GetArcValue(Char, self.status, b, pos1)
       bar_values[b] = (val[1], pos)
-     
+
 # todo regrouper avec _set_curve_values
 # enlever unit_conv
   def _set_defo_values(self, cr, rdm, struct_scale, chart_scale, n_case, Char):
@@ -2373,13 +2378,14 @@ class Drawing(object):
 
 
 
-  def _push_legends_group(self, cr, struct):
+  def _push_legends_group(self, cr, rdm):
     """Crée un dictionnaire de patterns contenant toutes les valeurs numériques des sollicitations pour chaque combinaison"""
     #print("_push_legends_group")
     if self.status == 3:
-      self._push_legends_group2(cr) # provisoire trouver mieux
+      self._push_legends_group2(cr, rdm) # provisoire trouver mieux
       return
     self.p_legends = {}
+    struct = rdm.struct
     di = self.mapping.curve_values[self.id]
     if self.status in [4, 5]:
       unit_conv = struct.units['F']
@@ -2406,10 +2412,16 @@ class Drawing(object):
         draw_single_soll_text(cr, x, y, text, angle)
       self.p_legends[n] = cr.pop_group()
 
-  def _push_legends_group2(self, cr):
+  def _push_legends_group2(self, cr, rdm):
     """Crée un dictionnaire de patterns contenant les valeurs des réactions d'appui"""
     #print("_push_legends_group2")
     self.p_legends = {}
+    n = self.s_case
+    if n is None:
+      n = self.s_case = 0
+    Char = rdm.GetCharByNumber(n)
+    if Char is None :
+      return
     di = self.mapping.curve_values[self.id]
     n = self.s_case
     #assert len(di) == 1
@@ -2459,7 +2471,7 @@ class Drawing(object):
         teta = 0.
         relax = False
         if noeud in struct.AppuiIncline:
-          teta = -struct.AppuiIncline[noeud] 
+          teta = -struct.AppuiIncline[noeud]
         if struct.IsRelax.get(noeud) == 1:
           relax = True
         self._draw_simple_support(cr, self.x0+dx, self.y0+dy, x1, y1,
@@ -2613,7 +2625,7 @@ class Drawing(object):
       elif len(data) == 4:
         dC1x, dC1y = data[1]
         dC2x, dC2y = data[2]
-        # correction des x des points de controles si raccourcissement ou allongement de la barre 
+        # correction des x des points de controles si raccourcissement ou allongement de la barre
         dC1x += defox/3
         dC2x += 2*defox/3
 
@@ -2659,7 +2671,7 @@ class Drawing(object):
 
     struct = rdm.struct
     bar_values = rdm.bar_values
-    
+
     #print("bar_values", bar_values)
     barre_by_node = struct.BarByNode
     for noeud, tu in barre_by_node.items():
@@ -2796,7 +2808,7 @@ class Drawing(object):
         tu = (xdprec, ydprec, C0xprec, C0yprec, C0x, C0y, xd0_0, yd0_0, b0, b1)
         li2.append(tu)
         b0, b1 = b, next_b-1
-       
+
         C0xprec, C0yprec = xd0_0 + dx0*coef/d0, yd0_0 + dy0*coef/d0
         xdprec, ydprec = xd0_0, yd0_0
       # cloture dernier segment
@@ -2969,12 +2981,12 @@ class Drawing(object):
       if nb == 0:
         continue
       if i == 0:
-        if 0 in di:  
+        if 0 in di:
           soll1 = di[0]
           cr.move_to(pt[0], pt[1]-soll1)
           cr.rel_line_to(0, soll1)
       elif i == n-1:
-        if 1 in di:  
+        if 1 in di:
           soll2 = di[1]
           cr.move_to(pt[0], pt[1])
           cr.rel_line_to(0, -soll2)
@@ -3042,7 +3054,7 @@ class Drawing(object):
   def paint_drawing(self, cr, alpha=1.):
     """Dessine la structure pour tous les patterns"""
     #print("paint_drawing", self.status)
-    if not hasattr(self, 'p_struct'): 
+    if not hasattr(self, 'p_struct'):
       return
     cr.save()
     cr.set_source(self.p_struct)
@@ -3234,7 +3246,7 @@ class Drawing(object):
       struct_scale = self.struct_scale
     except TypeError:
       struct_scale = None
-    if not len(struct.NodeNotLinked) == 0: 
+    if not len(struct.NodeNotLinked) == 0:
       message = ("Certains noeuds ne sont pas reliés à une barre.", 0)
     else:
       message = ("Nombre de noeuds : %d" % len(struct.UserNodes), 2)
@@ -3242,7 +3254,7 @@ class Drawing(object):
     #self._push_node_group(study, cr, struct_scale)
     self._push_struct_group(study, cr, struct_scale)
     self._push_scale_group(study, cr, 1., struct_scale)
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_char_group(study, cr)
 # provisoire pas de pattern p_barre
     cr.push_group()
@@ -3262,7 +3274,7 @@ class Drawing(object):
       return
     self._push_struct_group(study, cr, struct_scale)
     self._push_scale_group(study, cr, 1., struct_scale)
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
 
   def area_expose_char(self, study, cr):
     self.mapping.clear(self.id)
@@ -3271,7 +3283,7 @@ class Drawing(object):
     #if not hasattr(self, 'p_struct'):
     self._push_struct_group(study, cr, struct_scale)
     #if not hasattr(self, 'p_bind'):
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_char_group(study, cr)
     self._push_scale_group(study, cr, 1., struct_scale)
 
@@ -3282,11 +3294,11 @@ class Drawing(object):
     #if not hasattr(self, 'p_struct'):
     self._push_struct_group(study, cr, struct_scale)
     #if not hasattr(self, 'p_bind'):
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     #if not hasattr(self, 'p_char'):
     self._push_char_group(study, cr)
     self._push_reac_group(study, cr)
-    self._push_legends_group2(cr)
+    self._push_legends_group2(cr, study.rdm)
     self._push_scale_group(study, cr, 1., struct_scale)
 
   def area_expose_soll(self, study, cr):
@@ -3299,11 +3311,11 @@ class Drawing(object):
     #if not hasattr(self, 'p_struct'):
     self._push_struct_group(study, cr, struct_scale)
     #if not hasattr(self, 'p_bind'):
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_soll_group(study, cr, maxi)
     self._push_series_group(study, cr)
     self._push_scale_group(study, cr, maxi, size)
-    self._push_legends_group(cr, struct)
+    self._push_legends_group(cr, study.rdm)
 
 
   def area_expose_defo(self, study, cr):
@@ -3315,9 +3327,9 @@ class Drawing(object):
     #if not hasattr(self, 'p_struct'):
     self._push_struct_group(study, cr, struct_scale)
     #if not hasattr(self, 'p_bind'):
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_defo_group(study, cr, maxi, size)
-    self._push_legends_group(cr, struct)
+    self._push_legends_group(cr, study.rdm)
     self._push_scale_group(study, cr, maxi, size)
     self._push_series_group(study, cr)
 
@@ -3328,9 +3340,9 @@ class Drawing(object):
     #if not hasattr(self, 'p_struct'):
     self._push_struct_group(study, cr, struct_scale)
     #if not hasattr(self, 'p_bind'):
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_moving_group(study, cr)
-    self._push_legends_group(cr, struct)
+    self._push_legends_group(cr, study.rdm)
 
   def _push_moving_group(self, study, cr):
     struct = study.rdm.struct
@@ -3413,9 +3425,9 @@ class Drawing(object):
     #if not hasattr(self, 'p_struct'):
     self._push_struct_group(study, cr, struct_scale)
     #if not hasattr(self, 'p_bind'):
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_influ_group(study, cr)
-    self._push_legends_group(cr, struct)
+    self._push_legends_group(cr, study.rdm)
     if status is None:
       self._push_scale_group(study, cr)
     else:
@@ -3913,17 +3925,25 @@ class Drawing(object):
     cr.show_text(name)
     cr.restore()
 
-  def _draw_bind(self, cr, x0, y0, struct, struct_scale, color=None):
+  def _draw_bind(self, cr, x0, y0, study, struct_scale, color=None):
     """Méthode de tracé de l'ensemble des liaisons de la structure"""
     if struct_scale is None:
       return
+    n = self.s_case
+    if n is None:
+      n = self.s_case = 0
+    rdm = study.rdm
+    struct = rdm.struct
+    Char = rdm.GetCharByNumber(n)
+    if Char is None: return
+
     if color is None:
       color = 'blue'
     try:
       liaisons = struct.Liaisons
     except AttributeError:
       return
-    for noeud, liaison in liaisons.items(): 
+    for noeud, liaison in liaisons.items():
       try:
         pt = struct.Nodes[noeud]
       except KeyError:
@@ -3933,7 +3953,7 @@ class Drawing(object):
       except ValueError:
         continue
       _color = color
-      if not self.status == 8 and noeud in struct.NodeDeps:
+      if not self.status == 8 and noeud in Char.KS.NodeDeps:
         _color = "red"
       if liaison == 0:
         angle = self._get_clumping_angle(struct, noeud)
@@ -3976,7 +3996,7 @@ class Drawing(object):
     if not color is None:
       self._fg.set_color_by_name(cr, color)
     cr.translate(x0 + x, y0 + y)
-    cr.rotate(angle) 
+    cr.rotate(angle)
     cr.move_to(-10, 0)
     cr.rel_line_to(21, 0)
     cr.stroke()
@@ -4174,7 +4194,7 @@ class Drawing(object):
     for tu in legends:
       xd, yd, text = tu
       self.mapping.extend_box(self.id, xd, yd-25)
-      self._draw_arrow_legend(cr, text, xd, yd, color='green') 
+      self._draw_arrow_legend(cr, text, xd, yd, color='green')
     cr.restore()
 
   def _draw_arc_char0(self, cr, X0, Y0, struct_scale, rdm, name, arc_char, color=None):
@@ -4429,7 +4449,7 @@ class Drawing(object):
     i = 0
     for xd, yd in texts_coors:
       text = texts[i]
-      self._draw_arrow_legend(cr, text, xd, yd-15, color=color) 
+      self._draw_arrow_legend(cr, text, xd, yd-15, color=color)
       i += 1
 
   def _draw_arc_char2(self, cr, X0, Y0, struct_scale, rdm, name, arc_char, color=None):
@@ -4642,7 +4662,7 @@ class Drawing(object):
       fpv = char[1]
       mirror = fpv >= 0 and True or False
       dy = -5 # décalage de l'axe de la barre
-     
+
       mz = char[2]
       norme = (fpu**2+fpv**2)**0.5
       if not norme == 0:
@@ -4660,7 +4680,7 @@ class Drawing(object):
     for tu in legends:
       xd, yd, text = tu
       self.mapping.extend_box(self.id, xd, yd-25)
-      self._draw_arrow_legend(cr, text, xd, yd, color=color) 
+      self._draw_arrow_legend(cr, text, xd, yd, color=color)
     cr.restore()
 
   def _draw_char_node(self, cr, x, y, study, char, color=None):
@@ -4679,7 +4699,7 @@ class Drawing(object):
     fx = char[0]
     fy = char[1]
     mirror = fy >= 0 and True or False
-   
+
     mz = char[2]
     norme = (fx**2+fy**2)**0.5
     arrow_size = Const.ARROW_SIZE_MAX
@@ -4700,24 +4720,25 @@ class Drawing(object):
       xlegend, ylegend = self._draw_moment(cr, 0, 0, radius=20, end=3.1, middle=True)
       legends.append((xlegend, ylegend, text))
     cr.restore()
+
     for tu in legends:
       xd, yd, text = tu
       self.mapping.extend_box(self.id, xd, yd-25)
-      self._draw_arrow_legend(cr, text, xd, yd, color=color) 
+      self._draw_arrow_legend(cr, text, xd, yd, color=color)
     cr.restore()
 
 
 
 # enlever struct_scale XXX
 
-# bug avec les charges triangulaires dans le cas d'un changement d'unité de longueur. Pour ces dernières les valeurs sont données en N et non pas en N/m pour les charges qu. 
+# bug avec les charges triangulaires dans le cas d'un changement d'unité de longueur. Pour ces dernières les valeurs sont données en N et non pas en N/m pour les charges qu.
 
   def _draw_char_bar_q(self, cr, x0, y0, barre, struct_scale, chars, qmax, study, nodes=None, color=None):
     """Dessine le chargement de type force qu sur la barre"""
     crit = 1e-8
     rdm = study.rdm
     unit_conv = rdm.struct.units
-    dim = Const.ARROW_SIZE_MAX # paramètre longueur flèche 
+    dim = Const.ARROW_SIZE_MAX # paramètre longueur flèche
     angleBarre = -rdm.struct.Angles[barre]
     l = rdm.struct.Lengths[barre]
     if nodes is None:
@@ -4783,7 +4804,7 @@ class Drawing(object):
         angle  = -angle
         if mirror:
           angle += math.pi
-        self._draw_arrow2(cr, pas*l, dy, struct_scale, 
+        self._draw_arrow2(cr, pas*l, dy, struct_scale,
 		arrow_scale, angle, mirror=mirror, height=height, width=1)
         if j == 0:
           text1 = function.PrintValue(height*qmax, unit_conv['F']/unit_conv['L'])
@@ -4795,17 +4816,17 @@ class Drawing(object):
       if brisure:
         pt3 = (x_bris*l, dy, 0, 0)
         texts = ((text1, 0), )
-        self._draw_qu_attache(cr, pt1, pt3, struct_scale, 
+        self._draw_qu_attache(cr, pt1, pt3, struct_scale,
 		arrow_scale, texts=texts)
         texts = ((text2, 1), )
-        self._draw_qu_attache(cr, pt3, pt2, struct_scale, 
+        self._draw_qu_attache(cr, pt3, pt2, struct_scale,
 		arrow_scale, texts=texts)
       else:
         if text1 == text2:
           texts = ((text1, 2), )
         else:
           texts = ((text1, 0), (text2,1))
-        self._draw_qu_attache(cr, pt1, pt2, struct_scale, 
+        self._draw_qu_attache(cr, pt1, pt2, struct_scale,
 		arrow_scale, texts=texts)
       a0 = a1
       qu_prec, qv_prec = tu[1]
@@ -4867,7 +4888,7 @@ class Drawing(object):
 
     if texts:
       cr.set_font_size(Const.FONT_SIZE/struct_scale)
-      
+
       if len(texts) == 1:
         text, pos = texts[0]
         xd, yd = show_text(x1, x2, y, height1, height2, angle1, angle2, text, pos)
@@ -4934,6 +4955,7 @@ class Drawing(object):
       cr.rotate(angle)
     cr.move_to(-width / 2 - x_bearing, -decalage-height / 2 - y_bearing)
     cr.show_text(text)
+    cr.stroke()
     cr.restore()
 
 
@@ -4983,7 +5005,8 @@ class Drawing(object):
 
 
   def _draw_moment(self, cr, x, y, start=0.1, end=1.4, radius=25, rotate=0, middle=False, color=None):
-    """Dessin d'une flèche de moment - start=axe horiz, tourne sens anti-trigo"""   
+    """Dessin d'une flèche de moment - start=axe horiz, tourne sens anti-trigo"""
+    #return 0,0
     cr.save()
     cr.set_line_width(2)
     if not color is None:
@@ -5011,9 +5034,6 @@ class Drawing(object):
     cr.close_path()
     cr.fill()
     cr.stroke()
-    #a = angle/2
-    #x_u = 1.8*radius*math.cos(a)
-    #y_u = 1.8*radius*math.sin(a)
     cr.restore()
     return x_d, y_d
 
@@ -5119,7 +5139,7 @@ class Drawing(object):
         if combi_error and cas >= n_cases:
           continue
         new.append(i)
-    
+
       s_cases = new
       if len(s_cases) == 0:
         n0 = self.get_first_case(rdm)
@@ -5234,8 +5254,9 @@ class Drawing(object):
     s_case = self.s_case
 # tester
     if self.status == 0:
+      errorcases = []
       combi_error = True
-    if self.status == 2: 
+    if self.status == 2:
       show_all = True # on montre les chargements
     if s_case is None:
       s_case = self.s_case = 0
@@ -5251,7 +5272,6 @@ class Drawing(object):
         if not i in errorcases:
           s_case = i
           break
-
     view = [(0, 1)]*n_chars
     view[s_case] = (1, 1)
 
@@ -5280,7 +5300,7 @@ class Drawing(object):
     else:
       barre = name
       show_pos = True
-    x, y = struct.Nodes[struct.Barres[barre][0]] 
+    x, y = struct.Nodes[struct.Barres[barre][0]]
     self._c_draw_legend_position(cr, struct, barre, x0, y0, x, y, u, du, dv, show_pos)
 
   def _c_draw_legend_position(self, cr, struct, barre, x0, y0, x, y, u, du, dv, show_pos=False):
@@ -5439,7 +5459,7 @@ class Drawing(object):
     """Retourne le message concernant la ligne d'influence"""
     rdm = study.rdm
     struct = rdm.struct
-    texts = {1: "d'effort tranchant", 2: "du moment fléchissant", 3: "de la déformée", 4: "de réaction d'appui"} 
+    texts = {1: "d'effort tranchant", 2: "du moment fléchissant", 3: "de la déformée", 4: "de réaction d'appui"}
     for obj in self.influ_list.values():
       if obj.id == n:
         break
@@ -5608,15 +5628,15 @@ class CharDrawing(ChildDrawing):
     """Dessine la barre d'outils du dessin"""
     layout = tab.layout
     Main = tab._main
-    hbox = Gtk.HBox(False, 10)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_PAGE_SETUP)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
+    b = Gtk.Button.new_from_icon_name('zoom-in', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Modifier l'échelle")
     b.connect('clicked', tab.on_show_scale_box, self, "struct")
     hbox.pack_start(b, False, False, 0)
     dx = 70
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_CLOSE)
+    b = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Fermer")
     b.connect('clicked', Main.on_del_drawing, self)
     hbox.pack_start(b, False, False, 0)
@@ -5694,7 +5714,6 @@ class BarreDrawing(ChildDrawing):
 
   def set_all_sizes(self, tab, study):
     """Calcule la taille, l'échelle et la position d'un dessin (structure seule)"""
-    #print("set_all_sizes in Barre Drawing")
     size = Const.DRAWING_SIZE
     struct = study.rdm.struct
     sw = tab.sw
@@ -5810,19 +5829,19 @@ class BarreDrawing(ChildDrawing):
     """Dessine la barre d'outils du dessin"""
     layout = tab.layout
     Main = tab._main
-    hbox = Gtk.HBox(False, 10)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_MEDIA_FORWARD)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
+    b = Gtk.Button.new_from_icon_name('media-seek-forward', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Barre suivante")
     b.connect('clicked', tab.on_select_next, self, study)
     hbox.pack_start(b, False, False, 0)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_MEDIA_REWIND)
+    b = Gtk.Button.new_from_icon_name('media-seek-backward', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Barre précédente")
     b.connect('clicked', tab.on_select_back, self, study)
     hbox.pack_start(b, False, False, 0)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_CLOSE)
+    b = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Fermer")
     b.connect('clicked', Main.on_del_drawing, self)
     hbox.pack_start(b, False, False, 0)
@@ -5843,7 +5862,7 @@ class BarreDrawing(ChildDrawing):
     struct = study.rdm.struct
     struct_scale = self.struct_scale
     self._push_struct_group(study, cr, struct_scale)
-    self._push_bind_group(struct, cr)
+    self._push_bind_group(study, cr)
     self._push_scale_group(study, cr, 1., struct_scale)
 
 
@@ -5887,7 +5906,7 @@ class BarreDrawing(ChildDrawing):
       box = (self.x0-w/2, self.y0-h/2, w, h)
       self.mapping.set_mapping_bars(self.id, {'e': (self.x0, self.y0)}, {}, box)
       return
-    cr.push_group()    
+    cr.push_group()
     self._draw_one_bar(cr, struct, struct_scale, barre, fill=True)
     x1, y1, node1 = self.N1
     x2, y2, node2 = self.N2
@@ -5905,7 +5924,7 @@ class BarreDrawing(ChildDrawing):
 
 
 
-  def _push_bind_group(self, struct, cr):
+  def _push_bind_group(self, study, cr):
     cr.push_group()
     self.p_bind = cr.pop_group()
 
@@ -5997,7 +6016,7 @@ class BarreDrawing(ChildDrawing):
 
       data = self._get_curve_points(rdm, barre, Char)
       self._draw_single_bar_curve(cr, rdm, barre, data, self.x0, self.y0, dx, dy, struct_scale, chart_scale, n_case, color=color, mode=2)
-      self._set_soll_values(cr, rdm, dx, dy, struct_scale, chart_scale, 
+      self._set_soll_values(cr, rdm, dx, dy, struct_scale, chart_scale,
 		n_case, Char, barre)
     self.p_curves = cr.pop_group()
 
@@ -6035,7 +6054,7 @@ class BarreDrawing(ChildDrawing):
       Char = rdm.GetCharByNumber(n_case)
       data = self._get_curve_points(rdm, barre, Char)
       self._draw_one_bar_defo(cr, study, barre, data, self.x0, self.y0, dx, dy, struct_scale, chart_scale, n_case, color=color, mode=mode)
-      self._set_defo_values(cr, rdm, dx, dy, struct_scale, chart_scale, 
+      self._set_defo_values(cr, rdm, dx, dy, struct_scale, chart_scale,
 		n_case, Char, barre)
 
     self.p_curves = cr.pop_group()
@@ -6232,7 +6251,7 @@ class BarreDrawing(ChildDrawing):
 
     if abs(M) > crit:
       text = function.PrintValue(M, unit_conv['F'])
-      xlegend, ylegend = self._draw_moment(cr, dx, 0, start=0.3, 
+      xlegend, ylegend = self._draw_moment(cr, dx, 0, start=0.3,
 		end=1.2, rotate=1.57, radius=25, middle=False, color='red')
       legends[node1][2] = [[text, xlegend, ylegend, 0, 0]]
       self.mapping.extend_box(self.id, xlegend, ylegend+25)
@@ -6293,7 +6312,7 @@ class BarreDrawing(ChildDrawing):
 
     if abs(M) > crit:
       text = function.PrintValue(M, unit_conv['F'])
-      xlegend, ylegend = self._draw_moment(cr, dx, 0, start=0.3, 
+      xlegend, ylegend = self._draw_moment(cr, dx, 0, start=0.3,
 		end=1.2, radius=25, middle=False, color='red')
       legends[node2][2] = [[text, xlegend, ylegend, 0, 0]]
       self.mapping.extend_box(self.id, xlegend+25, ylegend+25)
@@ -6355,7 +6374,7 @@ class SigmaDrawing(ChildDrawing):
   def set_status(self, status):
     """Blocage du status pour ce type de dessin"""
     self.status = 2
-    
+
   def get_menu_options(self):
     """Retourne les options du menu contextuel"""
     options = {}
@@ -6562,7 +6581,7 @@ class SigmaDrawing(ChildDrawing):
       self._draw_error_chart(cr, study, unit_C, Const.SIGMA_SIZE_MAX)
       self.has_pattern = True
       return
-    
+
     if self.struct_scale is None:
       self.set_scale(struct)
     self.set_width(rdm)
@@ -6822,7 +6841,7 @@ class SigmaDrawing(ChildDrawing):
 
 
   def get_sigma(self, rdm):
-    """Retourne les valeurs des contraintes""" 
+    """Retourne les valeurs des contraintes"""
     Char = rdm.GetCharByNumber(self.s_case)
 
     return rdm.GetSigma(Char, self.u, self.s_bar)
@@ -6861,7 +6880,7 @@ class SigmaDrawing(ChildDrawing):
       self.chart_scale = size/maxi
     elif maxi*self.chart_scale < size/10:
       self.chart_scale = size/10/maxi
-    
+
   def get_max_scale2(self, value, study):
     """Vérifie si la nouvelle échelle des contraintes n'est pas trop grande"""
     size = Const.SIGMA_SIZE_MAX
@@ -6877,36 +6896,36 @@ class SigmaDrawing(ChildDrawing):
     """Dessine la barre d'outils du dessin"""
     layout = tab.layout
     Main = tab._main
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     if not self.chart_scale is None and not self.struct_scale is None:
-      b = Gtk.Button()
-      function.add_icon_to_button2(b, Gtk.STOCK_GO_FORWARD)
+      b = Gtk.Button.new_from_icon_name('zoom-out', Gtk.IconSize.MENU)
+      b.set_relief(Gtk.ReliefStyle.NONE)
       b.set_tooltip_text("Modifier l'échelle des contraintes")
       b.connect('clicked', tab.on_show_scale_box, self, "chart")
       hbox.pack_start(b, False, False, 0)
-      b = Gtk.Button()
-      function.add_icon_to_button2(b, Gtk.STOCK_GO_UP)
+      b = Gtk.Button.new_from_icon_name('view-sort-ascending', Gtk.IconSize.MENU)
+      b.set_relief(Gtk.ReliefStyle.NONE)
       b.set_tooltip_text("Modifier l'échelle des y")
       b.connect('clicked', tab.on_show_scale_box, self, "struct")
       hbox.pack_start(b, False, False, 0)
-      b = Gtk.Button()
-      function.add_icon_to_button2(b, Gtk.STOCK_PAGE_SETUP)
+      b = Gtk.Button.new_from_icon_name('start-here', Gtk.IconSize.MENU)
+      b.set_relief(Gtk.ReliefStyle.NONE)
       b.set_tooltip_text("Modifier la position")
       b.connect('clicked', tab.on_show_scale_box, self, "pos")
       hbox.pack_start(b, False, False, 0)
       if len(study.rdm.struct.GetBars()) > 1:
-        b = Gtk.Button()
-        function.add_icon_to_button2(b, Gtk.STOCK_MEDIA_FORWARD)
+        b = Gtk.Button.new_from_icon_name('media-seek-forward', Gtk.IconSize.MENU)
+        b.set_relief(Gtk.ReliefStyle.NONE)
         b.set_tooltip_text("Barre suivante")
         b.connect('clicked', tab.on_select_next, self, study)
         hbox.pack_start(b, False, False, 0)
-        b = Gtk.Button()
-        function.add_icon_to_button2(b, Gtk.STOCK_MEDIA_REWIND)
+        b = Gtk.Button.new_from_icon_name('media-seek-backward', Gtk.IconSize.MENU)
+        b.set_relief(Gtk.ReliefStyle.NONE)
         b.set_tooltip_text("Barre précédente")
         b.connect('clicked', tab.on_select_back, self, study)
         hbox.pack_start(b, False, False, 0)
-    b = Gtk.Button()
-    function.add_icon_to_button2(b, Gtk.STOCK_CLOSE)
+    b = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_tooltip_text("Fermer")
     b.connect('clicked', Main.on_del_drawing, self)
     hbox.pack_start(b, False, False, 0)
@@ -7057,7 +7076,7 @@ class Tab(object):
 
   def add_drawing(self, sibling, study):
     """Ajoute un diagramme dans un onglet à partit du drawing sibling"""
-    print("add_drawing")
+    #print("add_drawing")
     id_study = sibling.id_study
     prefs = copy.copy(sibling.options)
     prefs["x0"] = sibling.x0
@@ -7167,7 +7186,8 @@ class Tab(object):
     self.is_selected = False
     id_study = drawing.id_study
     drawings = self.drawings
-    for drawing in drawings.values():
+    li = list(drawings.values()) # eviter runtimeerror
+    for drawing in li:
       id = drawing.id_study
       if not id == id_study:
         continue
@@ -7486,7 +7506,6 @@ class Tab(object):
     sw = self.sw = Gtk.ScrolledWindow()
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     layout = self.layout = Gtk.Layout()
-    layout.modify_bg(Gtk.StateType.NORMAL, self._fg.get_white_color()) # keep
     layout.set_events(Gdk.EventMask.POINTER_MOTION_MASK # enlever ???
 		| Gdk.EventMask.BUTTON_PRESS_MASK
 		| Gdk.EventMask.BUTTON_RELEASE_MASK
@@ -7520,7 +7539,7 @@ class Tab(object):
     return False
 
 
-   
+
 # le dessin se fait en deux étapes:
 # D'abord on dessine sur une source en mémoire dans la méthode configure_event
 # puis on dessin de la source sur le widget dans draw_event
@@ -7566,7 +7585,7 @@ class Tab(object):
     studies = self.studies
     ids = list(drawings.keys())
     ids.sort(reverse=True)
-    for id in ids: # on parcours en sens des id décroissants pour dessiner 
+    for id in ids: # on parcours en sens des id décroissants pour dessiner
       # à coup sûr le p_barre
       drawing = drawings[id]
       study = studies[drawing.id_study]
@@ -7591,7 +7610,7 @@ class Tab(object):
     n_drawing = len(self.drawings)
     ids = list(drawings.keys())
     ids.sort(reverse=True)
-    for id in ids: # on parcours en sens des id décroissants pour dessiner 
+    for id in ids: # on parcours en sens des id décroissants pour dessiner
       # à coup sûr le p_barre
       drawing = drawings[id]
       tag = drawing is a_d and n_drawing > 1
@@ -7647,7 +7666,7 @@ class Tab(object):
     if n_drawing > 1:
       ids = list(drawings.keys())
       ids.sort(reverse=True)
-      for id in ids: # on parcours en sens des id décroissants pour dessiner 
+      for id in ids: # on parcours en sens des id décroissants pour dessiner
       # à coup sûr le p_barre
         drawing = drawings[id]
         tag = drawing is a_d
@@ -7768,7 +7787,7 @@ class Tab(object):
         drawing.paint_drawing4(cr, 1.)
       else:
         drawing.paint_drawing(cr, alpha)
- 
+
   def _paint_moving_struct(self, cr, moving_drawing, x=0, y=0, alpha=1.):
     """Redessine toutes les structures, y compris celle en mouvement de DND"""
     for drawing in self.drawings.values():
@@ -7947,7 +7966,7 @@ class Tab(object):
     """Retourne les messages lors de clics sur les objets"""
     #print("get_message")
     is_selected = self.is_selected
-    if is_selected is False: 
+    if is_selected is False:
       return None
     drawing = is_selected[1]
     study = self.studies[drawing.id_study]
@@ -7987,13 +8006,13 @@ class Tab(object):
     """Affiche la boite de dialogue pour la position d'une valeur de courbe"""
     if self.is_selected and self.is_selected[0] == 'entry':
       return
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     entry = MyEntry()
     x, y = legend.get_position()
     entry.set_text(str(legend.u)) # crée un arrondi!!!
     entry.set_tooltip_text("Modifier la position sur la barre")
-    entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
-    entry.modify_font(Pango.FontDescription("sans 14"))
+    #entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
+    #entry.modify_font(Pango.FontDescription("sans 14"))
     entry.connect('event', self.on_pos_change, n_case, legend)
     entry.set_has_frame(False)
 
@@ -8011,14 +8030,14 @@ class Tab(object):
     if self.is_selected and self.is_selected[0] == 'entry':
       return
     #print("on_show_title_box")
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     entry = MyEntry()
     obj = drawing.mapping.infos[drawing.id][drawing.title_id]
     x, y = obj.box[0:2]
     entry.set_text(obj.text)
     entry.set_tooltip_text("Modifier le titre")
-    entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
-    entry.modify_font(Pango.FontDescription("sans 14"))
+    #entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
+    #entry.modify_font(Pango.FontDescription("sans 14"))
     entry.connect('event', self.on_title_change)
     entry.set_has_frame(False)
 
@@ -8048,13 +8067,13 @@ class Tab(object):
       value = drawing.chart_scale
     elif tag == "pos":
       value = drawing.u
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     entry = MyEntry()
     text = str(value)
     entry.set_text(text)
-    entry.modify_font(Pango.FontDescription("sans 14"))
+    #entry.modify_font(Pango.FontDescription("sans 14"))
     entry.set_tooltip_text("Modifier l'échelle")
-    entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
+    #entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
     entry.connect('event', self.on_scale_change, tag)
     #entry.set_width_chars(n_chars)
     entry.set_has_frame(False)
@@ -8105,13 +8124,12 @@ class Tab(object):
     """Action liée à un mouvement du pointeur"""
     #print("start_dnd", is_press)
     if event.is_hint:
-      (ptr_window, x, y, mask) = event.window.get_pointer()
-      #x, y, state = event.window.get_pointer()
+      device = Gdk.Display.get_default().get_default_seat().get_pointer()
+      (ptr_window, x, y, mask) = event.window.get_device_position(device)
     else:
       # for Windows
       x = event.x
       y = event.y
-      #state = event.get_state()
     if is_press:
       x0, y0 = is_press
       dx = x-x0
@@ -8163,7 +8181,7 @@ class Tab(object):
         self.set_surface(self.area_w, self.area_h)
         cr = cairo.Context(self.surface)
         study = self.studies[drawing.id_study]
-        drawing._push_legends_group(cr, study.rdm.struct)
+        drawing._push_legends_group(cr, study.rdm)
         self.paint_all_struct(cr, drawing, alpha=0.6)
         w, h = 80, 40 # paramétrer mieux?
         rect = (int(min(x+dx, x+dx_prec))-40, int(min(y+dy_prec, y+dy))-20, int(max(w, w+dx_prec-dx)), int(max(h, h+dy_prec-dy)))
@@ -8212,7 +8230,6 @@ class Tab(object):
     dx, dy = int(dx), int(dy)
     if not dx and not dy:
       #self.is_selected = False # supprimé le 21/9/2012
-      #self.layout.window.set_cursor(None)
       return
     # on encre la légende
     if self.is_selected[0] == 'info':
@@ -8265,8 +8282,10 @@ class Tab(object):
         self.layout.queue_draw()
       self.remove_tools_box()
       self._draw_tools(drawing)
-    watch = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-    self.layout.get_root_window().set_cursor(watch)
+    watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+    screen = Gdk.Screen.get_default()
+    window = screen.get_root_window()
+    window.set_cursor(watch)
 
 # inutilisée
   def move_tools_box(self, x, y):
@@ -8444,7 +8463,7 @@ class Tab(object):
         self.remove_entry_box()
         self.is_selected = ('draw', drawing)
 
-  
+
   def layout_motion_event(self, area, event):
     """Gère les fonctionnalités lors d'un évènement de survol du Layout"""
     x_event, y_event = event.x, event.y
@@ -8459,12 +8478,15 @@ class Tab(object):
     #    raise
     # fin test
 
+
     if self.is_selected and self.is_selected[0] == "entry":
-      watch = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-      area.get_root_window().set_cursor(watch)
+      watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+      screen = Gdk.Screen.get_default()
+      window = screen.get_root_window()
+      window.set_cursor(watch)
       return
     area.grab_focus()
-    watch = Gdk.Cursor.new(Gdk.CursorType.HAND1)
+    watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.HAND1)
     if self.is_selected:
       drawings = [self.is_selected[1]]
     else:
@@ -8473,7 +8495,9 @@ class Tab(object):
     if not data is False:
       drawing_id, info_id = data
       drawing = self.drawings[drawing_id]
-      area.get_root_window().set_cursor(watch)
+      screen = Gdk.Screen.get_default()
+      window = screen.get_root_window()
+      window.set_cursor(watch)
       self.set_surface(self.area_w, self.area_h)
       cr = cairo.Context(self.surface)
       self.paint_all_struct(cr, drawing, alpha=0.6)
@@ -8488,7 +8512,9 @@ class Tab(object):
       n_case, legend = data
       #print(legend.auto)
       drawing = self.is_selected[1]
-      area.get_root_window().set_cursor(watch)
+      screen = Gdk.Screen.get_default()
+      window = screen.get_root_window()
+      window.set_cursor(watch)
       self.is_selected = ('value', drawing, n_case, legend)
       self.set_surface(self.area_w, self.area_h)
       cr = cairo.Context(self.surface)
@@ -8502,7 +8528,9 @@ class Tab(object):
     if chart:
       n_case, barre, points = chart[0], chart[1], chart[2]
       drawing = self.is_selected[1]
-      area.get_root_window().set_cursor(watch)
+      screen = Gdk.Screen.get_default()
+      window = screen.get_root_window()
+      window.set_cursor(watch)
       self.set_surface(self.area_w, self.area_h)
       cr = cairo.Context(self.surface)
       obj = chart[3]
@@ -8523,7 +8551,9 @@ class Tab(object):
       if data:
         point = data[1]
         drawing = self.is_selected[1]
-        area.get_root_window().set_cursor(watch)
+        screen = Gdk.Screen.get_default()
+        window = screen.get_root_window()
+        window.set_cursor(watch)
         self.set_surface(self.area_w, self.area_h)
         cr = cairo.Context(self.surface)
         self.paint_all_struct(cr, drawing, alpha=0.6)
@@ -8538,7 +8568,9 @@ class Tab(object):
       if data:
         barre = data[1]
         drawing = self.is_selected[1]
-        area.get_root_window().set_cursor(watch)
+        screen = Gdk.Screen.get_default()
+        window = screen.get_root_window()
+        window.set_cursor(watch)
         self.set_surface(self.area_w, self.area_h)
         cr = cairo.Context(self.surface)
         self.paint_all_struct(cr, drawing, alpha=0.6)
@@ -8551,7 +8583,9 @@ class Tab(object):
     data = self.mapping.select_drawing(x_event, y_event, self.is_selected)
     if data:
       drawing = self.drawings[data[0]]
-      area.get_root_window().set_cursor(watch)
+      screen = Gdk.Screen.get_default()
+      window = screen.get_root_window()
+      window.set_cursor(watch)
       if self.is_selected:
         type_prec, prec = self.is_selected[0:2]
         if type_prec == 'draw' and prec is drawing:
@@ -8570,7 +8604,9 @@ class Tab(object):
       id = self.is_selected[1].id
       data = self.mapping.get_is_in_drawing(x_event, y_event, id)
       if data:
-        area.get_root_window().set_cursor(watch)
+        screen = Gdk.Screen.get_default()
+        window = screen.get_root_window()
+        window.set_cursor(watch)
         drawing = self.drawings[data[0]]
         type_prec, prec = self.is_selected[0:2]
         if type_prec == 'draw' and prec is drawing:
@@ -8593,8 +8629,10 @@ class Tab(object):
       self.layout.queue_draw()
     self.is_selected = False
     self.remove_tools_box()
-    watch = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-    area.get_root_window().set_cursor(watch)
+    watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+    screen = Gdk.Screen.get_default()
+    window = screen.get_root_window()
+    window.set_cursor(watch)
 
 
 

@@ -44,6 +44,7 @@ class barreSimpleTestCase(unittest.TestCase) :
 		<unit d="1000" id="M"/>
 		<unit d="0.01" id="L"/>
 		<unit d="1e-4" id="S"/>
+		<const g="9.81"/>
 	</elem>
 </data>
 """
@@ -134,6 +135,17 @@ class emptyKMatrixTestCase(unittest.TestCase) :
 		</case>
 	</elem>
 	<elem id="combinaison">
+	</elem>
+	<elem id="prefs">
+		<unit d="1.0" id="C"/>
+		<unit d="1.0" id="E"/>
+		<unit d="1.0" id="F"/>
+		<unit d="1.0" id="I"/>
+		<unit d="1.0" id="M"/>
+		<unit d="1.0" id="L"/>
+		<unit d="1.0" id="S"/>
+		<const g="9.81"/>
+		<conv conv="1.0"/>
 	</elem>
 </data>"""
     xml = fakeReadXMLString(string)
@@ -823,6 +835,17 @@ class barreBiEncastreeTestCase(unittest.TestCase):
 	</elem>
 	<elem id="combinaison">
 		<combinaison d="1.0" id="combi1"/>
+	</elem>
+	<elem id="prefs">
+		<unit d="1.0" id="C"/>
+		<unit d="1.0" id="E"/>
+		<unit d="1.0" id="F"/>
+		<unit d="1.0" id="I"/>
+		<unit d="1.0" id="M"/>
+		<unit d="1.0" id="L"/>
+		<unit d="1.0" id="S"/>
+		<const g="9.81"/>
+		<conv conv="1.0"/>
 	</elem>
 </data>"""
     xml = fakeReadXMLString(string)
@@ -2168,7 +2191,8 @@ class portiqueDoubleTraverseTestCase(unittest.TestCase):
 		<unit d="1.0" id="M"/>
 		<unit d="1.0" id="L"/>
 		<unit d="1.0" id="S"/>
-		<g g="9.81"/>
+		<const name="g" value="9.81"/>
+		<const name="conv" value="1"/>
 	</elem>
 </data>"""
     xml = fakeReadXMLString(string)

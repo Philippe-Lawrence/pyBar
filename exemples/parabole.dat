@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.3">
   <elem id="node">
     <node d="0,0" id="N1" liaison="1" />
@@ -42,6 +42,6 @@
     <conv conv="1.0" />
   </elem>
   <draw id="prefs">
-    <drawing axis="false" bar_name="true" node_name="true" scale="203.0" scale_pos="59.0,-102.0,49,25" show_title="true" status="7,0,1,2" title="153.0,109.0,137,25,parabole" x0="103.0" y0="434.0" />
+    <drawing axis="false" bar_name="true" node_name="true" scale="203.0" scale_pos="59.0,-102.0,49,25" show_title="true" status="7,0,1,2" title="153.0,109.0,130,25,parabole" x0="103.0" y0="434.0" />
   </draw>
 </data>

@@ -381,9 +381,15 @@ class SuperBar(object):
     cr.line_to(x1, -y1)
     cr.stroke()
 
+class EmptyKStructure(object):
 
-class Structure(object):
-  """Classe contenant la structure"""
+  def __init__(self, struct, NodeDeps={}):
+    self.struct = struct
+    self.NodeDeps = NodeDeps
+    self.status = 0
+
+class KStructure(object):
+  """Contient les matrices de rigidité"""
 
   CODES_DDL = {
 		0: (0, 0, 0), 
@@ -400,6 +406,942 @@ class Structure(object):
 		1011: (1, 0, 1, 1),
 		1111: (1, 1, 1, 1)
 		}
+
+  def __init__(self, struct, NodeDeps={}):
+    #print("init KStructure")
+    self.struct = struct
+    self.NodeDeps = NodeDeps
+    self.status = 0
+
+    MatK = self.GetInvMatK()
+    if not MatK is None:
+      self.status = 1
+      self.InvMatK = MatK
+
+  def GetInvMatK(self):
+    #print("GetInvMatK status=", self.status)
+    struct = self.struct
+    if struct.status == 1:
+      matK = self.MatriceK()
+      if matK.size == 0:
+        return matK
+      det = numpy.linalg.slogdet(matK)[1] # evite un overflow
+      trace = numpy.trace(matK)
+      trace = math.log(trace)
+      if abs(det/trace < 1):
+        struct.PrintError("Matrice non inversible\nLe système présente trop de degré de liberté \nou ne peut être résolu selon l'hypothèse des petits déplacements", 0)
+        #print("non inversible debug")
+        return None # tester
+      try:
+        return numpy.linalg.inv(matK)
+      except numpy.linalg.linalg.LinAlgError:
+        struct.PrintError("Singular matrix", 0)
+        return None
+
+  def MatriceK(self):
+    """Crée la liste des ddl et la matrice de rigidité"""
+    #print("MatriceK")
+    struct = self.struct
+    self._MakeLiDDL()
+    size = self.n_ddl
+    if size == 0:
+      return numpy.empty(0)
+    # initialisation rigidity matrix
+    matK = numpy.zeros((size, size))
+    noeuds = struct.Nodes
+    codeDDL = self.codeDDL
+    raideurs = struct.RaideurAppui
+    RotuleElast = struct.RotuleElast
+    for noeud0 in noeuds:
+      code0 = codeDDL[noeud0][0]
+      ddls0 = self.CODES_DDL[code0]
+      pos0 = self.get_ddl_pos(noeud0)
+      if pos0 == None:
+        continue
+
+      row = pos0
+      # appuis élastiques
+      if noeud0 in raideurs:
+        self._add_elastic(matK, row, ddls0, raideurs[noeud0])
+
+      beamStart, beamEnd = struct.BarByNode[noeud0]
+      if ddls0[0] == 1: 
+        # projection suivant X
+        self._projX(matK, noeud0, beamStart, beamEnd, row, ddls0, code0)
+        row += 1
+      if ddls0[1] == 1: 
+        # projection suivant Y
+        self._projY(matK, beamStart, beamEnd, row, pos0, ddls0, code0)
+        row += 1
+      if ddls0[2] == 1: 
+        # équation du moment
+        self._projM(matK, beamStart, beamEnd, row, pos0, ddls0, code0)
+        row += 1
+      content = RotuleElast.get(noeud0)
+      if not content is None:
+        # équation supplémentaire de compatibilité au niveau de la rotule
+        self._RotuleElasM(matK, noeud0, content, row)
+        row += 1
+    #print("matK", matK)
+    return matK
+
+  def _MakeLiDDL(self):
+    """Crée un attribut codeDDL de format {noeud: (octal_ddl, position_first_ddl}
+    Crée un attribut n_liaison pour le nombre de liaison
+    Crée un attribut n_ddl pour le nombre de ddl"""
+    struct = self.struct
+    n_liaisons = 0
+    codeDDL = {}
+    posDDL = 0
+    liaisons = struct.Liaisons
+    relaxs = struct.IsRelax
+    nodes = struct.Nodes
+    for noeud in nodes:
+      i = -1 # par défaut noeud libre
+      if noeud in liaisons:
+        i = liaisons[noeud]
+      posDDL, n_liaisons = self._GetNodeDdl(noeud, i, codeDDL, posDDL, n_liaisons, relaxs)
+    self.codeDDL = codeDDL
+    #print("codeDDL", codeDDL)
+    struct.n_liaison = n_liaisons # renommer
+
+    # Calcul du nombre de ddl non nuls
+    n_ddl = 0
+    for noeud in codeDDL:
+      ind = codeDDL[noeud][0]
+      ddls = self.CODES_DDL[ind]
+      for val in ddls:
+          if not val == 0:
+            n_ddl += 1
+    self.n_ddl = n_ddl
+
+  def _GetNodeDdl(self, noeud, n_liaison, codeDDL, posDDL, n_liaisons, relaxs):
+    """Retourne un tuple contenant la position des ddl et le nombre de liaisons"""
+    struct = self.struct
+    if n_liaison == -1:
+      if noeud in relaxs:
+        code = 6
+        nDDL = 2
+      else:
+        code = 7
+        nDDL = 3
+      if noeud in struct.RotuleElast:
+        if code == 6: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
+        code = 1111
+        nDDL += 1
+      # on supprime u et v si déplacements imposés
+      if noeud in self.NodeDeps:
+        if code == 7:
+          code = 1
+        elif code == 6:
+          code = 0
+        elif code == 1111:
+          code = 11
+        nDDL -= 2
+
+    elif n_liaison == 0: # le noeud ne peut pas être relaxé
+      if noeud in struct.RotuleElast:
+        codeDDL[noeud] = (8, posDDL)
+        posDDL += 1
+        n_liaisons += 3
+      else:
+        codeDDL[noeud] = (0, None)
+        n_liaisons += 3
+      return posDDL, n_liaisons
+
+    elif n_liaison == 1:
+      #if relaxs[noeud] == 0:
+      if noeud in relaxs:
+        code = 0
+        nDDL = 0
+      else:
+        code = 1
+        nDDL = 1
+      n_liaisons += 2
+      if noeud in struct.RotuleElast:
+        if code == 0: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
+        code = 11
+        nDDL += 1
+
+    elif n_liaison == 2:
+      #if relaxs[noeud] == 0:
+      if noeud in relaxs:
+        code = 4
+        nDDL = 1
+      else:
+        code = 5
+        nDDL = 2
+      n_liaisons += 1
+      if noeud in struct.RotuleElast:
+        if code == 4: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
+        code = 1011
+        nDDL += 1
+
+    elif n_liaison == 3:
+      octal = 0
+      oct = 4 # utilisation de la notation chmod octal 4 2 1
+      pos = 0
+      liRaideur = struct.RaideurAppui[noeud]
+      #for j in range(3):
+      # suivant x
+      if liRaideur[0] == "inf": 
+        n_liaisons += 1
+      elif liRaideur[0] == 0: 
+        octal += oct
+        pos += 1
+      else: 
+        n_liaisons += 1
+        pos += 1
+        octal += oct
+      oct /= 2
+      # suivant y
+      if liRaideur[1] == "inf": 
+        n_liaisons += 1
+      elif liRaideur[1] == 0: 
+        octal += oct
+        pos += 1
+      else: 
+        n_liaisons += 1
+        pos += 1
+        octal += oct
+      oct /= 2
+      # suivant z
+      if noeud in struct.IsRelax:
+        pass
+      else:
+        if liRaideur[2] == "inf": 
+          n_liaisons += 1
+        elif liRaideur[2] == 0:
+          octal += oct
+          pos += 1
+        else: 
+          n_liaisons += 1
+          pos += 1
+          octal += oct
+
+      code = octal
+      nDDL = pos
+      if noeud in struct.RotuleElast:
+        string = ""
+        ddl = self.CODES_DDL[code]
+        # on recrée le codeDDL et on ajoute 1 en 4ieme position
+        for ind in ddl:
+          string += str(ind)
+        string += "1"
+        code = int(string)
+        nDDL += 1
+
+    codeDDL[noeud] = (code, posDDL)
+    posDDL += nDDL
+    return posDDL, n_liaisons
+
+  def get_ddl_pos(self, node):
+    """retourne la position du premier ddl pour le noeud donné dans la liste des ddl non nuls"""
+    return self.codeDDL[node][1]
+
+  def _add_elastic(self, matK, row, ddl, values):
+    """Ajoute les valeurs des raideurs sur les appuis élastiques
+    Si rotule élastique, on prend la valeur de gauche (wG) comme rotation
+    pour l'appui élastique"""
+    #print("add_elastic", row, ddl, values)
+    col = row
+    for i, val in enumerate(ddl):
+      if val == 0 or i == 3:
+        continue
+      matK[col, col] += values[i]
+      col += 1
+
+  def _projX(self, matK, noeud0, beamStart, beamEnd, row, ddls0, code0):
+    #print("_projX", noeud0)
+    struct = self.struct
+    pos0 = row
+    cos = math.cos # inutile pour améliorer le temps
+    sin = math.sin
+    appuis_inclines = struct.AppuiIncline
+    RotuleElast = struct.RotuleElast
+
+    # changement d'axe de projection si appui incliné
+    teta = 0.
+    if noeud0 in appuis_inclines:
+      teta = appuis_inclines[noeud0]
+
+    # barre démarrant sur le noeud
+    for name in beamStart:
+      angle = struct.Angles[name]
+      barre = struct.Barres[name]
+      noeud0, noeud1, relax0, relax1 = barre
+      
+      N0, N1 = self._getN1(name, noeud0, noeud1)
+# XXX inutile de récupérer V0,V1 si angle == 0?????
+      V0, V1 = self._getV1(name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+
+      pos1 = self.get_ddl_pos(noeud1)
+      code1 = self.codeDDL[noeud1][0]
+      ddls1 = self.CODES_DDL[code1]
+
+      # modification valeurs pour le noeud 0
+      pos = pos0
+      rot_elast = False
+      if noeud0 in RotuleElast:
+        barre_elast = RotuleElast[noeud0][0]
+        if name == barre_elast:
+          rot_elast = True
+      if teta:
+        #a = self._get_angle_proj(angle, teta)
+        a = teta - angle
+
+      if ddls0[0] == 1:
+        if teta: # projection sur l'axe de l'appui incliné
+          value = N0[0]*cos(a) + V0[0]*sin(a)
+        else:
+          value = N0[0]*cos(angle) - V0[0]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[1] == 1:
+        # pas d'équation si teta différent 0
+        value = N0[1]*cos(angle) - V0[1]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[2] == 1:
+        if not rot_elast:
+          if teta:
+            value = N0[2]*cos(a) + V0[2]*sin(a)
+          else:
+            value = N0[2]*cos(angle) - V0[2]*sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        if teta:
+          value = N0[2]*cos(a) + V0[2]*sin(a)
+        else:
+          value = N0[2]*cos(angle) - V0[2]*sin(angle)
+        matK[row, pos] += value
+
+      # modification valeurs pour le noeud 1
+      pos = pos1
+      rot_elast = False
+      if noeud1 in RotuleElast:
+        barre_elast = RotuleElast[noeud1][0]
+        if name == barre_elast:
+          rot_elast = True
+
+      if ddls1[0] == 1:
+        if teta: # projection sur l'axe de l'appui incliné
+          value = N1[0]*cos(a) + V1[0]*sin(a)
+        else:
+          value = N1[0]*cos(angle) - V1[0]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[1] == 1:
+        if teta: # projection sur l'axe de l'appui incliné
+          value = N1[1]*cos(a) + V1[1]*sin(a)
+        else:
+          value = N1[1]*cos(angle) - V1[1]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[2] == 1:
+        if not rot_elast:
+          if teta:
+            value = N1[2]*cos(a) + V1[2]*sin(a)
+          else:
+            value = N1[2]*cos(angle) - V1[2]*sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        if teta:
+          value = N1[2]*cos(a) + V1[2]*sin(a)
+        else:
+          value = N1[2]*cos(angle) - V1[2]*sin(angle)
+        matK[row, pos] += value
+
+    # barre arrivant sur le noeud
+    for name in beamEnd:
+      angle = struct.Angles[name]
+      barre = struct.Barres[name]
+      noeud0, noeud1, relax0, relax1 = barre
+      N0, N1 = self._getN2(name, noeud0, noeud1)
+      V0, V1 = self._getV2(name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+
+      pos0 = self.get_ddl_pos(noeud0)
+      pos1 = self.get_ddl_pos(noeud1)
+      code0 = self.codeDDL[noeud0][0]
+      ddls0 = self.CODES_DDL[code0]
+      code1 = self.codeDDL[noeud1][0]
+      ddls1 = self.CODES_DDL[code1]
+
+      # modification valeurs pour le noeud 0
+      pos = pos0
+      rot_elast = False
+      if noeud0 in RotuleElast:
+        barre_elast = RotuleElast[noeud0][0]
+        if name == barre_elast:
+          rot_elast = True
+      if teta:
+        #a = self._get_angle_proj(angle, teta)
+        a = teta - angle
+      if ddls0[0] == 1:
+        if teta: # projection sur l'axe de l'appui incliné
+          value = N0[0]*cos(a) + V0[0]*sin(a)
+        else:
+          value = N0[0]*cos(angle) - V0[0]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[1] == 1:
+        if teta: # projection sur l'axe de l'appui incliné
+          value = N0[1]*cos(a) + V0[1]*sin(a)
+        else:
+          value = N0[1]*cos(angle) - V0[1]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[2] == 1:
+        if not rot_elast:
+          if teta:
+            value = N0[2]*cos(a) + V0[2]*sin(a)
+          else:
+            value = N0[2]*cos(angle) - V0[2]*sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        if teta:
+          value = N0[2]*cos(a) + V0[2]*sin(a)
+        else:
+          value = N0[2]*cos(angle) - V0[2]*sin(angle)
+        matK[row, pos] += value
+
+      # modification valeurs pour le noeud 1
+      pos = pos1
+      rot_elast = False
+      if noeud1 in RotuleElast:
+        barre_elast = RotuleElast[noeud1][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls1[0] == 1:
+        if teta: # projection sur l'axe de l'appui incliné
+          value = N1[0]*cos(a) + V1[0]*sin(a)
+        else:
+          value = N1[0]*cos(angle) - V1[0]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[1] == 1:
+        value = N1[1]*cos(angle) - V1[1]*sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[2] == 1:
+        if not rot_elast:
+          if teta:
+            value = N1[2]*cos(a) + V1[2]*sin(a)
+          else:
+            value = N1[2]*cos(angle) - V1[2]*sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        if teta:
+          value = N1[2]*cos(a) + V1[2]*sin(a)
+        else:
+          value = N1[2]*cos(angle) - V1[2]*sin(angle)
+        matK[row, pos] += value
+
+
+  def _projY(self, matK, beamStart, beamEnd, row, col, ddls0, code0):
+    #print("_projY")
+    struct = self.struct
+    pos0 = col
+    # barre démarrant sur le noeud
+    RotuleElast = struct.RotuleElast
+    appuis_inclines = struct.AppuiIncline
+    for name in beamStart:
+      angle = struct.Angles[name]
+      barre = struct.Barres[name]
+      noeud0, noeud1, relax0, relax1 = barre
+      N0, N1 = self._getN1(name, noeud0, noeud1)
+      V0, V1 = self._getV1(name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+
+      pos1 = self.get_ddl_pos(noeud1)
+      code1 = self.codeDDL[noeud1][0]
+      ddls1 = self.CODES_DDL[code1]
+
+      # modification valeurs pour le noeud 0
+      pos = pos0
+      rot_elast = False
+      if noeud0 in RotuleElast:
+        barre_elast = RotuleElast[noeud0][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls0[0] == 1:
+        value = V0[0]*math.cos(angle) + N0[0]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[1] == 1:
+        value = V0[1]*math.cos(angle) + N0[1]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[2] == 1:
+        if not rot_elast:
+          value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
+        matK[row, pos] += value
+
+      # modification valeurs pour le noeud 1
+      if pos1 == None: continue
+      pos = pos1
+      rot_elast = False
+      if noeud1 in RotuleElast:
+        barre_elast = RotuleElast[noeud1][0]
+        if name == barre_elast:
+          rot_elast = True
+
+      if ddls1[0] == 1:
+        value = V1[0]*math.cos(angle) + N1[0]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[1] == 1:
+        value = V1[1]*math.cos(angle) + N1[1]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[2] == 1:
+        if not rot_elast:
+          value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
+        matK[row, pos] += value
+
+
+    # barre arrivant sur le noeud
+    for name in beamEnd:
+      angle = struct.Angles[name]
+      barre = struct.Barres[name]
+      noeud0, noeud1, relax0, relax1 = barre
+      N0, N1 = self._getN2(name, noeud0, noeud1)
+      V0, V1 = self._getV2(name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+
+      pos0 = self.get_ddl_pos(noeud0) # revoir
+      pos1 = self.get_ddl_pos(noeud1)
+      code0 = self.codeDDL[noeud0][0]
+      ddls0 = self.CODES_DDL[code0]
+      code1 = self.codeDDL[noeud1][0]
+      ddls1 = self.CODES_DDL[code1]
+
+      # modification valeurs pour le noeud 0
+      pos = pos0
+      rot_elast = False
+      if noeud0 in RotuleElast:
+        barre_elast = RotuleElast[noeud0][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls0[0] == 1:
+        value = V0[0]*math.cos(angle) + N0[0]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[1] == 1:
+        value = V0[1]*math.cos(angle) + N0[1]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls0[2] == 1:
+        if not rot_elast:
+          value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
+        matK[row, pos] += value
+
+      # modification valeurs pour le noeud 1
+      if pos1 == None: continue
+      pos = pos1
+      rot_elast = False
+      if noeud1 in RotuleElast:
+        barre_elast = RotuleElast[noeud1][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls1[0] == 1:
+        value = V1[0]*math.cos(angle) + N1[0]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[1] == 1:
+        value = V1[1]*math.cos(angle) + N1[1]*math.sin(angle)
+        matK[row, pos] += value
+        pos += 1
+      if ddls1[2] == 1:
+        if not rot_elast:
+          value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
+          matK[row, pos] += value
+        pos += 1
+      if rot_elast:
+        value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
+        matK[row, pos] += value
+
+
+
+  def _RotuleElasM(self, matK, noeud, content, row):
+    """On écrit que le moment Mij d'une barre dont l'extrémité est une rotule élastique doit être équivalent au moment élastique transmis
+    Attention il ne peut y avoir que 2 barres par noeuds
+    """
+    #print("_RotuleElasM", noeud)
+    struct = self.struct
+    RotuleElast = struct.RotuleElast
+    bar_name = content[0]
+    kz = content[1]
+    appuis_inclines = struct.AppuiIncline
+    barre = struct.Barres[bar_name]
+    noeud0, noeud1, relax0, relax1 = barre
+    pos0 = self.get_ddl_pos(noeud0)
+    code0 = self.codeDDL[noeud0][0]
+    ddls0 = self.CODES_DDL[code0]
+    pos1 = self.get_ddl_pos(noeud1)
+    code1 = self.codeDDL[noeud1][0]
+    ddls1 = self.CODES_DDL[code1]
+    # noeud avec rotule élastique à l'origine de la barre
+    if noeud == noeud0:
+      rz = False
+      if noeud1 in RotuleElast and RotuleElast[noeud1][0] == bar_name:
+        rz = True
+      # calcul de Mij
+      M0, M1 = self._getM1(bar_name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+      # modification matrice
+      if ddls0[0] == 1:
+        matK[row, pos0] += M0[0]
+        pos0 += 1
+      if ddls0[1] == 1:
+        matK[row, pos0] += M0[1]
+        pos0 += 1
+      if ddls0[2] == 1:
+        matK[row, pos0] += -kz
+        pos0 += 1
+      if ddls0[3] == 1:
+        matK[row, pos0] += kz+M0[2]
+    
+      if ddls1[0] == 1:
+        matK[row, pos1] += M1[0]
+        pos1 += 1
+      if ddls1[1] == 1:
+        matK[row, pos1] += M1[1]
+        pos1 += 1
+      if ddls1[2] == 1 and rz:
+        pos1 += 1
+      if ddls1[2] == 1 or rz:
+        matK[row, pos1] += M1[2]
+    else:
+    # noeud avec rotule élastique à l'extrémité de la barre
+      M0, M1 = self._getM2(bar_name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+      if ddls0[0] == 1:
+        matK[row, pos0] += M0[0]
+        pos0 += 1
+      if ddls0[1] == 1:
+        matK[row, pos0] += M0[1]
+        pos0 += 1
+      rz = False
+      if noeud0 in RotuleElast and RotuleElast[noeud0][0] == bar_name:
+        rz = True
+      if ddls0[2] == 1 and rz:
+        pos0 += 1
+      if ddls0[2] == 1 or rz:
+        matK[row, pos0] += M0[2]
+    
+      if ddls1[0] == 1:
+        matK[row, pos1] += M1[0]
+        pos1 += 1
+      if ddls1[1] == 1:
+        matK[row, pos1] += M1[1]
+        pos1 += 1
+      if ddls1[2] == 1:
+        matK[row, pos1] += -kz
+        pos1 += 1
+      if ddls1[3] == 1:
+        matK[row, pos1] += kz + M1[2]
+
+
+  def _projM(self, matK, beamStart, beamEnd, row, col, ddls0, code0):
+    #print("_projM")
+    struct = self.struct
+    pos0 = col
+    RotuleElast = struct.RotuleElast
+    appuis_inclines = struct.AppuiIncline
+    # barre démarrant sur le noeud
+    for name in beamStart:
+      angle = struct.Angles[name]
+      barre = struct.Barres[name]
+      noeud0, noeud1, relax0, relax1 = barre
+      M0, M1 = self._getM1(name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+
+      pos1 = self.get_ddl_pos(noeud1)
+      code1 = self.codeDDL[noeud1][0]
+      ddls1 = self.CODES_DDL[code1]
+
+      # modification valeurs pour le noeud 0
+      pos = pos0
+      rot_elast = False
+      if noeud0 in RotuleElast:
+        barre_elast = RotuleElast[noeud0][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls0[0] == 1:
+        matK[row, pos] += M0[0]
+        pos += 1
+      if ddls0[1] == 1:
+        matK[row, pos] += M0[1]
+        pos += 1
+      if ddls0[2] == 1:
+        if not rot_elast:
+          matK[row, pos] += M0[2]
+        pos += 1
+      if rot_elast:
+        matK[row, pos] += M0[2]
+
+
+      # modification valeurs pour le noeud 1
+      pos = pos1
+      rot_elast = False
+      if noeud1 in RotuleElast:
+        barre_elast = RotuleElast[noeud1][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls1[0] == 1:
+        matK[row, pos] += M1[0]
+        pos += 1
+      if ddls1[1] == 1:
+        matK[row, pos] += M1[1]
+        pos += 1
+      if ddls1[2] == 1:
+        if not rot_elast:
+          matK[row, pos] += M1[2]
+        pos += 1
+      if rot_elast:
+        matK[row, pos] += M1[2]
+
+    # barre arrivant sur le noeud
+    for name in beamEnd:
+      angle = struct.Angles[name]
+      barre = struct.Barres[name]
+      noeud0, noeud1, relax0, relax1 = barre
+      M0, M1 = self._getM2(name, noeud0, noeud1, relax0, relax1)
+      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+
+      pos0 = self.get_ddl_pos(noeud0) # revoir
+      pos1 = self.get_ddl_pos(noeud1)
+      code0 = self.codeDDL[noeud0][0]
+      ddls0 = self.CODES_DDL[code0]
+      code1 = self.codeDDL[noeud1][0]
+      ddls1 = self.CODES_DDL[code1]
+
+      # modification valeurs pour le noeud 0
+      pos = pos0
+      rot_elast = False
+      if noeud0 in RotuleElast:
+        barre_elast = RotuleElast[noeud0][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls0[0] == 1:
+        matK[row, pos] += M0[0]
+        pos += 1
+      if ddls0[1] == 1:
+        matK[row, pos] += M0[1]
+        pos += 1
+      if ddls0[2] == 1:
+        if not rot_elast:
+          matK[row, pos] += M0[2]
+        pos += 1
+      if rot_elast:
+        matK[row, pos] += M0[2]
+
+      #for i in range(3):
+      #  if ddls0[i] == 0: continue
+      #  if i == 2 and rot_elast:
+      #    pos += 1
+      #  matK[row, pos] += M0[i]
+      #  pos += 1
+
+      # modification valeurs pour le noeud 1
+      pos = pos1
+      rot_elast = False
+      if noeud1 in RotuleElast:
+        barre_elast = RotuleElast[noeud1][0]
+        if name == barre_elast:
+          rot_elast = True
+      if ddls1[0] == 1:
+        matK[row, pos] += M1[0]
+        pos += 1
+      if ddls1[1] == 1:
+        matK[row, pos] += M1[1]
+        pos += 1
+      if ddls1[2] == 1:
+        if not rot_elast:
+          matK[row, pos] += M1[2]
+        pos += 1
+      if rot_elast:
+        matK[row, pos] += M1[2]
+
+  def _getN1(self, barre, noeud0, noeud1): 
+    """Retourne les coefficients intrinsèques d'une barre pour l'effort normal
+    exprimés dans le repère global des ddls
+    Coefficients pour l'origine de la barre"""
+    struct = self.struct
+    angle = struct.Angles[barre]
+    E = struct._GetYoung(barre)
+    S = struct._GetSection(barre)
+    coef = E*S/struct.Lengths[barre]
+    ddl0 = [coef, 0., 0.]
+    if not angle == 0:
+      ProjL2G(ddl0, angle) 
+    ddl1 = [-i for i in ddl0]
+    return ddl0, ddl1
+
+  def _getN2(self, barre, noeud0, noeud1): 
+    """Retourne les coefficients intrinsèques d'une barre pour l'effort normal
+    exprimés dans le repère global des ddls
+    Coefficients pour l'extrémité de la barre"""
+    struct = self.struct
+    angle = struct.Angles[barre]
+    E = struct._GetYoung(barre)
+    S = struct._GetSection(barre)
+    coef = E*S/struct.Lengths[barre]
+    ddl0 = [-coef, 0., 0.]
+    if not angle == 0:
+      ProjL2G(ddl0, angle) 
+    ddl1 = [-i for i in ddl0]
+    return ddl0, ddl1
+
+  def _getV1(self, barre, noeud0, noeud1, relax0, relax1):
+    """Retourne les coefficients intrinsèques d'une barre pour l'effort tranchant
+    exprimés dans le repère global des ddls
+    Coefficients pour l'origine de la barre"""
+    struct = self.struct
+    angle = struct.Angles[barre]
+    E = struct._GetYoung(barre)
+    I = struct._GetMQua(barre)
+    coef = E*I
+    l = struct.Lengths[barre]
+    if relax0 == 0:
+      if relax1 == 0:
+        # Noeud non relaxé, noeud suivant non relaxé
+        ddl0, ddl1 = [0., 12./l**3, 6./l**2], [0, -12./l**3, 6./l**2]
+      elif relax1 == 1:
+        # Noeud non relaxé, noeud suivant relaxé
+        ddl0, ddl1 = [0., 3./l**3, 3./l**2], [0., -3./l**3, 0]
+    elif relax0 == 1:
+      if relax1 == 0:
+        # Noeud relaxé, noeud suivant non relaxé
+        ddl0, ddl1 = [0., 3./l**3, 0.], [0., -3./l**3, 3./l**2]
+      elif relax1 == 1:
+        # Noeud relaxé, noeud suivant relaxé
+         return [0.]*3, [0.]*3
+    if not angle == 0:
+      ProjL2G(ddl0, angle)
+      ProjL2G(ddl1, angle)
+    return [i*coef for i in ddl0], [i*coef for i in ddl1]
+
+  def _getV2(self, barre, noeud0, noeud1, relax0, relax1):
+    """Retourne les coefficients intrinsèques d'une barre pour l'effort tranchant
+    exprimés dans le repère global des ddls
+    Coefficients pour l'extrémité de la barre"""
+    struct = self.struct
+    angle = struct.Angles[barre]
+    E = struct._GetYoung(barre)
+    I = struct._GetMQua(barre)
+    coef = E*I
+    l = struct.Lengths[barre]
+    if relax0 == 0:
+      if relax1 == 0:
+        # Noeud non relaxé, noeud suivant non relaxé
+        ddl0, ddl1 = [0., -12./l**3, -6./l**2], [0, 12./l**3, -6./l**2]
+      elif relax1 == 1:
+        # Noeud non relaxé, noeud suivant relaxé
+        ddl0, ddl1 = [0., -3./l**3, -3./l**2], [0., 3./l**3, 0]
+    elif relax0 == 1:
+      if relax1 == 0:
+        # Noeud relaxé, noeud suivant non relaxé
+        ddl0, ddl1 = [0., -3./l**3, 0.], [0., 3./l**3, -3./l**2]
+      elif relax1 == 1:
+        # Noeud relaxé, noeud suivant relaxé
+         return [0.]*3, [0.]*3
+    if not angle == 0:
+      ProjL2G(ddl0, angle)
+      ProjL2G(ddl1, angle)
+    return [i*coef for i in ddl0], [i*coef for i in ddl1]
+
+  def _getM1(self, barre, noeud0, noeud1, relax0, relax1):
+    """Retourne les coefficients intrinsèques d'une barre pour les moments
+    exprimés dans le repère global des ddls
+    Coefficients pour l'origine de la barre"""
+    struct = self.struct
+    angle = struct.Angles[barre]
+    E = struct._GetYoung(barre)
+    I = struct._GetMQua(barre)
+    coef = E*I
+    l = struct.Lengths[barre]
+    if relax0 == 1:
+      return [0]*3, [0]*3
+    if relax1 == 0:
+      # Noeud non relaxé, noeud suivant non relaxé
+      ddl0, ddl1 = [0., 6./l**2, 4./l], [0., -6./l**2, 2./l]
+    elif relax1 == 1:
+      # Noeud non relaxé, noeud suivant relaxé
+      ddl0, ddl1 = [0., 3./l**2, 3./l], [0., -3./l**2, 0.]
+    if not angle == 0:
+      ProjL2G(ddl0, angle)
+      ProjL2G(ddl1, angle)
+    return [i*coef for i in ddl0], [i*coef for i in ddl1]
+
+  def _getM2(self, barre, noeud0, noeud1, relax0, relax1):
+    """Retourne les coefficients intrinsèques d'une barre pour les moments
+    exprimés dans le repère global des ddls
+    Coefficients pour l'extrémité de la barre"""
+    struct = self.struct
+    angle = struct.Angles[barre]
+    E = struct._GetYoung(barre)
+    I = struct._GetMQua(barre)
+    coef = E*I
+    l = struct.Lengths[barre]
+    if relax1 == 1:
+      return [0]*3, [0]*3
+    if relax0 == 0:
+      # Noeud non relaxé, noeud suivant non relaxé
+      ddl0, ddl1 = [0., 6./l**2, 2./l], [0., -6./l**2, 4./l]
+    elif relax0 == 1:
+      # Noeud non relaxé, noeud suivant relaxé
+      ddl0, ddl1 = [0., 3./l**2, 0.],[0., -3./l**2, 3./l]
+    if not angle == 0:
+      ProjL2G(ddl0, angle)
+      ProjL2G(ddl1, angle)
+    return [i*coef for i in ddl0], [i*coef for i in ddl1]
+
+  def ChangeAxis(self, appuis_inclines, noeud0, noeud1, N0, N1, V0, V1):
+    """Change le repère des ddl si le noeud est un appui incliné, pour les composantes N et V en passant dans le repère de l'appui incliné"""
+    struct = self.struct
+    if noeud0 in appuis_inclines:
+      teta = appuis_inclines[noeud0]
+      struct._SetAppuiIncline(teta, N0)
+      struct._SetAppuiIncline(teta, V0)
+    if noeud1 in appuis_inclines:
+      teta = appuis_inclines[noeud1]
+      struct._SetAppuiIncline(teta, N1)
+      struct._SetAppuiIncline(teta, V1)
+
+  def ChangeAxis2(self, appuis_inclines, noeud0, noeud1, M0, M1):
+    """Change le repère des ddl si le noeud est un appui incliné, pour les composantes de M en passant dans le repère de l'appui incliné"""
+    struct = self.struct
+    if noeud0 in appuis_inclines:
+      teta = appuis_inclines[noeud0]
+      struct._SetAppuiIncline(teta, M0)
+    if noeud1 in appuis_inclines:
+      teta = appuis_inclines[noeud1]
+      struct._SetAppuiIncline(teta, M1)
+
+class Structure(object):
+  """Classe contenant la structure"""
+
+
 
   def __init__(self, xml, path=None):
     #print("Structure::__init__")
@@ -422,39 +1364,7 @@ class Structure(object):
     except XMLError:
       self.status = -1
       return
-    MatK = self.GetInvMatK()
-    if not MatK is None:
-      self.status = 2
-      self.InvMatK = MatK
 
-  def GetInvMatK(self):
-    #print("GetInvMatK status=", self.status)
-    if self.status == 1:
-      matK = self.MatriceK()
-      #print(matK)
-      #tr = numpy.trace(matK)
-      #print("trace", tr)
-      #matK = matK/tr
-      #print(matK)
-      #det = numpy.linalg.det(matK)
-      #print("det", det)
-      #print(numpy.rank(matK))
-      #print(numpy.linalg.slogdet(matK) )
-      if matK.size == 0:
-        return matK
-      #print(numpy.linalg.det(matK))
-      det = numpy.linalg.slogdet(matK)[1] # evite un overflow
-      trace = numpy.trace(matK)
-      trace = math.log(trace)
-      if abs(det/trace < 1):
-        self.PrintError("Matrice non inversible\nLe système présente trop de degré de liberté \nou ne peut être résolu selon l'hypothèse des petits déplacements", 0)
-        return None # tester
-      try:
-        return numpy.linalg.inv(matK)
-        #self.InvMatK *= tr
-      except numpy.linalg.linalg.LinAlgError:
-        self.PrintError("Singular matrix", 0)
-        return None
 # ------------------ LECTURE DES DONNEES ----------------------
 
 
@@ -528,8 +1438,6 @@ class Structure(object):
     self._GetRotulePlast()
     # relaxation du noeud si toutes les barres sont relaxées
     self._RelaxNode()
-    # affaissement d'appuis
-    self._GetNodeDeps()
     # élimination les noeuds non liés
     self._GetNodeNotLinked()
 
@@ -616,39 +1524,29 @@ class Structure(object):
 
   def GetG(self, UP=None):
     """Récupère la valeur de G"""
+    G = None
+    if 'g' in self.CONST: G = self.CONST['g']
     try:
-      elem = self.XMLNodes["prefs"]
-    except KeyError:
-      return Const.G
-    try:
-      xml = elem[0]
-    except IndexError:
-      return Const.G
-    g = xml.get("g")
-    if g is None:
-      return Const.G
-    try:
-      return float(g)
+      return float(G)
     except ValueError:
+      return Const.G
+    except TypeError:
       return Const.G
 
   def GetConv(self, UP=None):
-    """Récupère la valeur de G"""
-    try:
-      elem = list(self.XMLNodes["prefs"].iter('conv'))
-    except KeyError:
-      return Const.CONV
-    try:
-      xml = elem[0]
-    except IndexError:
-      return Const.CONV
-    conv = xml.get("conv")
-    if conv is None:
-      return Const.CONV
-    try:
-      return float(conv)
-    except ValueError:
-      return Const.CONV
+    """Récupère la valeur de la convention de signe"""
+    if 'conv' in self.CONST: 
+      conv = self.CONST['conv']
+      try:
+        conv = int(conv)
+      except ValueError:
+        conv = None
+    else : conv = None
+    if conv == 1 :
+      return conv
+    if conv == -1:
+      return conv
+    return Const.CONV
 
   def _GetDim(self):
     """Crée les attributs width et height de la structure
@@ -705,9 +1603,20 @@ class Structure(object):
     # Retourne None si l'attribut n'est pas trouvé
     #print("Version %s" % self.version)
     self.XMLNodes = {}
+    self.CONST = {}
     for Node in root.iter('elem'):
       self.XMLNodes[Node.get("id")] = Node
-    return
+    try:
+      node = self.XMLNodes["prefs"]
+    except KeyError:
+      return 
+    di = {}
+    for node in self.XMLNodes["prefs"].iter('const'):
+      name = node.get("name")
+      if name is None : continue
+      val = node.get("value")
+      di[name] = val
+    self.CONST = di
 
   def GetNode(self):
     """Crée les dictionnaires des noeuds"""
@@ -2193,41 +3102,6 @@ class Structure(object):
       self.RotulePlast[noeud] = (barres[0], barres[1], mp)
       #print("self.RotulePlast=", self.RotulePlast)
 
-  def _GetNodeDeps(self):
-    """Récupère les déplacements d'appui suivant X et Y.
-    Si appui incliné, le déplacement est unique et correspond au déplacement perpendiculaire à l'appui."""
-    self.NodeDeps = {}
-    try:
-      li_node = self.XMLNodes["node"].iter('node')
-    except KeyError:
-      text = "Erreur dans XMLNodes::pas de clé node"
-      self.PrintError(text, 0)
-      raise XMLError(text)
-    for node in li_node:
-      noeud = node.get("id")
-      content = node.get("dep")
-      if content is None:
-        continue
-      content = content.split(",")
-      if len(content) == 2:
-        try:
-          depX = float(content[0])*self.units['L']
-        except ValueError:
-          self.PrintError("Erreur pour l'affaissement d'appui du noeud (X): %s" % noeud, 1)
-          depX = 0.
-        try:
-          depY = float(content[1])*self.units['L']
-        except ValueError:
-          self.PrintError("Erreur pour l'affaissement d'appui du noeud (Y): %s" % noeud, 1)
-          depY = 0.
-      else:
-        try:
-          depY = float(content[0])*self.units['L']
-          depX = 0.
-        except ValueError:
-          self.PrintError("Erreur pour l'affaissement d'appui du noeud: %s" % noeud, 0)
-          continue
-      self.NodeDeps[noeud] = [depX, depY, 0]
 
   
   def FirstBarre(self):
@@ -2268,158 +3142,7 @@ class Structure(object):
   #------------------ ECRITURE DE LA MATRICE DES DDL ------------------------
 
 
-  def _GetNodeDdl(self, noeud, n_liaison, codeDDL, posDDL, n_liaisons, relaxs):
-    """Retourne un tuple contenant la position des ddl et le nombre de liaisons"""
-    if n_liaison == -1:
-      if noeud in relaxs:
-        code = 6
-        nDDL = 2
-      else:
-        code = 7
-        nDDL = 3
-      if noeud in self.RotuleElast:
-        if code == 6: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
-        code = 1111
-        nDDL += 1
-      # on supprime u et v si déplacements imposés
-      if noeud in self.NodeDeps:
-        if code == 7:
-          code = 1
-        elif code == 6:
-          code = 0
-        elif code == 1111:
-          code = 11
-        nDDL -= 2
 
-    elif n_liaison == 0: # le noeud ne peut pas être relaxé
-      if noeud in self.RotuleElast:
-        codeDDL[noeud] = (8, posDDL)
-        posDDL += 1
-        n_liaisons += 3
-      else:
-        codeDDL[noeud] = (0, None)
-        n_liaisons += 3
-      return posDDL, n_liaisons
-
-    elif n_liaison == 1:
-      #if relaxs[noeud] == 0:
-      if noeud in relaxs:
-        code = 0
-        nDDL = 0
-      else:
-        code = 1
-        nDDL = 1
-      n_liaisons += 2
-      if noeud in self.RotuleElast:
-        if code == 0: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
-        code = 11
-        nDDL += 1
-
-    elif n_liaison == 2:
-      #if relaxs[noeud] == 0:
-      if noeud in relaxs:
-        code = 4
-        nDDL = 1
-      else:
-        code = 5
-        nDDL = 2
-      n_liaisons += 1
-      if noeud in self.RotuleElast:
-        if code == 4: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
-        code = 1011
-        nDDL += 1
-
-    elif n_liaison == 3:
-      octal = 0
-      oct = 4 # utilisation de la notation chmod octal 4 2 1
-      pos = 0
-      liRaideur = self.RaideurAppui[noeud]
-      #for j in range(3):
-      # suivant x
-      if liRaideur[0] == "inf": 
-        n_liaisons += 1
-      elif liRaideur[0] == 0: 
-        octal += oct
-        pos += 1
-      else: 
-        n_liaisons += 1
-        pos += 1
-        octal += oct
-      oct /= 2
-      # suivant y
-      if liRaideur[1] == "inf": 
-        n_liaisons += 1
-      elif liRaideur[1] == 0: 
-        octal += oct
-        pos += 1
-      else: 
-        n_liaisons += 1
-        pos += 1
-        octal += oct
-      oct /= 2
-      # suivant z
-      if noeud in self.IsRelax:
-        pass
-      else:
-        if liRaideur[2] == "inf": 
-          n_liaisons += 1
-        elif liRaideur[2] == 0:
-          octal += oct
-          pos += 1
-        else: 
-          n_liaisons += 1
-          pos += 1
-          octal += oct
-
-      code = octal
-      nDDL = pos
-      if noeud in self.RotuleElast:
-        string = ""
-        ddl = self.CODES_DDL[code]
-        # on recrée le codeDDL et on ajoute 1 en 4ieme position
-        for ind in ddl:
-          string += str(ind)
-        string += "1"
-        code = int(string)
-        nDDL += 1
-
-    codeDDL[noeud] = (code, posDDL)
-    posDDL += nDDL
-    return posDDL, n_liaisons
-
-
-  def _MakeLiDDL(self):
-    """Crée un attribut codeDDL de format {noeud: (octal_ddl, position_first_ddl}
-    Crée un attribut n_liaison pour le nombre de liaison
-    Crée un attribut n_ddl pour le nombre de ddl"""
-    n_liaisons = 0
-    codeDDL = {}
-    posDDL = 0
-    liaisons = self.Liaisons
-    relaxs = self.IsRelax
-    nodes = self.Nodes
-    for noeud in nodes:
-      i = -1 # par défaut noeud libre
-      if noeud in liaisons:
-        i = liaisons[noeud]
-      posDDL, n_liaisons = self._GetNodeDdl(noeud, i, codeDDL, posDDL, n_liaisons, relaxs)
-    self.codeDDL = codeDDL
-    #print("codeDDL", codeDDL)
-    self.n_liaison = n_liaisons # renommer
-
-    # Calcul du nombre de ddl non nuls
-    n_ddl = 0
-    for noeud in codeDDL:
-      ind = codeDDL[noeud][0]
-      ddls = self.CODES_DDL[ind]
-      for val in ddls:
-          if not val == 0:
-            n_ddl += 1
-    self.n_ddl = n_ddl
-
-  def get_ddl_pos(self, node):
-    """retourne la position du premier ddl pour le noeud donné dans la liste des ddl non nuls"""
-    return self.codeDDL[node][1]
 
   def CalculDegreH(self):
     """Calcul du degré d'hyperstaticité"""
@@ -2501,760 +3224,26 @@ class Structure(object):
     li[0] = x*math.cos(teta) + y*math.sin(teta)
     li[1] = -x*math.sin(teta) + y*math.cos(teta) # XXX test
 
-  def _getN1(self, barre, noeud0, noeud1): 
-    """Retourne les coefficients intrinsèques d'une barre pour l'effort normal
-    exprimés dans le repère global des ddls
-    Coefficients pour l'origine de la barre"""
-    angle = self.Angles[barre]
-    E = self._GetYoung(barre)
-    S = self._GetSection(barre)
-    coef = E*S/self.Lengths[barre]
-    ddl0 = [coef, 0., 0.]
-    if not angle == 0:
-      ProjL2G(ddl0, angle) 
-    ddl1 = [-i for i in ddl0]
-    return ddl0, ddl1
 
-  def _getN2(self, barre, noeud0, noeud1): 
-    """Retourne les coefficients intrinsèques d'une barre pour l'effort normal
-    exprimés dans le repère global des ddls
-    Coefficients pour l'extrémité de la barre"""
-    angle = self.Angles[barre]
-    E = self._GetYoung(barre)
-    S = self._GetSection(barre)
-    coef = E*S/self.Lengths[barre]
-    ddl0 = [-coef, 0., 0.]
-    if not angle == 0:
-      ProjL2G(ddl0, angle) 
-    ddl1 = [-i for i in ddl0]
-    return ddl0, ddl1
-
-  def _getV1(self, barre, noeud0, noeud1, relax0, relax1):
-    """Retourne les coefficients intrinsèques d'une barre pour l'effort tranchant
-    exprimés dans le repère global des ddls
-    Coefficients pour l'origine de la barre"""
-    angle = self.Angles[barre]
-    E = self._GetYoung(barre)
-    I = self._GetMQua(barre)
-    coef = E*I
-    l = self.Lengths[barre]
-    if relax0 == 0:
-      if relax1 == 0:
-        # Noeud non relaxé, noeud suivant non relaxé
-        ddl0, ddl1 = [0., 12./l**3, 6./l**2], [0, -12./l**3, 6./l**2]
-      elif relax1 == 1:
-        # Noeud non relaxé, noeud suivant relaxé
-        ddl0, ddl1 = [0., 3./l**3, 3./l**2], [0., -3./l**3, 0]
-    elif relax0 == 1:
-      if relax1 == 0:
-        # Noeud relaxé, noeud suivant non relaxé
-        ddl0, ddl1 = [0., 3./l**3, 0.], [0., -3./l**3, 3./l**2]
-      elif relax1 == 1:
-        # Noeud relaxé, noeud suivant relaxé
-         return [0.]*3, [0.]*3
-    if not angle == 0:
-      ProjL2G(ddl0, angle)
-      ProjL2G(ddl1, angle)
-    return [i*coef for i in ddl0], [i*coef for i in ddl1]
-
-  def _getV2(self, barre, noeud0, noeud1, relax0, relax1):
-    """Retourne les coefficients intrinsèques d'une barre pour l'effort tranchant
-    exprimés dans le repère global des ddls
-    Coefficients pour l'extrémité de la barre"""
-    angle = self.Angles[barre]
-    E = self._GetYoung(barre)
-    I = self._GetMQua(barre)
-    coef = E*I
-    l = self.Lengths[barre]
-    if relax0 == 0:
-      if relax1 == 0:
-        # Noeud non relaxé, noeud suivant non relaxé
-        ddl0, ddl1 = [0., -12./l**3, -6./l**2], [0, 12./l**3, -6./l**2]
-      elif relax1 == 1:
-        # Noeud non relaxé, noeud suivant relaxé
-        ddl0, ddl1 = [0., -3./l**3, -3./l**2], [0., 3./l**3, 0]
-    elif relax0 == 1:
-      if relax1 == 0:
-        # Noeud relaxé, noeud suivant non relaxé
-        ddl0, ddl1 = [0., -3./l**3, 0.], [0., 3./l**3, -3./l**2]
-      elif relax1 == 1:
-        # Noeud relaxé, noeud suivant relaxé
-         return [0.]*3, [0.]*3
-    if not angle == 0:
-      ProjL2G(ddl0, angle)
-      ProjL2G(ddl1, angle)
-    return [i*coef for i in ddl0], [i*coef for i in ddl1]
-
-  def _getM1(self, barre, noeud0, noeud1, relax0, relax1):
-    """Retourne les coefficients intrinsèques d'une barre pour les moments
-    exprimés dans le repère global des ddls
-    Coefficients pour l'origine de la barre"""
-    angle = self.Angles[barre]
-    E = self._GetYoung(barre)
-    I = self._GetMQua(barre)
-    coef = E*I
-    l = self.Lengths[barre]
-    if relax0 == 1:
-      return [0]*3, [0]*3
-    if relax1 == 0:
-      # Noeud non relaxé, noeud suivant non relaxé
-      ddl0, ddl1 = [0., 6./l**2, 4./l], [0., -6./l**2, 2./l]
-    elif relax1 == 1:
-      # Noeud non relaxé, noeud suivant relaxé
-      ddl0, ddl1 = [0., 3./l**2, 3./l], [0., -3./l**2, 0.]
-    if not angle == 0:
-      ProjL2G(ddl0, angle)
-      ProjL2G(ddl1, angle)
-    return [i*coef for i in ddl0], [i*coef for i in ddl1]
-
-  def _getM2(self, barre, noeud0, noeud1, relax0, relax1):
-    """Retourne les coefficients intrinsèques d'une barre pour les moments
-    exprimés dans le repère global des ddls
-    Coefficients pour l'extrémité de la barre"""
-    angle = self.Angles[barre]
-    E = self._GetYoung(barre)
-    I = self._GetMQua(barre)
-    coef = E*I
-    l = self.Lengths[barre]
-    if relax1 == 1:
-      return [0]*3, [0]*3
-    if relax0 == 0:
-      # Noeud non relaxé, noeud suivant non relaxé
-      ddl0, ddl1 = [0., 6./l**2, 2./l], [0., -6./l**2, 4./l]
-    elif relax0 == 1:
-      # Noeud non relaxé, noeud suivant relaxé
-      ddl0, ddl1 = [0., 3./l**2, 0.],[0., -3./l**2, 3./l]
-    if not angle == 0:
-      ProjL2G(ddl0, angle)
-      ProjL2G(ddl1, angle)
-    return [i*coef for i in ddl0], [i*coef for i in ddl1]
-
-  def ChangeAxis(self, appuis_inclines, noeud0, noeud1, N0, N1, V0, V1):
-    """Change le repère des ddl si le noeud est un appui incliné, pour les composantes N et V en passant dans le repère de l'appui incliné"""
-    if noeud0 in appuis_inclines:
-      teta = appuis_inclines[noeud0]
-      self._SetAppuiIncline(teta, N0)
-      self._SetAppuiIncline(teta, V0)
-    if noeud1 in appuis_inclines:
-      teta = appuis_inclines[noeud1]
-      self._SetAppuiIncline(teta, N1)
-      self._SetAppuiIncline(teta, V1)
-
-  def ChangeAxis2(self, appuis_inclines, noeud0, noeud1, M0, M1):
-    """Change le repère des ddl si le noeud est un appui incliné, pour les composantes de M en passant dans le repère de l'appui incliné"""
-    if noeud0 in appuis_inclines:
-      teta = appuis_inclines[noeud0]
-      self._SetAppuiIncline(teta, M0)
-    if noeud1 in appuis_inclines:
-      teta = appuis_inclines[noeud1]
-      self._SetAppuiIncline(teta, M1)
-
-  def _projX(self, matK, noeud0, beamStart, beamEnd, row, ddls0, code0):
-    #print("_projX", noeud0)
-    pos0 = row
-    cos = math.cos # inutile pour améliorer le temps
-    sin = math.sin
-    appuis_inclines = self.AppuiIncline
-    RotuleElast = self.RotuleElast
-
-    # changement d'axe de projection si appui incliné
-    teta = 0.
-    if noeud0 in appuis_inclines:
-      teta = appuis_inclines[noeud0]
-
-    # barre démarrant sur le noeud
-    for name in beamStart:
-      angle = self.Angles[name]
-      barre = self.Barres[name]
-      noeud0, noeud1, relax0, relax1 = barre
-      
-      N0, N1 = self._getN1(name, noeud0, noeud1)
-# XXX inutile de récupérer V0,V1 si angle == 0?????
-      V0, V1 = self._getV1(name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
-
-      pos1 = self.get_ddl_pos(noeud1)
-      code1 = self.codeDDL[noeud1][0]
-      ddls1 = self.CODES_DDL[code1]
-
-      # modification valeurs pour le noeud 0
-      pos = pos0
-      rot_elast = False
-      if noeud0 in RotuleElast:
-        barre_elast = RotuleElast[noeud0][0]
-        if name == barre_elast:
-          rot_elast = True
-      if teta:
-        #a = self._get_angle_proj(angle, teta)
-        a = teta - angle
-
-      if ddls0[0] == 1:
-        if teta: # projection sur l'axe de l'appui incliné
-          value = N0[0]*cos(a) + V0[0]*sin(a)
-        else:
-          value = N0[0]*cos(angle) - V0[0]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[1] == 1:
-        # pas d'équation si teta différent 0
-        value = N0[1]*cos(angle) - V0[1]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[2] == 1:
-        if not rot_elast:
-          if teta:
-            value = N0[2]*cos(a) + V0[2]*sin(a)
-          else:
-            value = N0[2]*cos(angle) - V0[2]*sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        if teta:
-          value = N0[2]*cos(a) + V0[2]*sin(a)
-        else:
-          value = N0[2]*cos(angle) - V0[2]*sin(angle)
-        matK[row, pos] += value
-
-      # modification valeurs pour le noeud 1
-      pos = pos1
-      rot_elast = False
-      if noeud1 in RotuleElast:
-        barre_elast = RotuleElast[noeud1][0]
-        if name == barre_elast:
-          rot_elast = True
-
-      if ddls1[0] == 1:
-        if teta: # projection sur l'axe de l'appui incliné
-          value = N1[0]*cos(a) + V1[0]*sin(a)
-        else:
-          value = N1[0]*cos(angle) - V1[0]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[1] == 1:
-        if teta: # projection sur l'axe de l'appui incliné
-          value = N1[1]*cos(a) + V1[1]*sin(a)
-        else:
-          value = N1[1]*cos(angle) - V1[1]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[2] == 1:
-        if not rot_elast:
-          if teta:
-            value = N1[2]*cos(a) + V1[2]*sin(a)
-          else:
-            value = N1[2]*cos(angle) - V1[2]*sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        if teta:
-          value = N1[2]*cos(a) + V1[2]*sin(a)
-        else:
-          value = N1[2]*cos(angle) - V1[2]*sin(angle)
-        matK[row, pos] += value
-
-    # barre arrivant sur le noeud
-    for name in beamEnd:
-      angle = self.Angles[name]
-      barre = self.Barres[name]
-      noeud0, noeud1, relax0, relax1 = barre
-      N0, N1 = self._getN2(name, noeud0, noeud1)
-      V0, V1 = self._getV2(name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
-
-      pos0 = self.get_ddl_pos(noeud0)
-      pos1 = self.get_ddl_pos(noeud1)
-      code0 = self.codeDDL[noeud0][0]
-      ddls0 = self.CODES_DDL[code0]
-      code1 = self.codeDDL[noeud1][0]
-      ddls1 = self.CODES_DDL[code1]
-
-      # modification valeurs pour le noeud 0
-      pos = pos0
-      rot_elast = False
-      if noeud0 in RotuleElast:
-        barre_elast = RotuleElast[noeud0][0]
-        if name == barre_elast:
-          rot_elast = True
-      if teta:
-        #a = self._get_angle_proj(angle, teta)
-        a = teta - angle
-      if ddls0[0] == 1:
-        if teta: # projection sur l'axe de l'appui incliné
-          value = N0[0]*cos(a) + V0[0]*sin(a)
-        else:
-          value = N0[0]*cos(angle) - V0[0]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[1] == 1:
-        if teta: # projection sur l'axe de l'appui incliné
-          value = N0[1]*cos(a) + V0[1]*sin(a)
-        else:
-          value = N0[1]*cos(angle) - V0[1]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[2] == 1:
-        if not rot_elast:
-          if teta:
-            value = N0[2]*cos(a) + V0[2]*sin(a)
-          else:
-            value = N0[2]*cos(angle) - V0[2]*sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        if teta:
-          value = N0[2]*cos(a) + V0[2]*sin(a)
-        else:
-          value = N0[2]*cos(angle) - V0[2]*sin(angle)
-        matK[row, pos] += value
-
-      # modification valeurs pour le noeud 1
-      pos = pos1
-      rot_elast = False
-      if noeud1 in RotuleElast:
-        barre_elast = RotuleElast[noeud1][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls1[0] == 1:
-        if teta: # projection sur l'axe de l'appui incliné
-          value = N1[0]*cos(a) + V1[0]*sin(a)
-        else:
-          value = N1[0]*cos(angle) - V1[0]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[1] == 1:
-        value = N1[1]*cos(angle) - V1[1]*sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[2] == 1:
-        if not rot_elast:
-          if teta:
-            value = N1[2]*cos(a) + V1[2]*sin(a)
-          else:
-            value = N1[2]*cos(angle) - V1[2]*sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        if teta:
-          value = N1[2]*cos(a) + V1[2]*sin(a)
-        else:
-          value = N1[2]*cos(angle) - V1[2]*sin(angle)
-        matK[row, pos] += value
-
-
-  def _projY(self, matK, beamStart, beamEnd, row, col, ddls0, code0):
-    #print("_projY")
-    pos0 = col
-    # barre démarrant sur le noeud
-    RotuleElast = self.RotuleElast
-    appuis_inclines = self.AppuiIncline
-    for name in beamStart:
-      angle = self.Angles[name]
-      barre = self.Barres[name]
-      noeud0, noeud1, relax0, relax1 = barre
-      N0, N1 = self._getN1(name, noeud0, noeud1)
-      V0, V1 = self._getV1(name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
-
-      pos1 = self.get_ddl_pos(noeud1)
-      code1 = self.codeDDL[noeud1][0]
-      ddls1 = self.CODES_DDL[code1]
-
-      # modification valeurs pour le noeud 0
-      pos = pos0
-      rot_elast = False
-      if noeud0 in RotuleElast:
-        barre_elast = RotuleElast[noeud0][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls0[0] == 1:
-        value = V0[0]*math.cos(angle) + N0[0]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[1] == 1:
-        value = V0[1]*math.cos(angle) + N0[1]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[2] == 1:
-        if not rot_elast:
-          value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
-        matK[row, pos] += value
-
-      # modification valeurs pour le noeud 1
-      if pos1 == None: continue
-      pos = pos1
-      rot_elast = False
-      if noeud1 in RotuleElast:
-        barre_elast = RotuleElast[noeud1][0]
-        if name == barre_elast:
-          rot_elast = True
-
-      if ddls1[0] == 1:
-        value = V1[0]*math.cos(angle) + N1[0]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[1] == 1:
-        value = V1[1]*math.cos(angle) + N1[1]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[2] == 1:
-        if not rot_elast:
-          value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
-        matK[row, pos] += value
-
-
-    # barre arrivant sur le noeud
-    for name in beamEnd:
-      angle = self.Angles[name]
-      barre = self.Barres[name]
-      noeud0, noeud1, relax0, relax1 = barre
-      N0, N1 = self._getN2(name, noeud0, noeud1)
-      V0, V1 = self._getV2(name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
-
-      pos0 = self.get_ddl_pos(noeud0) # revoir
-      pos1 = self.get_ddl_pos(noeud1)
-      code0 = self.codeDDL[noeud0][0]
-      ddls0 = self.CODES_DDL[code0]
-      code1 = self.codeDDL[noeud1][0]
-      ddls1 = self.CODES_DDL[code1]
-
-      # modification valeurs pour le noeud 0
-      pos = pos0
-      rot_elast = False
-      if noeud0 in RotuleElast:
-        barre_elast = RotuleElast[noeud0][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls0[0] == 1:
-        value = V0[0]*math.cos(angle) + N0[0]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[1] == 1:
-        value = V0[1]*math.cos(angle) + N0[1]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls0[2] == 1:
-        if not rot_elast:
-          value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        value = V0[2]*math.cos(angle) + N0[2]*math.sin(angle)
-        matK[row, pos] += value
-
-      # modification valeurs pour le noeud 1
-      if pos1 == None: continue
-      pos = pos1
-      rot_elast = False
-      if noeud1 in RotuleElast:
-        barre_elast = RotuleElast[noeud1][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls1[0] == 1:
-        value = V1[0]*math.cos(angle) + N1[0]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[1] == 1:
-        value = V1[1]*math.cos(angle) + N1[1]*math.sin(angle)
-        matK[row, pos] += value
-        pos += 1
-      if ddls1[2] == 1:
-        if not rot_elast:
-          value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
-          matK[row, pos] += value
-        pos += 1
-      if rot_elast:
-        value = V1[2]*math.cos(angle) + N1[2]*math.sin(angle)
-        matK[row, pos] += value
-
-
-
-  def _RotuleElasM(self, matK, noeud, content, row):
-    """On écrit que le moment Mij d'une barre dont l'extrémité est une rotule élastique doit être équivalent au moment élastique transmis
-    Attention il ne peut y avoir que 2 barres par noeuds
-    """
-    #print("_RotuleElasM", noeud)
-    RotuleElast = self.RotuleElast
-    bar_name = content[0]
-    kz = content[1]
-    appuis_inclines = self.AppuiIncline
-    barre = self.Barres[bar_name]
-    noeud0, noeud1, relax0, relax1 = barre
-    pos0 = self.get_ddl_pos(noeud0)
-    code0 = self.codeDDL[noeud0][0]
-    ddls0 = self.CODES_DDL[code0]
-    pos1 = self.get_ddl_pos(noeud1)
-    code1 = self.codeDDL[noeud1][0]
-    ddls1 = self.CODES_DDL[code1]
-    # noeud avec rotule élastique à l'origine de la barre
-    if noeud == noeud0:
-      rz = False
-      if noeud1 in RotuleElast and RotuleElast[noeud1][0] == bar_name:
-        rz = True
-      # calcul de Mij
-      M0, M1 = self._getM1(bar_name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
-      # modification matrice
-      if ddls0[0] == 1:
-        matK[row, pos0] += M0[0]
-        pos0 += 1
-      if ddls0[1] == 1:
-        matK[row, pos0] += M0[1]
-        pos0 += 1
-      if ddls0[2] == 1:
-        matK[row, pos0] += -kz
-        pos0 += 1
-      if ddls0[3] == 1:
-        matK[row, pos0] += kz+M0[2]
-    
-      if ddls1[0] == 1:
-        matK[row, pos1] += M1[0]
-        pos1 += 1
-      if ddls1[1] == 1:
-        matK[row, pos1] += M1[1]
-        pos1 += 1
-      if ddls1[2] == 1 and rz:
-        pos1 += 1
-      if ddls1[2] == 1 or rz:
-        matK[row, pos1] += M1[2]
-    else:
-    # noeud avec rotule élastique à l'extrémité de la barre
-      M0, M1 = self._getM2(bar_name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
-      if ddls0[0] == 1:
-        matK[row, pos0] += M0[0]
-        pos0 += 1
-      if ddls0[1] == 1:
-        matK[row, pos0] += M0[1]
-        pos0 += 1
-      rz = False
-      if noeud0 in RotuleElast and RotuleElast[noeud0][0] == bar_name:
-        rz = True
-      if ddls0[2] == 1 and rz:
-        pos0 += 1
-      if ddls0[2] == 1 or rz:
-        matK[row, pos0] += M0[2]
-    
-      if ddls1[0] == 1:
-        matK[row, pos1] += M1[0]
-        pos1 += 1
-      if ddls1[1] == 1:
-        matK[row, pos1] += M1[1]
-        pos1 += 1
-      if ddls1[2] == 1:
-        matK[row, pos1] += -kz
-        pos1 += 1
-      if ddls1[3] == 1:
-        matK[row, pos1] += kz + M1[2]
-
-
-  def _projM(self, matK, beamStart, beamEnd, row, col, ddls0, code0):
-    #print("_projM")
-    pos0 = col
-    RotuleElast = self.RotuleElast
-    appuis_inclines = self.AppuiIncline
-    # barre démarrant sur le noeud
-    for name in beamStart:
-      angle = self.Angles[name]
-      barre = self.Barres[name]
-      noeud0, noeud1, relax0, relax1 = barre
-      M0, M1 = self._getM1(name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
-
-      pos1 = self.get_ddl_pos(noeud1)
-      code1 = self.codeDDL[noeud1][0]
-      ddls1 = self.CODES_DDL[code1]
-
-      # modification valeurs pour le noeud 0
-      pos = pos0
-      rot_elast = False
-      if noeud0 in RotuleElast:
-        barre_elast = RotuleElast[noeud0][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls0[0] == 1:
-        matK[row, pos] += M0[0]
-        pos += 1
-      if ddls0[1] == 1:
-        matK[row, pos] += M0[1]
-        pos += 1
-      if ddls0[2] == 1:
-        if not rot_elast:
-          matK[row, pos] += M0[2]
-        pos += 1
-      if rot_elast:
-        matK[row, pos] += M0[2]
-
-
-      # modification valeurs pour le noeud 1
-      pos = pos1
-      rot_elast = False
-      if noeud1 in RotuleElast:
-        barre_elast = RotuleElast[noeud1][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls1[0] == 1:
-        matK[row, pos] += M1[0]
-        pos += 1
-      if ddls1[1] == 1:
-        matK[row, pos] += M1[1]
-        pos += 1
-      if ddls1[2] == 1:
-        if not rot_elast:
-          matK[row, pos] += M1[2]
-        pos += 1
-      if rot_elast:
-        matK[row, pos] += M1[2]
-
-    # barre arrivant sur le noeud
-    for name in beamEnd:
-      angle = self.Angles[name]
-      barre = self.Barres[name]
-      noeud0, noeud1, relax0, relax1 = barre
-      M0, M1 = self._getM2(name, noeud0, noeud1, relax0, relax1)
-      self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
-
-      pos0 = self.get_ddl_pos(noeud0) # revoir
-      pos1 = self.get_ddl_pos(noeud1)
-      code0 = self.codeDDL[noeud0][0]
-      ddls0 = self.CODES_DDL[code0]
-      code1 = self.codeDDL[noeud1][0]
-      ddls1 = self.CODES_DDL[code1]
-
-      # modification valeurs pour le noeud 0
-      pos = pos0
-      rot_elast = False
-      if noeud0 in RotuleElast:
-        barre_elast = RotuleElast[noeud0][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls0[0] == 1:
-        matK[row, pos] += M0[0]
-        pos += 1
-      if ddls0[1] == 1:
-        matK[row, pos] += M0[1]
-        pos += 1
-      if ddls0[2] == 1:
-        if not rot_elast:
-          matK[row, pos] += M0[2]
-        pos += 1
-      if rot_elast:
-        matK[row, pos] += M0[2]
-
-      #for i in range(3):
-      #  if ddls0[i] == 0: continue
-      #  if i == 2 and rot_elast:
-      #    pos += 1
-      #  matK[row, pos] += M0[i]
-      #  pos += 1
-
-      # modification valeurs pour le noeud 1
-      pos = pos1
-      rot_elast = False
-      if noeud1 in RotuleElast:
-        barre_elast = RotuleElast[noeud1][0]
-        if name == barre_elast:
-          rot_elast = True
-      if ddls1[0] == 1:
-        matK[row, pos] += M1[0]
-        pos += 1
-      if ddls1[1] == 1:
-        matK[row, pos] += M1[1]
-        pos += 1
-      if ddls1[2] == 1:
-        if not rot_elast:
-          matK[row, pos] += M1[2]
-        pos += 1
-      if rot_elast:
-        matK[row, pos] += M1[2]
-
-
-  def MatriceK(self):
-    """Crée la liste des ddl et la matrice de rigidité"""
-    #print("MatriceK")
-    self._MakeLiDDL()
-    size = self.n_ddl
-    if size == 0:
-      return numpy.empty(0)
-    # initialisation rigidity matrix
-    matK = numpy.zeros((size, size))
-    noeuds = self.Nodes
-    codeDDL = self.codeDDL
-    raideurs = self.RaideurAppui
-    RotuleElast = self.RotuleElast
-    for noeud0 in noeuds:
-      code0 = codeDDL[noeud0][0]
-      ddls0 = self.CODES_DDL[code0]
-      pos0 = self.get_ddl_pos(noeud0)
-      if pos0 == None:
-        continue
-
-      row = pos0
-      # appuis élastiques
-      if noeud0 in raideurs:
-        self._add_elastic(matK, row, ddls0, raideurs[noeud0])
-
-      beamStart, beamEnd = self.BarByNode[noeud0]
-      if ddls0[0] == 1: 
-        # projection suivant X
-        self._projX(matK, noeud0, beamStart, beamEnd, row, ddls0, code0)
-        row += 1
-      if ddls0[1] == 1: 
-        # projection suivant Y
-        self._projY(matK, beamStart, beamEnd, row, pos0, ddls0, code0)
-        row += 1
-      if ddls0[2] == 1: 
-        # équation du moment
-        self._projM(matK, beamStart, beamEnd, row, pos0, ddls0, code0)
-        row += 1
-      content = RotuleElast.get(noeud0)
-      if not content is None:
-        # équation supplémentaire de compatibilité au niveau de la rotule
-        self._RotuleElasM(matK, noeud0, content, row)
-        row += 1
-    #print("matK", matK)
-    return matK
-
-
-  def _add_elastic(self, matK, row, ddl, values):
-    """Ajoute les valeurs des raideurs sur les appuis élastiques
-    Si rotule élastique, on prend la valeur de gauche (wG) comme rotation
-    pour l'appui élastique"""
-    #print("add_elastic", row, ddl, values)
-    col = row
-    for i, val in enumerate(ddl):
-      if val == 0 or i == 3:
-        continue
-      matK[col, col] += values[i]
-      col += 1
-
-# ----------------- Tools -----------------------------
 
 class StructureDrawing(Structure):
   def __init__(self, xml):
     self.XML = xml
     self.errors = []
     self.width, self.height = 0, 0
+    self.status = -1
     try:
       self.GetXMLElem()
     except:
-      self.status = -1
       return
-    self.status = 1
+    #self.status = 1
     # -1: xml error, 0: erreur lecture, 1: données valide mais erreur inversion
     # 2: inversion matrice rigidité ok
     try:
       self._ExtractData()
     except XMLError:
-      self.status = -1
+      #self.status = -1
+      pass
 
 class StructureFile(Structure):
 
@@ -3626,10 +3615,9 @@ class CasCharge(object):
     self.name = name
     self.struct = struct
     # status :: 0: warning lecture, 1: lecture ok 
-    # r_status :: 0 : erreur inversion, 1 : valide
     self.status = -1
-    self.r_status = -1
     self._SetChar(name, xmlnode)
+    self._GetNodeDeps(name, xmlnode)
 
   def Solve(self, struct, MatK, MatChar):
     """Résolution du système pour un cas donné"""
@@ -3639,29 +3627,66 @@ class CasCharge(object):
     #det1 = linalg.det(matK) 
     #print("trace1 = ", trace1,"det = ", det1)
     #print("rapport = ", det1/trace1, det1/trace1**n)
-    #InvMatK = self.struct.InvMatK
     if MatK is None:
       struct.PrintError("Les valeurs des degrés de liberté sont excessives dans \"%s\".\nVérifier le degré d'Hyperstaticité de la structure ou que\nle chargement n'est pas trop grand par rapport à la rigidité des barres." % self.name, 0)
-      self.r_status = 0
+      self.status = 0
       return 
     if MatK.size == 0:
       self._DdlEmpty()
       self._GetRotationIso()
-      self.r_status = 1
+      self.status = 1
     else:
       resu = numpy.dot(MatK, MatChar)
       resu = resu.transpose()[0]
       self.GetDDLValues(resu)
-      self.r_status = 1
 
     if self._TestInfiniteDep() == False:
       struct.PrintError("Les valeurs des degrés de liberté sont excessives dans \"%s\".\nVérifier le degré d'Hyperstaticité de la structure ou que\nle chargement n'est pas trop grand par rapport à la rigidité des barres." % self.name, 0)
-      self.r_status = 0
+      self.status = 0
       self._DdlEmpty()
       return 
     self._GetEndBarSol()
     self.GetReac()
 
+  def _GetNodeDeps(self, name, xml):
+    """Récupère les déplacements d'appui suivant X et Y.
+    Si appui incliné, le déplacement est unique et correspond au déplacement perpendiculaire à l'appui."""
+    struct = self.struct
+    self.NodeDeps = {}
+    for i, case in enumerate(xml):
+      case_name = case.get("id")
+      #print("case_name=", case_name)
+      if not case_name == name:
+        continue
+      lichar = case.iter('depi')
+      for char in lichar:
+        noeud = char.get("id")
+        if not noeud:
+          continue
+        value = char.get("d")
+        if value is None:
+          continue
+        value = value.split(",")
+        if len(value) == 2:
+          try:
+            depX = float(value[0])*self.struct.units['L']
+          except ValueError:
+            struct.PrintError("Erreur pour l'affaissement d'appui du noeud (X): %s" % noeud, 1)
+            depX = 0.
+          try:
+            depY = float(value[1])*self.struct.units['L']
+          except ValueError:
+            struct.PrintError("Erreur pour l'affaissement d'appui du noeud (Y): %s" % noeud, 1)
+            depY = 0.
+        else:
+          try:
+            depY = float(value[0])*self.struct.units['L']
+            depX = 0.
+          except ValueError:
+            struct.PrintError("Erreur pour l'affaissement d'appui du noeud: %s" % noeud, 0)
+            continue
+        self.NodeDeps[noeud] = [depX, depY, 0]
+    #print("NodeDeps=",  self.NodeDeps)
 
 # homogénéiser les codes des messages d'erreur
   def _SetChar(self, name, xmlnode):
@@ -4618,8 +4643,9 @@ class CasCharge(object):
     """Transforme les affaissements d'appuis en chargement nodal
     retourne une liste [FX,FY,M] ou [FX,FY,M,M'] si rotule élastique"""
     #print("_GetAff2Char", noeud)
+    KS = self.KS
     struct = self.struct
-    affs = struct.NodeDeps
+    affs = self.NodeDeps
     appuis_inclines = struct.AppuiIncline
     rot_elast = struct.RotuleElast
     if noeud in rot_elast:
@@ -4647,12 +4673,12 @@ class CasCharge(object):
         teta = appuis_inclines[noeud]
 
       if noeud0 == noeud:
-        M0, M1 = struct._getM1(barre_elast, noeud0, noeud1, relax0, relax1)
-        self.struct.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+        M0, M1 = KS._getM1(barre_elast, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
         charAff[3] = -M0[0]*dep0[0]-M0[1]*dep0[1]-M1[0]*dep1[0]-M1[1]*dep1[1]
       else:
-        M0, M1 = struct._getM2(barre_elast, noeud0, noeud1, relax0, relax1)
-        self.struct.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+        M0, M1 = KS._getM2(barre_elast, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
         charAff[3] = -M0[0]*dep0[0]-M0[1]*dep0[1]-M1[0]*dep1[0]-M1[1]*dep1[1]
 
     # termes pour équation proj X, Equation proj Y, Moment
@@ -4662,28 +4688,28 @@ class CasCharge(object):
       angle = struct.Angles[barre]
       if noeud0 in affs:
         dep = affs[noeud0]
-        N0, N1 = struct._getN2(barre, noeud0, noeud1)
-        V0, V1 = struct._getV2(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+        N0, N1 = KS._getN2(barre, noeud0, noeud1)
+        V0, V1 = KS._getV2(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
         N = N0[0]*dep[0]+N0[1]*dep[1]
         V = V0[0]*dep[0]+V0[1]*dep[1]
         char[0] += -N*math.cos(angle) + V*math.sin(angle)
         char[1] += -N*math.sin(angle) - V*math.cos(angle)
-        M0, M1 = struct._getM2(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+        M0, M1 = KS._getM2(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
         char[2] += -M0[0]*dep[0]
         char[2] += -M0[1]*dep[1]
       if noeud1 in affs:
         dep = affs[noeud1]
-        N0, N1 = struct._getN2(barre, noeud0, noeud1)
-        V0, V1 = struct._getV2(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+        N0, N1 = KS._getN2(barre, noeud0, noeud1)
+        V0, V1 = KS._getV2(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
         N = N1[0]*dep[0]+N1[1]*dep[1]
         V = V1[0]*dep[0]+V1[1]*dep[1]
         char[0] += -N*math.cos(angle) + V*math.sin(angle)
         char[1] += -N*math.sin(angle) - V*math.cos(angle)
-        M0, M1 = struct._getM2(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+        M0, M1 = KS._getM2(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
         char[2] += -M1[0]*dep[0]
         char[2] += -M1[1]*dep[1]
       charAff = SumList(char, charAff)
@@ -4694,28 +4720,28 @@ class CasCharge(object):
       angle = struct.Angles[barre]
       if noeud0 in affs:
         dep = affs[noeud0]
-        N0, N1 = struct._getN1(barre, noeud0, noeud1)
-        V0, V1 = struct._getV1(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+        N0, N1 = KS._getN1(barre, noeud0, noeud1)
+        V0, V1 = KS._getV1(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
         N = N0[0]*dep[0]+N0[1]*dep[1]
         V = V0[0]*dep[0]+V0[1]*dep[1]
         char[0] += -N*math.cos(angle) + V*math.sin(angle)
         char[1] += -N*math.sin(angle) - V*math.cos(angle)
-        M0, M1 = struct._getM1(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+        M0, M1 = KS._getM1(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
         char[2] += -M0[0]*dep[0]
         char[2] += -M0[1]*dep[1]
       if noeud1 in affs:
         dep = affs[noeud1]
-        N0, N1 = struct._getN1(barre, noeud0, noeud1)
-        V0, V1 = struct._getV1(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
+        N0, N1 = KS._getN1(barre, noeud0, noeud1)
+        V0, V1 = KS._getV1(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis(appuis_inclines, noeud0, noeud1, N0, N1, V0, V1)
         N = N1[0]*dep[0]+N1[1]*dep[1]
         V = V1[0]*dep[0]+V1[1]*dep[1]
         char[0] += -N*math.cos(angle) + V*math.sin(angle)
         char[1] += -N*math.sin(angle) - V*math.cos(angle)
-        M0, M1 = struct._getM1(barre, noeud0, noeud1, relax0, relax1)
-        struct.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
+        M0, M1 = KS._getM1(barre, noeud0, noeud1, relax0, relax1)
+        KS.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
         char[2] += -M1[0]*dep[0]
         char[2] += -M1[1]*dep[1]
       charAff = SumList(char, charAff)
@@ -4725,20 +4751,20 @@ class CasCharge(object):
   def GetMatChar(self):
     """Crée la matrice de chargement"""
     struct = self.struct
-    size = struct.n_ddl
-    if struct.n_ddl == 0:
+    size = self.KS.n_ddl
+    if size == 0:
       return numpy.zeros((size, 1))
     mat = numpy.zeros((size, 1))
-    codeDDL = struct.codeDDL
+    codeDDL = self.KS.codeDDL
     appuis_inclines = struct.AppuiIncline
     rot_elast = struct.RotuleElast
     # on crée la liste des ddl à partir du dico des ddl
-    n_aff = len(struct.NodeDeps)
+    n_aff = len(self.KS.NodeDeps)
     nodes = struct.Nodes
     for noeud in struct.Nodes:
       code0 = codeDDL[noeud][0]
-      ddls = struct.CODES_DDL[code0]
-      pos0 = struct.get_ddl_pos(noeud)
+      ddls = self.KS.CODES_DDL[code0]
+      pos0 = self.KS.get_ddl_pos(noeud)
       if pos0 == None:
         continue
       chars = [0.]*3
@@ -4828,15 +4854,16 @@ class CasCharge(object):
   def GetDDLValues(self, liResu):
     #print("ResuDdlParNoeud", liResu)
     struct = self.struct
+    KS = self.KS
     appuis_inclines = struct.AppuiIncline
     j, n = 0, 0
     resu = {}
-    codeDDL = struct.codeDDL
+    codeDDL = KS.codeDDL
     nodes = struct.Nodes
     for noeud in nodes:
       li = []
       ind = codeDDL[noeud][0]
-      ddls = struct.CODES_DDL[ind]
+      ddls = KS.CODES_DDL[ind]
       for ddl in ddls:
         if ddl == 0:
           li.append(0.)
@@ -4854,18 +4881,16 @@ class CasCharge(object):
       ddlValue[noeud][0] = val*math.cos(teta)
 
     # on ajoute les déplacements d'appuis imposés
-    for noeud in struct.NodeDeps:
-      aff = struct.NodeDeps[noeud]
+    for noeud in self.NodeDeps:
+      aff = self.NodeDeps[noeud]
       if noeud in appuis_inclines:
         teta = appuis_inclines[noeud]
         depY = aff[1]
         aff = [-depY*math.sin(teta), depY*math.cos(teta), 0]
-
       for i, val in enumerate(aff):
         ddlValue[noeud][i] += val
     self.ddlValue = ddlValue
-
-    #print("resu", ddlValue)
+    #print("ddlValue=", ddlValue)
     rot_plast = self._GetRotationPlast()
     self._GetRotationIso()
 
@@ -5226,7 +5251,7 @@ class CasCharge(object):
     """calcul des réactions d'appuis"""
     struct = self.struct
     liaisons = struct.Liaisons
-    deps = struct.NodeDeps
+    deps = self.NodeDeps
     effort = {}
     # recherche des sollicitations pour les barres raccordées au noeud
     for noeud in struct.UserNodes:
@@ -5267,7 +5292,7 @@ class CasCharge(object):
     try:
       reactions = self.Reactions
     except AttributeError:
-      return None, None
+      return 0, 0
     for elem in reactions.values():
       if 'Fx' in elem and abs(elem["Fx"]) > maxF:
         maxF = abs(elem["Fx"])
@@ -5328,7 +5353,6 @@ class CombiChar(CasCharge):
     self._CharsCoef = coefs
     self.Chars = Chars
     self.GetCombiChar()
-    self.r_status = 0
 
   def Solve2(self):
     self._GetEndBarSolC()
@@ -5554,6 +5578,7 @@ class R_Structure(object):
   """Résolution de la structure chargée"""
 
   def __init__(self, struct):
+    #print("init R_Structure")
     self.struct = struct
     self.errors = struct.errors
     self.status = struct.status
@@ -5566,11 +5591,22 @@ class R_Structure(object):
     self.n_cases = len(self.Cases)
     self.n_chars = self.n_cases + len(self.CombiCoef)
     self.XMLNodes = self.struct.XMLNodes
+    if self.status == 0:
+      return
+    xmlnode = list(self.struct.XMLNodes["char"].iter('case'))
+
+    KS1 = KStructure(self.struct) # calcul sans affaissement d'appui
     self.Chars = {}
     #self.char_error = [] # erreur en relation avec un chargement, provisoire
     for cas in self.Cases:
-      xmlnodes = self.struct.XMLNodes["char"].iter('case')
-      Char = CasCharge(cas, xmlnodes, self.struct)
+      #xmlnodes = self.struct.XMLNodes["char"].iter('case')
+      Char = CasCharge(cas, xmlnode, self.struct)
+      if Char.NodeDeps:
+        KS = KStructure(self.struct, Char.NodeDeps)
+      else:
+        KS = KS1
+      Char.KS = KS
+      Char.status = KS.status
       self.Chars[cas] = Char
     self.bar_values = {}
     self.SolveCombis()
@@ -5580,11 +5616,17 @@ class R_Structure(object):
     n_cases = len(self.Cases)
     if n < n_cases:
       name = self.Cases[n]
-      return self.Chars[name]
+      try:
+        return self.Chars[name]
+      except AttributeError:
+        return None
     n = n - n_cases
     Combis = list(self.Combis.keys())
     Combis.sort()
-    name = Combis[n]
+    try:
+      name = Combis[n]
+    except IndexError:
+      return None
     return self.Combis[name]
 
   def GetCharNameByNumber(self, n):
@@ -5651,7 +5693,12 @@ class R_Structure(object):
   def SolveCombis(self):
     """Lance les calculs necessaires aux calculs des cas et combinaisons"""
     self.Combis = {}
-    if not self.struct.status == 2:
+    status  = 1
+    for i, cas in enumerate(self.Cases):
+      Char = self.Chars[cas]
+      if Char.status == 0:
+        break
+    if status == 0:
       return
     self.char_error = []
     self.SolveAllCases()
@@ -5664,6 +5711,7 @@ class R_Structure(object):
     self.SolveAllCombis()
 
   def SolveAllCombis(self):
+    """Résout les combinaison à partir des chargements résolus"""
     #print('SolveAllCombis')
     struct = self.struct
     assym_b = struct.assym_b
@@ -5675,20 +5723,22 @@ class R_Structure(object):
       else:
         Combi.Solve2()
       self.Combis[combi] = Combi
-      Combi.r_status = 1
+      Combi.status = 1
 
   def GetFirstCombi(self):
     """Retourne la première combinaison"""
     return self.Combis[list(self.Combis.keys())[0]]
 
   def SolveAssymCombi(self, Combi, assym_b):
-    """Resoud le cas de charge en cas de présence de barres traction/compression seule"""
+    """Résout le cas de charge en cas de présence de barres traction/compression seule"""
     #print("SolveAssymCombi")
     struct = self.struct
     Backup_S = copy.deepcopy(struct.Sections)
     Sections = struct.Sections
     removed_b = []
-    InvMatK = struct.InvMatK
+    Combi.NodeDeps = {}
+    Combi.KS = KStructure(self.struct) # calcul sans affaissement d'appui
+    InvMatK = Combi.KS.InvMatK
     MatChar = Combi.GetMatChar()
     Combi.Solve(struct, InvMatK, MatChar)
     for b in assym_b:
@@ -5701,21 +5751,22 @@ class R_Structure(object):
         Sections[b] = 0.
     for b in removed_b:
       struct.status = 1
-      matK = struct.GetInvMatK()
-      Combi.Solve(struct, matK, MatChar)
+      Combi.KS = KStructure(self.struct) # calcul sans affaissement d'appui
+      InvMatK = Combi.KS.InvMatK
+      Combi.Solve(struct, InvMatK, MatChar)
     struct.Sections = copy.deepcopy(Backup_S) # on remet les sections droites
 
 
 
   def SolveAssym(self, assym_b):
-    """Resoud le cas de charge en cas de présence de barres traction/compression seule"""
+    """Résout le cas de charge en cas de présence de barres traction/compression seule"""
     struct = self.struct
     Backup_S = copy.deepcopy(struct.Sections)
     for i, cas in enumerate(self.Cases):
       Sections = struct.Sections
       removed_b = []
       Char = self.Chars[cas]
-      InvMatK = struct.InvMatK
+      InvMatK = Char.KS.InvMatK
       MatChar = Char.GetMatChar()
       Char.Solve(struct, InvMatK, MatChar)
       for b in assym_b:
@@ -5729,8 +5780,8 @@ class R_Structure(object):
 # revoir ici
       #for b in removed_b:
       struct.status = 1
-      matK = struct.GetInvMatK()
-      Char.Solve(struct, matK, MatChar)
+      InvMatK = Char.KS.GetInvMatK()
+      Char.Solve(struct, InvMatK, MatChar)
 
       struct.Sections = copy.deepcopy(Backup_S) # on remet les sections droites
 
@@ -5742,11 +5793,10 @@ class R_Structure(object):
     else:
       for i, cas in enumerate(self.Cases):
         Char = self.Chars[cas]
+        if Char.status == 0 : continue
         MatChar = Char.GetMatChar()
-        #print(MatChar)
-        InvMatK = struct.InvMatK
-        Char.Solve(struct, InvMatK, MatChar)
-        if Char.r_status == 0 or Char.status == 0:
+        Char.Solve(struct, Char.KS.InvMatK, MatChar)
+        if Char.status == 0:
           self.char_error.append(i)
     #print(self.char_error)
 
@@ -5767,7 +5817,7 @@ class R_Structure(object):
     maxiN, maxiV, maxiM, maxiU = 0, 0, 0, 0
     for cas in self.Cases:
       Char = self.Chars[cas]
-      if Char.r_status == 0:
+      if Char.status == 0:
         continue
       cas = Char.name
       max0 = self._SearchDepMax(Char)
@@ -5929,7 +5979,8 @@ class R_Structure(object):
 
   def GetNodeDepMax(self, Char):
     """Retourne le maximum des déplacements nodaux u et v"""
-    max = 0
+    max0 = 0
+    if Char.status == 0: return max0
     ddl = Char.ddlValue
     if ddl == {}:
       return 0
@@ -5937,16 +5988,17 @@ class R_Structure(object):
       dep = ddl[noeud]
       depX = abs(dep[0])
       depY = abs(dep[1])
-      if depX > max:
-        max = depX
-      if depY > max:
-        max = depY
-    return max
+      if depX > max0:
+        max0 = depX
+      if depY > max0:
+        max0 = depY
+    return max0
 
 
   def GetMidBarDefoMax(self, Char, relaxs):
     """Retourne le maximum des déplacements aux milieux des barres, perpendiculairement aux barres"""
-    max = 0
+    max0 = 0
+    if Char.status == 0: return max0
     ddl = Char.ddlValue
     struct = self.struct
     if ddl == {}:
@@ -5968,9 +6020,9 @@ class R_Structure(object):
       # milieu de la barre
       for u in pos:
         defo = abs(self.DefoPoint(Char, barre, l, angle, u*l, ddl, relaxs, chars))
-        if defo > max:
-          max = defo
-    return max
+        if defo > max0:
+          max0 = defo
+    return max0
 
   def _SearchNMax(self, Combi): 
     #print("_SearchNMax", Combi.name)
@@ -6107,7 +6159,7 @@ class R_Structure(object):
 
   def GetSigma(self, Char, u, barre):
     """Retourne les contraintes normales en fibres supérieure et inférieure"""
-    if Char.r_status == -1 or Char.r_status == 0:
+    if Char.status == -1 or Char.status == 0:
       return None, None
     struct = self.struct
     charQu = Char.charBarQu.get(barre, {})
@@ -7315,13 +7367,13 @@ class R_Structure(object):
       return None
     
     ap, bp, cp = 3*a, 2*b, c
-    delta = (bp**2-4*ap*cp)**0.5
+    delta = bp**2-4*ap*cp
     if delta < 0:
       return  None
-    r1 = (-bp+delta)/2/ap
+    r1 = (-bp+delta**0.5)/2/ap
     if r1 > x0 and r1 < x1:
       return  r1, f(a, b, c, d, r1)
-    r1 = (-bp-delta)/2/ap
+    r1 = (-bp-delta**0.5)/2/ap
     if r1 > x0 and r1 < x1:
       return  r1, f(a, b, c, d, r1)
     #print(r1, x0, x1)
@@ -7414,14 +7466,14 @@ class R_Structure(object):
     a = (h31-h21)/(x3-x2) # y = ax2+bx+c
     b = h21 - a*(x2+x1)
     c = y1 - a*x1*x1 - b*x1
-    delta = (b**2-4*a*c)**0.5
+    delta = b**2-4*a*c
     if delta < 0:
       return  (a, b, c), None
-# que se passe t il si deux racines? XXX
-    r1 = (-b+delta)/2/a
+# que se passe t il si deux racines dans l'intervale x1, x3? XXX
+    r1 = (-b+delta**0.5)/2/a
     if r1 > x1 and r1 < x3:
       return  (a, b, c), r1
-    r1 = (-b-delta)/2/a
+    r1 = (-b-delta**0.5)/2/a
     if r1 > x1 and r1 < x3:
       return  (a, b, c), r1
     return  (a, b, c), None
@@ -7436,13 +7488,33 @@ class EmptyRdm(R_Structure):
   class_counter = 0
 
   def __init__(self, xml, name=None):
-    struct = StructureDrawing(xml)
+    #print("init EmptyRdm")
+    self.struct = StructureDrawing(xml)
+    self.status = self.struct.status
     self.UP = classPrefs.UserPrefs()
-    super(EmptyRdm, self).__init__(struct)
-
-    #self.XMLNodes = None
+    #super(EmptyRdm, self).__init__(struct)
     EmptyRdm.class_counter += 1
-    self.status = 0 # pour les boutons
+    self.conv = self.GetConv()
+    self.Cases = self.GetCasCharge()
+    self.CombiCoef = self.GetCombi()
+    self.n_cases = len(self.Cases)
+    self.n_chars = self.n_cases + len(self.CombiCoef)
+    self.XMLNodes = self.struct.XMLNodes
+    #if self.status == 0:
+    #  return
+    xmlnode = list(self.struct.XMLNodes["char"].iter('case'))
+
+    KS = EmptyKStructure(self.struct)
+    self.Chars = {}
+    for cas in self.Cases:
+      Char = CasCharge(cas, xmlnode, self.struct)
+      Char.KS = KS
+      self.Chars[cas] = Char
+    self.bar_values = {}
+
+
+
+
     self.errors = [("Etude non enregistrée", 0)]
     if name is None:
       self.SetStructName()
@@ -7562,7 +7634,7 @@ class Moving_Structure(R_Structure):
         u += pas
         self.Char.ini(x)
         MatChar = self.Char.GetMatChar()
-        self.Char.Solve(struct, struct.InvMatK, MatChar)
+        self.Char.Solve(struct, Char.KS.InvMatK, MatChar)
         for barre in barres:
           pos = 0
           for j in range(0, m_inter[barre]+1):
@@ -7631,10 +7703,10 @@ class Influ_Structure(R_Structure):
     #print("ValueLigneInf", x_char, elem_resu, barre_char)
     # x_resu: point de calcul sur elem_resu en %
     struct = self.struct
-    InvMatK = struct.InvMatK
     Char = self.Char
     Char.ini(barre_char, x_char)
-    if InvMatK == []:
+    InvMatK = Char.KS.InvMatK
+    if InvMatK.size == 0:
       Char._DdlEmpty()
     else:
       matChar = Char.GetMatChar()
@@ -7794,6 +7866,8 @@ class InfluCasCharge(CasCharge):
     """Initialise le chargement pour la ligne d'influence"""
     self.charBarFp = {}
     self.charBarFp[barre_char] = {x_char: [0., -1., 0.]}
+    self.NodeDeps = {}
+    self.KS = KStructure(self.struct) # calcul sans affaissement d'appui
 
 class MovingCasCharge(CasCharge):
 

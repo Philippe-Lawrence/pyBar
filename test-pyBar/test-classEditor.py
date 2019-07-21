@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -21,7 +21,6 @@ import classRdm
 import Const
 import classProfilManager
 import classPrefs
-import classCMenu
 import function
 from time import sleep
 from xml.etree.ElementTree import fromstring, ElementTree, tostring
@@ -229,7 +228,50 @@ string2 = """<?xml version='1.0' encoding='UTF-8'?>
   </draw>
 </data>
 """
-
+string="""<data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.3">
+  <elem id="node">
+    <node d="0,0" id="N1" liaison="1" />
+    <node d="2,0" id="N2" liaison="2" />
+    <arc d="0.2" id="N4" name="Parabole4" pos_on_curve="false" r="0" liaison='0' />
+    <arc d="0.8" id="N5" name="Parabole4" pos_on_curve="false" r="0" />
+  </elem>
+  <elem id="barre">
+    <parabola end="N2" f="0.5" id="Parabole4" r0="0" r1="0" start="N1" />
+    <mbarre end="N5" id="B2" r0="0" r1="0" start="N4" />
+  </elem>
+  <elem id="geo">
+    <barre h="" id="Parabole4" igz="1" profil="" s="1" v="" />
+    <barre h="" id="*" igz="1" profil="" s="1" v="" />
+  </elem>
+  <elem id="material">
+    <barre alpha="" id="*" mv="1" young="200000000000" />
+  </elem>
+  <elem id="char">
+    <case id="radiale">
+      <pp d="false" />
+     <depi id="N2" d="0,-0.01" />
+      <arc id="Parabole4" proj="2" qu="%0.0,1.0,1.0,-1.0,1.0,-1.0" />
+    </case>
+    <case id="lineique">
+      <arc id="Parabole4" proj="0" qu="%0.0,1.0,0.0,1.0,0.0,1.0" />
+    </case>
+    <case id="projetee">
+      <arc id="Parabole4" proj="1" qu="%0.0,1.0,0.0,-1.0,0.0,-1.0" />
+    </case>
+  </elem>
+  <elem id="combinaison" />
+  <elem id="prefs">
+    <unit d="1.0" id="E" />
+    <unit d="1000.0" id="F" />
+    <unit d="1.0" id="C" />
+    <unit d="1.0" id="I" />
+    <unit d="1.0" id="L" />
+    <unit d="1.0" id="M" />
+    <unit d="1.0" id="S" />
+    <const name="g" value="9.81" />
+    <const name="conv" value="1" />
+  </elem>
+</data>"""
 
 class fakeEmptyRdm(classRdm.EmptyRdm) :
   """Programme de calcul RDM"""
@@ -259,11 +301,20 @@ class fakeRdm(classRdm.R_Structure):
 
     self.Cases = self.GetCasCharge()
     self.CombiCoef = self.GetCombi()
-    xmlnode = self.struct.XMLNodes["char"].getiterator('case')
+    xmlnode = list(self.struct.XMLNodes["char"])
+    KS1 = classRdm.KStructure(self.struct) # calcul sans affaissement d'appui
     self.Chars = {}
+    #self.char_error = [] # erreur en relation avec un chargement, provisoire
     for cas in self.Cases:
+      #xmlnodes = self.struct.XMLNodes["char"].iter('case')
       Char = classRdm.CasCharge(cas, xmlnode, self.struct)
+      if Char.NodeDeps:
+        KS = classRdm.KStructure(self.struct, Char.NodeDeps)
+      else:
+        KS = KS1
+      Char.KS = KS
       self.Chars[cas] = Char
+
     self.SolveCombis()
 
 class fakeEmptyStudy(object):

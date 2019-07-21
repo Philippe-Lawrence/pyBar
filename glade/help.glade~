@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="window5">
+    <property name="default_width">500</property>
+    <property name="default_height">450</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="icon">logo.ico</property>
+    <signal name="delete_event" handler="on_w5_destroy"/>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
+        <property name="vscrollbar_policy">automatic</property>
+        <child>
+          <object class="GtkTextView" id="textview1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="wrap_mode">word</property>
+            <property name="justification">fill</property>
+            <property name="left_margin">10</property>
+            <property name="right_margin">10</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -20,7 +20,7 @@
 
 import os
 import sys
-from gi.repository import Pango, GObject, Gtk, Gdk
+from gi.repository import Pango, GObject, Gtk, Gdk, GLib
 
 import xml.etree.ElementTree as ET
 from function import *
@@ -34,6 +34,13 @@ import classSection
 import copy
 import file_tools
 import function
+
+screen = Gdk.Screen.get_default()
+css_provider = Gtk.CssProvider()
+css_provider.load_from_path('gtk-widgets.css')
+context = Gtk.StyleContext()
+context.add_provider_for_screen(screen, css_provider,
+                                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 def Rotation(a, x, y):
   """x, y étant les coordonnées d'un point dans un repère 1, retourne les coordonnées du point dans le repère 2 obtenu par rotation d'angle a"""
@@ -54,7 +61,6 @@ class MyError(Exception):
 class DataEntry(Gtk.Entry):
 
   def __init__(self):
-    #GObject.GObject.__init__(self)
     super(DataEntry,self).__init__()
 
   def get_text(self):
@@ -72,481 +78,6 @@ class MyEntry(Gtk.Entry):
     text = self.get_text()
     n_chars = len(text)
     self.set_width_chars(n_chars+1)
-
-
-
-class CMenuNode1(object):
-  """Classe pour les menus contextuels d'un noeud d'arc"""
-  ui = '''<ui>
-         <popup>
-          <!--   <menuitem action="0" />
-             <menuitem action="1" />
-             <separator/> -->
-             <menuitem action="Rel" name="rel"/>
-             <menuitem action="Clear" name="clear"/>
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, node, event):
-    ui =CMenuNode1.ui
-    arcs = Main.data_editor.get_arcs()
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    if node.arc in arcs:
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup', '0', '0', Gtk.UIManagerItemType.MENUITEM, False)
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup', '1', '1', Gtk.UIManagerItemType.MENUITEM, False)
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup/clear', 'separator',
-		None, Gtk.UIManagerItemType.SEPARATOR, False)
-      actiongroup.add_radio_actions([
-	('0', None, 'Position relative à la corde', None, None, 0),
-	('1', None, 'Position relative à l\'arc', None, None, 1)
-		], node.pos_on_curve, node.update_type_coor, (Main, node))
-    uimanager.insert_action_group(actiongroup)
-
-    actiongroup.add_toggle_actions([
-	('Rel', None, 'Relaxer', None, None, node._update_relax, node.rel)
-    ], Main)
-
-    actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, node.on_delete)
-    ], (Main, node.id))
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-class CMenuNode2(object):
-  """Classe pour les menus contextuels d'un noeud simple"""
-  ui = '''<ui>
-         <popup>
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, node, event):
-    ui =CMenuNode2.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, node.on_delete)
-    ], (Main, node.id))
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-class CMenuS(object):
-  """Classe pour les menus contextuels d'une section"""
-
-  ui = '''<ui>
-         <popup>
-             <menuitem action="Name"/>
-             <menuitem action="H"/>
-             <menuitem action="V"/>
-             <menuitem action="Add1"/>
-             <menuitem action="Add2"/>
-             <menuitem action="Open"/>
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, S, widget, event):
-    ui =CMenuS.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    try:
-      S.profil
-      tag0 = 1
-    except AttributeError:
-      tag0 = 0 
-    try:
-      S.h
-      tag1 = 1
-    except AttributeError:
-      tag1 = 0 
-    try:
-      S.v
-      tag2 = 1
-    except AttributeError:
-      tag2 = 0 
-    actiongroup.add_toggle_actions([
-	('Name', None, 'Définir le nom', None, None, S.on_add_name, tag0),
-	('H', None, 'Définir la hauteur', None, None, S.on_add_h, tag1),
-	('V', None, 'Définir la distance v', None, None, S.on_add_v, tag2)
-    ], Main)
-    action = Gtk.Action("Add1", "Affecter le profilé", None, None)
-    if hasattr(Main, 'profil_manager'):
-      action.set_sensitive(True)
-    else:
-      action.set_sensitive(False)
-    action.connect('activate', S.on_set_profil, Main)
-    actiongroup.add_action(action)
-    action = Gtk.Action("Add2", "Affecter la section", None, None)
-    if hasattr(Main, 'section_manager'):
-      action.set_sensitive(True)
-    else:
-      action.set_sensitive(False)
-    action.connect('activate', S.on_set_section, Main)
-    actiongroup.add_action(action)
-
-
-    action = Gtk.Action("Open", "Ouvrir l'éditeur", None, None)
-    if hasattr(S, "file"): 
-      action.connect('activate', Main.on_open_section_ed, S.file)
-      action.set_sensitive(True)
-    else:
-      action.set_sensitive(False)
-    actiongroup.add_action(action)
-
-    action = Gtk.Action("Clear", "Supprimer", None, None)
-    action.set_sensitive(False)
-    action.connect('activate', S.on_delete, Main, S.id)
-    actiongroup.add_action(action)
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-
-class CMenuMat(object):
-  """Classe pour les menus contextuels d'un matériau"""
-
-  ui = '''<ui>
-         <popup>
-             <menuitem action="Name"/>
-             <menuitem action="MV"/>
-             <menuitem action="Alpha"/>
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, Mat, event):
-    ui =CMenuMat.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    try:
-      Mat.profil
-      tag0 = 1
-    except AttributeError:
-      tag0 = 0 
-    try:
-      Mat.m
-      tag1 = 1
-    except AttributeError:
-      tag1 = 0 
-    try:
-      Mat.a
-      tag2 = 1
-    except AttributeError:
-      tag2 = 0 
-    actiongroup.add_toggle_actions([
-	('Name', None, 'Définir le nom', None, None, Mat.on_add_name, tag0),
-	('MV', None, 'Définir la masse volumique', None, None, Mat.on_add_mv, tag1),
-	('Alpha', None, 'Définir le coefficient de dilatation', None, None, Mat.on_add_alpha, tag2)
-    ], Main)
-    actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, Mat.on_delete)
-    ], (Main, Mat.id))
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-
-
-class CMenuEmpty(object):
-  """Classe pour les menus contextuels en dehors d'un item"""
-  ui = '''<ui>
-         <popup>
-         <!--    <menuitem action="Copy" />
-             <menuitem action="Paste" /> -->
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, event):
-    ui =CMenuEmpty.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    n_page = Main.book.get_current_page()
-    is_sensitive = False
-
-    if n_page == 1:
-      nodes = Main.data_editor.nodes
-      for node in nodes:
-        checkbutton = node.hbox.get_children()[1]
-        if checkbutton.get_active():
-          is_sensitive = True
-          break
-      f = Main.remove_nodes
-    elif n_page == 2:
-      nodes = Main.data_editor.barres
-      for node in nodes:
-        checkbutton = node.hbox.get_children()[1]
-        if checkbutton.get_active():
-          is_sensitive = True
-          break
-      f = Main.remove_barres
-    elif n_page == 4:
-      nodes = Main.data_editor.sections
-      for node in nodes:
-        checkbutton = node.hbox.get_children()[0]
-        if checkbutton.get_active():
-          is_sensitive = True
-          break
-      f = Main.remove_sections
-    elif n_page == 5:
-      nodes = Main.data_editor.materials
-      for node in nodes:
-        checkbutton = node.hbox.get_children()[0]
-        if checkbutton.get_active():
-          is_sensitive = True
-          break
-      f = Main.remove_materials
-    elif n_page == 6:
-      case_page = Main.charbook.get_current_page()
-      page = Main.charbook.get_nth_page(case_page)
-      vbox = page.get_children()[0].get_children()[0]
-      childs = vbox.get_children()
-      case = Main.data_editor.cases[case_page]
-      for i, hbox in enumerate(childs):
-        char = case.chars[i]
-        if char.get_is_selected():
-          is_sensitive = True
-          break
-      f = Main.remove_chars
-    elif n_page == 7:
-      nodes = Main.data_editor.combis
-      for node in nodes:
-        checkbutton = node.hbox.get_children()[0]
-        if checkbutton.get_active():
-          is_sensitive = True
-          break
-      f = Main.remove_combinaisons
-
-    action = Gtk.Action("Clear", "Supprimer", None, None)
-    actiongroup.add_action(action)
-    action.set_sensitive(is_sensitive)
-    action.connect('activate', f)
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-
-class CMenuNode3(object):
-  """Classe pour les menus contextuels d'une barre simple"""
-  ui = '''<ui>
-         <popup>
-             <menuitem action="R0"/>
-             <menuitem action="R1"/>
-             <menuitem action="Clear" name="clear"/>
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, b, event):
-    try:
-      b.k0
-      k0 = 1
-    except AttributeError:
-      k0 = 0
-    try:
-      b.k1
-      k1 = 1
-    except AttributeError:
-      k1 = 0
-    ui =CMenuNode3.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    actiongroup.add_toggle_actions([
-	('R0', None, 'Relaxer l\'origine', None, None, b._update_relax, b.R0),
-	('R1', None, 'Relaxer l\'extrémité', None, None, b._update_relax, b.R1),
-	#('k0', None, 'Rotation élastique de l\'origine', None, None, b.update_k_widget, k0),
-	#('k1', None, 'Rotation élastique de l\'extrémité', None, None, b.update_k_widget, k1)
-    ], Main)
-    if isinstance(b, Barre):
-      if b.R0 and b.R1:
-        is_sensitive = True
-      else:
-        is_sensitive = False
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup', 'k0', 'k0', Gtk.UIManagerItemType.MENUITEM, False)
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup', 'k1', 'k1', Gtk.UIManagerItemType.MENUITEM, False)
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup', 'N+', 'N+', Gtk.UIManagerItemType.MENUITEM, False)
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup', 'N-', 'N-', Gtk.UIManagerItemType.MENUITEM, False)
-      id = uimanager.new_merge_id()
-      uimanager.add_ui(id, '/popup/clear', 'separator',
-		None, Gtk.UIManagerItemType.SEPARATOR, False)
-      action = Gtk.ToggleAction("N+", 'Traction seulement', None, None)
-      action.set_sensitive(is_sensitive)
-      action.set_active(b.mode == 1 and True or False)
-      action.connect('activate', b.set_one_way, Main, "N+")
-      actiongroup.add_action(action)
-      action = Gtk.ToggleAction("N-", 'Compression seulement', None, None)
-      action.set_sensitive(is_sensitive)
-      action.set_active(b.mode == -1 and True or False)
-      action.connect('activate', b.set_one_way, Main, "N-")
-      actiongroup.add_action(action)
-
-      action = Gtk.ToggleAction("k0", 'Rotation élastique de l\'origine', None, None)
-      action.set_active(k0 == 1 and True or False)
-      action.connect('activate', b.update_k_widget, Main)
-      actiongroup.add_action(action)
-      action = Gtk.ToggleAction("k1", 'Rotation élastique de l\'extrémité', None, None)
-      action.set_active(k1 == 1 and True or False)
-      action.connect('activate', b.update_k_widget, Main)
-      actiongroup.add_action(action)
-    actiongroup.add_actions([
-	('Clear', None, 'Supprimer', None, None, b.on_delete)
-    ], (Main, b.id))
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.cm_popup = True
-    Main.popup_menu.popup_at_pointer(event)
-    Main.popup_menu.connect("event", Main.popup_event)
-
-
-
-
-class CMenuChar1(object):
-  """Classe pour les menus contextuels du chargement sur un arc"""
-  ui = '''<ui>
-         <popup>
-             <menuitem action="0" />
-             <menuitem action="1" />
-             <menuitem action="2" />
-             <menuitem action="Unif" />
-             <menuitem action="Start" />
-             <menuitem action="End" />
-             <menuitem action="Copy" />
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, char, event):
-    ui =CMenuChar1.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-    actiongroup.add_radio_actions([
-	('0', None, 'Linéique', None, None, 0),
-	('1', None, 'Projetée', None, None, 1),
-	('2', None, 'Radiale', None, None, 2)
-		], char.proj, char.update_arc_type, Main)
-
-    uimanager.insert_action_group(actiongroup)
-    start = not char.d['x1'] == 0.
-    end = not char.d['x2'] == 1.
-    actiongroup.add_toggle_actions([
-	('Unif', None, 'Charge uniforme', None, None, char.update_unif, char.unif),
-	('Start', None, 'Ajouter un point de départ', None, None, char.add_start_point, start),
-	('End', None, 'Ajouter un point de fin', None, None, char.add_end_point, end)
-    ], Main)
-    actiongroup.add_actions([
-	('Copy', None, 'Copier', None, None, char.copy_char),
-	('Clear', None, 'Supprimer', None, None, char.on_delete),
-    ], Main)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-
-class CMenuChar2(object):
-  """Classe pour les menus contextuels du chargement sur une barre"""
-  ui = '''<ui>
-         <popup>
-             <menuitem action="Copy" />
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, Char, event):
-    ui =CMenuChar2.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-
-    page = Main.charbook.get_nth_page(Main.charbook.get_current_page())   
-    n_page = Main.charbook.get_current_page()
-    vbox = page.get_children()[0].get_children()[0]
-    childs = vbox.get_children()
-    case = Main.data_editor.cases[n_page]
-    is_sensitive = True
-    #for i, hbox in enumerate(childs):
-    #  char = case.chars[i]
-    #  if char.get_is_selected():
-    #    is_sensitive = True
-    #    break
-
-    action = Gtk.Action("Copy", "Copier", None, None)
-    actiongroup.add_action(action)
-    action.set_sensitive(is_sensitive)
-    action.connect('activate', Char.copy_char, Main)
-    action = Gtk.Action("Clear", "Supprimer", None, None)
-    actiongroup.add_action(action)
-    action.set_sensitive(is_sensitive)
-    action.connect('activate', Char.on_delete, Main)
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
-class CMenuCombi(object):
-  """Classe pour les menus contextuels d'une combinaison"""
-  ui = '''<ui>
-         <popup>
-             <menuitem action="Duplicate" />
-             <menuitem action="Clear" />
-         </popup>
-         </ui>'''
-
-  def __init__(self, Main, Combi, event):
-    ui =CMenuCombi.ui
-    uimanager = Gtk.UIManager()
-    uimanager.add_ui_from_string(ui)
-    accelgroup = uimanager.get_accel_group()
-    Main.w2.add_accel_group(accelgroup)
-    actiongroup = Gtk.ActionGroup('settings')
-
-    is_sensitive = True
-    #for i, hbox in enumerate(childs):
-    #  char = case.chars[i]
-    #  if char.get_is_selected():
-    #    is_sensitive = True
-    #    break
-
-    action = Gtk.Action("Duplicate", "Dupliquer", None, None)
-    actiongroup.add_action(action)
-    action.set_sensitive(is_sensitive)
-    action.connect('activate', Combi.on_duplicate, (Main, Combi))
-    action = Gtk.Action("Clear", "Supprimer", None, None)
-    actiongroup.add_action(action)
-    action.set_sensitive(is_sensitive)
-    action.connect('activate', Combi.on_delete, (Main, Combi.id))
-    uimanager.insert_action_group(actiongroup)
-    Main.popup_menu = uimanager.get_widget('/popup')
-    Main.popup_menu.popup_at_pointer(event)
-
 
 class AbstractNode(object):
   """Classe abstraite pour les noeuds"""
@@ -604,8 +135,8 @@ class AbstractNode(object):
       break
     Main._fill_preceding_node(i)
     # modification de la page contenant des combobox avec des noeuds
-    Main._remove_liaison2(are_deleted)
-    Main._remove_nodes_combo(old_nodes, are_deleted)
+    Main.remove_liaison2(are_deleted)
+    Main.remove_nodes_combos(old_nodes, are_deleted)
     Main._remove_combo_char_items(are_deleted)
 
 class ArcNode(AbstractNode):
@@ -641,6 +172,8 @@ class ArcNode(AbstractNode):
       self.rel = False
     self.x = None
     self.y = None
+    if 'liaison' in data :
+      self.l = data['liaison']
 
   def set_content_from_widgets(self, relative_node=None):
     """Modifie les attributs à partir de la lecture des widgets pour un noeud d'arc"""
@@ -672,12 +205,6 @@ class ArcNode(AbstractNode):
       node.set("liaison", ",".join(l))
     except AttributeError:
       pass
-    try:
-      dep = self.dep
-      dep = ",".join(dep)
-      node.set("dep", dep)
-    except AttributeError:
-      pass
     return node
 
   def update_arc_name(self, barres, old_name, new_name):
@@ -695,7 +222,7 @@ class ArcNode(AbstractNode):
 
   def set_coors_label(self, data_editor):
     """Raffraichit l'affichage des coordonnées dans une ligne de noeud d'arc"""
-    #print "set_coors_label", self.name
+    #print ("set_coors_label", self.name, self.arc)
     widgets = self.hbox.get_children()
     label = widgets[5]
     try:
@@ -725,7 +252,7 @@ class ArcNode(AbstractNode):
   def add_hbox(self, Main):
     """Crée la hbox pour un noeud d'arc pour la page des noeuds"""
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     image = Gtk.Image()
     file1 = self.get_img_file()
     image.set_from_file("glade/%s" % file1)
@@ -772,7 +299,7 @@ class ArcNode(AbstractNode):
     if self.rel == 0:
       return "noeud2_0.png"
     return "noeud2_1.png"
-      
+
   def _update_relax(self, widget, Main):
     """Modification de la relaxation du noeud d'arc"""
     self.rel = widget.get_active()
@@ -809,7 +336,7 @@ class ArcNode(AbstractNode):
     self.set_coors_label(Main.data_editor)
     Main.set_is_changed(True)
 
-  def update_node_name(self, widget, Main, id): 
+  def update_node_name(self, widget, Main, id):
     """Mise à jour du nom d'un noeud pour un noeud d'arc"""
     new = widget.get_text()
     old = self.name
@@ -828,7 +355,7 @@ class ArcNode(AbstractNode):
       n += 1
     next_nodes = nodes[n+1:]
     self._update_preceding_node(next_nodes, old, new)
-    # modification de la page des barres
+    # modification des combos des noeuds dans toutes mes pages
     Main._update_node_list(self, n)
     # actualise les instances Nodes
     self.set_content_from_widgets()
@@ -864,15 +391,28 @@ class ArcNode(AbstractNode):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuNode1(Main, self, event)
+        arcs = Main.data_editor.get_arcs()
+        menu1 = Gtk.Menu()
+        if self.arc in arcs:
+          pass
+        menuitem1 = Gtk.CheckMenuItem(label="Relaxer", active=self.rel)
+        menuitem1.connect("activate", self._update_relax, Main)
+        menu1.append(menuitem1)
+        menuitem2 = Gtk.MenuItem(label="Supprimer")
+        menuitem2.connect("activate", self.on_delete, (Main, self.id))
+        menu1.append(menuitem2)
+        menuitem3 = Gtk.CheckMenuItem(label="Position relative à la corde", active=self.pos_on_curve)
+        menuitem3.connect("activate", self.update_type_coor, Main)
+        menu1.append(menuitem3)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
         return True # bloque la propagation du signal
     return False
 
-  def update_type_coor(self, action, current, *args):
+  def update_type_coor(self, widget, Main):
     """Choisi le type de coordonnées (par rapport à la corde ou sur l'arc)"""
-    #print "update_type_coor", action.get_current_value()
-    Main, node = args
-    node.pos_on_curve = action.get_current_value()
+    #print ("update_type_coor")
+    self.pos_on_curve = widget.get_active()
     Main.set_is_changed(True)
 
 
@@ -886,7 +426,8 @@ class Node(AbstractNode):
     self.arc = None # None si sans objet (segment), False si pas encore défini
     self.x = None
     self.y = None
-    self.set_content_from_string(content)
+    self.set_content_from_string(content['d'])
+    if 'liaison' in content : self.l = content['liaison']
 
   def set_content_from_string(self, content):
     """Crée les attribut de l'instance en fonction de la chaine de caractère"""
@@ -940,13 +481,6 @@ class Node(AbstractNode):
       node.set("liaison", ",".join(l))
     except AttributeError:
       pass
-    try:
-      dep = self.dep
-      dep = ",".join(dep)
-      node.set("dep", dep)
-    except AttributeError:
-      pass
-    return node
 
   def update_preceding_combo(self, old, new):
     """Actualise le combo des noeuds précédents pour un noeud simple"""
@@ -1022,7 +556,7 @@ class Node(AbstractNode):
     unit_L = function.return_key(units['L'], Main.data_editor.unit_conv['L'])
     #unit_F = function.return_key(units['F'], Main.data_editor.unit_conv['F'])
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     image = Gtk.Image()
     image.set_from_file("glade/noeud1.png")
     hbox.pack_start(image, False, False, 0)
@@ -1033,7 +567,7 @@ class Node(AbstractNode):
     entry.set_width_chars(10)
     entry.set_text(node_name)
     entry.set_tooltip_text("Nom")
-    entry.connect("changed", self.update_node_name, Main)
+    entry.connect("changed", self.update_node_name, Main, self.id)
     hbox.pack_start(entry, False, False, 0)
     combobox = Gtk.ComboBoxText()
     combobox.set_size_request(60, 30)
@@ -1064,7 +598,7 @@ class Node(AbstractNode):
     id3 = entry.connect('changed', Main.update_nodes, self)
     hbox.pack_start(entry, False, False, 0)
     self.ids = (id1, id2, id3)
-    button = Gtk.CheckButton("Polaire")
+    button = Gtk.CheckButton(label="Polaire")
     if self.pol:
       button.set_active(True)
     button.connect('clicked', self.update_node2, Main)
@@ -1107,7 +641,7 @@ class Node(AbstractNode):
     Main.set_is_changed(True)
 
 
-  def update_node_name(self, widget, Main, id): 
+  def update_node_name(self, widget, Main, id):
     """Mise à jour du nom d'un noeud pour un noeud simple"""
     new = widget.get_text()
     old = self.name
@@ -1117,8 +651,6 @@ class Node(AbstractNode):
     Main.set_is_changed(True)
     # actualise les combobox des noeuds précédents
     nodes = Main.data_editor.nodes
-    #node_names = Main.data_editor.get_all_nodes()
-    #n = node_names.index(new)
     n = 0
     for node in nodes:
       if node.id == id:
@@ -1146,9 +678,15 @@ class Node(AbstractNode):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuNode2(Main, self, event)
+        menu1 = Gtk.Menu()
+        menuitem1 = Gtk.MenuItem(label="Supprimer")
+        menuitem1.connect("activate", self.on_delete, (Main, self.id))
+        menu1.append(menuitem1)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
         return True # bloque la propagation du signal
     return False
+
 
 class AbstractBar(object):
   """Classe abstraite pour les barres"""
@@ -1173,7 +711,8 @@ class AbstractBar(object):
 
   def set_content(self, data_editor):
     """Calcule les attributs de l'objet"""
-    print("set_content pas défini pour la classe")
+    #print("set_content pas défini pour la classe")
+    pass
 
   def set_empty_nodes(self, data_editor):
     """calcul des coordonnées des points qui dépendent de l'arc"""
@@ -1221,6 +760,17 @@ class AbstractBar(object):
     """Attribut la longueur de l'élément"""
     self.l = None
 
+  def _update_relaxs(self, widget, Main):
+    if self.R0 == 1 and self.R1 == 1:
+      self.R0, self.R1 = 0, 0
+    elif self.R0 == 0 and self.R1 == 0:
+      self.R0, self.R1 = 1, 1
+    file1 = self.get_img_file()
+    widgets = self.hbox.get_children()
+    image = widgets[0]
+    image.set_from_file("glade/%s" % file1)
+    Main.set_is_changed(True)
+
   def _update_relax(self, widget, Main):
     """Modification de la relaxation d'extremité d'une barre"""
     r = widget.get_name()
@@ -1235,14 +785,16 @@ class AbstractBar(object):
     Main.set_is_changed(True)
 
   def _update_combo(self, combo, Main, n):
-    """Actualisation d'un combo de noeud pour la page des barres"""
+    """Actualisation d'un combo de noeud"""
     node_name = combo.get_active_text()
     if node_name is None:
       node_name = ''
     self.set_node(Main.data_editor, node_name, n)
+    self.set_content(Main.data_editor)
     self.set_length(Main.data_editor.nodes)
     Main.set_is_changed(True)
     Main.update_bars_combo(self.name)
+
 
   def update_numeric_L(self, factor):
     pass
@@ -1265,6 +817,7 @@ class AbstractBar(object):
       b = barres[i]
       b.update_combos(Main)
     Main.set_is_changed()
+
 
   def on_move_down(self, widget, barre, Main):
     """Déplace la ligne vers le bas"""
@@ -1289,8 +842,74 @@ class AbstractBar(object):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuNode3(Main, self, event)
-        return True # bloque la propagation du signal dans les widgets parent
+        try:
+          self.k0
+          k0 = 1
+        except AttributeError:
+         k0 = 0
+        try:
+          self.k1
+          k1 = 1
+        except AttributeError:
+          k1 = 0
+        menu1 = Gtk.Menu()
+        menuitem = Gtk.CheckMenuItem(label="Relaxer l\'origine", active=self.R0)
+        menuitem.set_name('R0')
+        menuitem.connect("activate", self._update_relax, Main)
+        menu1.append(menuitem)
+        menuitem = Gtk.CheckMenuItem(label="Relaxer l\'extrémité", active=self.R1)
+        menuitem.set_name('R1')
+        menuitem.connect("activate", self._update_relax, Main)
+        menu1.append(menuitem)
+        if isinstance(self, Barre):
+          if self.R0==1 and self.R1==1:
+            menuitem = Gtk.MenuItem(label="Supprimer les relaxations")
+            #menuitem.set_name('R1')
+            menuitem.connect("activate", self._update_relaxs, Main)
+            menu1.append(menuitem)
+            is_sensitive = True
+          elif self.R0==0 and self.R1==0:
+            menuitem = Gtk.MenuItem(label="Tout relaxer")
+            #menuitem.set_name('R1')
+            menuitem.connect("activate", self._update_relaxs, Main)
+            menu1.append(menuitem)
+            is_sensitive = False
+          else:
+            is_sensitive = False
+          if self.mode == 0:
+            active1 = 0
+            active2 = 0
+          elif self.mode == 1:
+            active1 = 1
+            active2 = 0
+          elif self.mode == -1:
+            active1 = 0
+            active2 = 1
+          menuitem3 = Gtk.CheckMenuItem(label="Traction seulement", active=active1)
+          menuitem3.set_sensitive(is_sensitive)
+          menuitem3.connect("activate", self.set_one_way, Main, "N+")
+          menu1.append(menuitem3)
+          menuitem4 = Gtk.CheckMenuItem(label="Compression seulement", active=active2)
+          menuitem4.set_sensitive(is_sensitive)
+          menuitem4.connect("activate", self.set_one_way, Main, "N-")
+          menu1.append(menuitem4)
+
+        menuitem5 = Gtk.CheckMenuItem(label="Rotation élastique de l\'origine", active=(k0 == 1 and True or False))
+        menuitem5.set_name('k0')
+        menuitem5.connect("activate", self.update_k_widget, Main)
+        menu1.append(menuitem5)
+        menuitem6 = Gtk.CheckMenuItem(label="Rotation élastique de l\'extrémité", active=(k1 == 1 and True or False))
+        menuitem6.set_name('k1')
+        menuitem6.connect("activate", self.update_k_widget, Main)
+        menu1.append(menuitem6)
+
+        menuitem7 = Gtk.MenuItem(label="Supprimer")
+        menuitem7.connect("activate", self.on_delete, (Main, self.id))
+        menu1.append(menuitem7)
+
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
+        return True # bloque la propagation du signal
     return False
 
   def on_delete(self, widget, args):
@@ -1464,7 +1083,7 @@ class Arc(AbstractBar):
     c = self.c
     N0, N1 = self.N0, self.N1
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=6)
     image = Gtk.Image()
     file1 = self.get_img_file()
     image.set_from_file("glade/%s" % file1)
@@ -1496,16 +1115,15 @@ class Arc(AbstractBar):
     function.fill_elem_combo(combobox, nodes, c)
     combobox.connect('changed', self._update_combo, Main, 2)
     hbox.pack_start(combobox, False, False, 0)
-    up_b = Gtk.Button()
+    up_b = Gtk.Button.new_from_icon_name('go-up', Gtk.IconSize.MENU)
+    up_b.set_relief(Gtk.ReliefStyle.NONE)
     up_b.connect('clicked', self.on_move_up, self, Main)
-    function.add_icon_to_button(up_b, Gtk.STOCK_GO_UP)
     hbox.pack_start(up_b, False, False, 0)
-    down_b = Gtk.Button()
+    down_b = Gtk.Button.new_from_icon_name('go-down', Gtk.IconSize.MENU)
+    down_b.set_relief(Gtk.ReliefStyle.NONE)
     down_b.connect('clicked', self.on_move_down, self, Main)
-    function.add_icon_to_button(down_b, Gtk.STOCK_GO_DOWN)
     hbox.pack_start(down_b, False, False, 0)
     self.hbox = hbox
-    #vbox.pack_start(hbox, False, False, 0)
     eventbox.add(hbox)
     eventbox.show_all()
     eventbox.connect("event", self.onCMenu, Main)
@@ -1520,7 +1138,7 @@ class Arc(AbstractBar):
     if self.R1 == 0:
       return "arc10.png"
     return "arc11.png"
-      
+
 
   def update_combos(self, Main):
     """Remplit les combo des noeuds pour un arc"""
@@ -1624,21 +1242,26 @@ class Parabola(AbstractBar):
       self.f = float(self.f)
     except ValueError:
       self.f = 0
-    self.set_content(nodes)
+    self.set_content(data_editor)
     self.set_length(None)
     self.set_empty_nodes(data_editor)
 
   def set_length(self, nodes):
     """Attribut la longueur de l'élément d'une parabole"""
-    if self.c is None:
+    if self.c is None or self.c == 0:
       self.l = None
       #print("erreur dans  set_length")
       return
     f = abs(self.f)
+    if f == 0:
+      self.l = None
+      return
     k = (self.c**2+16*f)**0.5
     self.l = k/2+self.c**2/8/f*math.log((4*f+k)/self.c)
 
-  def set_content(self, nodes):
+  def set_content(self, data_editor):
+    #print("set_content parabole")
+    nodes = data_editor.nodes
     node_names = [val.name for val in nodes]
     try:
       N0 = nodes[node_names.index(self.N0)]
@@ -1670,7 +1293,7 @@ class Parabola(AbstractBar):
 
   def get_coors(self, data_editor, d):
     """Retourne les coordonnées du point appartenant à une parabole"""
-    #print "get_parabola_coors"
+    #print ("get_parabola_coors", self.N0, self.N1)
     factor_L = data_editor.unit_conv['L']
     nodes = data_editor.nodes
     try:
@@ -1689,6 +1312,7 @@ class Parabola(AbstractBar):
     if x0 is None:
       return None
     a, corde, f = self.a, self.c, self.f
+    #print(a, corde, f, d)
     if d is None or corde is None:
       return None
     u = d*corde
@@ -1720,7 +1344,7 @@ class Parabola(AbstractBar):
     f = self.f
     N0, N1 = self.N0, self.N1
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=6)
     image = Gtk.Image()
     file1 = self.get_img_file()
     image.set_from_file("glade/%s" % file1)
@@ -1751,17 +1375,16 @@ class Parabola(AbstractBar):
     entry.set_text(str(f))
     entry.connect("changed", self._update_f, Main)
     hbox.pack_start(entry, False, False, 0)
-    up_b = Gtk.Button()
+    up_b = Gtk.Button.new_from_icon_name('go-up', Gtk.IconSize.MENU)
+    up_b.set_relief(Gtk.ReliefStyle.NONE)
     up_b.connect('clicked', self.on_move_up, self, Main)
-    function.add_icon_to_button(up_b, Gtk.STOCK_GO_UP)
     hbox.pack_start(up_b, False, False, 0)
-    down_b = Gtk.Button()
+    down_b = Gtk.Button.new_from_icon_name('go-down', Gtk.IconSize.MENU)
+    down_b.set_relief(Gtk.ReliefStyle.NONE)
     down_b.connect('clicked', self.on_move_down, self, Main)
-    function.add_icon_to_button(down_b, Gtk.STOCK_GO_DOWN)
     hbox.pack_start(down_b, False, False, 0)
 
     self.hbox = hbox
-    #vbox.pack_start(hbox, False, False, 0)
     eventbox.add(hbox)
     eventbox.show_all()
     eventbox.connect("event", self.onCMenu, Main)
@@ -1777,7 +1400,7 @@ class Parabola(AbstractBar):
     if self.R1 == 0:
       return "parabola10.png"
     return "parabola11.png"
-      
+
   def update_combos(self, Main):
     """Remplit les combo des noeuds pour une parabole"""
     nodes = self.get_nodes( Main.data_editor.barres, Main.data_editor.nodes)
@@ -1809,6 +1432,7 @@ class Parabola(AbstractBar):
       f = 0
     self.f = f
     Main.update_bars_combo(self.name)
+    self.set_content(Main.data_editor)
     Main.set_is_changed(True)
 
   def rename_node_combo(self, de, Node, n):
@@ -1829,7 +1453,7 @@ class Parabola(AbstractBar):
 
   def update_numeric_L(self, factor):
     self.f *= factor
-    widget = self.hbox.get_children()[7]
+    widget = self.hbox.get_children()[5]
     widget.set_text(str(self.f))
 
   def add_node_combo(self, ed, node, force=False):
@@ -1934,7 +1558,7 @@ class Barre(AbstractBar):
     N1 = self.N0
     N2 = self.N1
     eventbox = Gtk.EventBox()
-    self.hbox = hbox = Gtk.HBox(False, 10)
+    self.hbox = hbox = Gtk.HBox(homogeneous=False, spacing=6)
     image = Gtk.Image()
     file1 = self.get_img_file()
     image.set_from_file("glade/%s" % file1)
@@ -1946,10 +1570,8 @@ class Barre(AbstractBar):
     entry = Gtk.Entry()
     entry.set_tooltip_text('Nom')
     entry.set_text(barre_name)
+    entry.set_width_chars(10)
     entry.connect("changed", self.update_bar_name, Main)
-    #entry.set_width_chars(5)
-    #print(dir(entry))
-    #entry.size_allocate(10)
     hbox.pack_start(entry, False, False, 0)
     combobox = Gtk.ComboBoxText()
     combobox.set_size_request(90, 30)
@@ -1963,13 +1585,13 @@ class Barre(AbstractBar):
     function.fill_elem_combo(combobox, nodes, N2)
     combobox.connect('changed', self._update_combo, Main, 1)
     hbox.pack_start(combobox, False, False, 0)
-    up_b = Gtk.Button()
+    up_b = Gtk.Button.new_from_icon_name('go-up', Gtk.IconSize.MENU)
+    up_b.set_relief(Gtk.ReliefStyle.NONE)
     up_b.connect('clicked', self.on_move_up, self, Main)
-    function.add_icon_to_button(up_b, Gtk.STOCK_GO_UP)
     hbox.pack_start(up_b, False, False, 0)
-    down_b = Gtk.Button()
+    down_b = Gtk.Button.new_from_icon_name('go-down', Gtk.IconSize.MENU)
+    down_b.set_relief(Gtk.ReliefStyle.NONE)
     down_b.connect('clicked', self.on_move_down, self, Main)
-    function.add_icon_to_button(down_b, Gtk.STOCK_GO_DOWN)
     hbox.pack_start(down_b, False, False, 0)
 
     try:
@@ -1995,7 +1617,7 @@ class Barre(AbstractBar):
 
   def _get_k_box(self, Main, name):
     """Ajoute la zone de saisie pour les raideurs élastiques"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="%s=" % name)
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2050,8 +1672,6 @@ class Barre(AbstractBar):
 
   def update_tooltip_F(self, unit):
     """Actualise les tooltips pour les liaisons élastiques"""
-    #units = Main.data_editor.get_units()
-    #unit = function.return_key(units['F'], Main.data_editor.unit_conv['F'])
     if "k0" in self.boxes:
       string = "Raideur élastique en rotation de l'origine\n(%s / rad)" % unit
       self.boxes['k0'].get_children()[1].set_tooltip_markup(string)
@@ -2096,7 +1716,7 @@ class Barre(AbstractBar):
     if self.R1 == 0:
       return "segment10.png"
     return "segment11.png"
-      
+
 
   def update_combos(self, Main):
     """Remplit les combo des noeuds pour un segment"""
@@ -2260,7 +1880,7 @@ class MBarre(AbstractBar):
     barres = Main.data_editor.barres
     nodes = self.get_nodes( Main.data_editor.barres, Main.data_editor.nodes)
     N0, N1 = self.N0, self.N1
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=6)
     eventbox = Gtk.EventBox()
     image = Gtk.Image()
     file1 = self.get_img_file()
@@ -2287,13 +1907,13 @@ class MBarre(AbstractBar):
     function.fill_elem_combo(combobox, nodes, N1)
     combobox.connect('changed', self._update_combo, Main, 1)
     hbox.pack_start(combobox, False, False, 0)
-    up_b = Gtk.Button()
+    up_b = Gtk.Button.new_from_icon_name('go-up', Gtk.IconSize.MENU)
+    up_b.set_relief(Gtk.ReliefStyle.NONE)
     up_b.connect('clicked', self.on_move_up, self, Main)
-    function.add_icon_to_button(up_b, Gtk.STOCK_GO_UP)
     hbox.pack_start(up_b, False, False, 0)
-    down_b = Gtk.Button()
+    down_b = Gtk.Button.new_from_icon_name('go-down', Gtk.IconSize.MENU)
+    down_b.set_relief(Gtk.ReliefStyle.NONE)
     down_b.connect('clicked', self.on_move_down, self, Main)
-    function.add_icon_to_button(down_b, Gtk.STOCK_GO_DOWN)
     hbox.pack_start(down_b, False, False, 0)
     self.hbox = hbox
     eventbox.add(hbox)
@@ -2310,7 +1930,7 @@ class MBarre(AbstractBar):
     if self.R1 == 0:
       return "msegment10.png"
     return "msegment11.png"
-      
+
   def update_combos(self, Main):
     """Remplit les combo des noeuds pour une barre multiple"""
     nodes = self.get_nodes( Main.data_editor.barres, Main.data_editor.nodes)
@@ -2360,6 +1980,204 @@ class MBarre(AbstractBar):
     combo = self.hbox.get_children()[4]
     combo.append_text(node_name)
 
+class Liaison(object):
+  """Classe pour une liaiosn"""
+  class_counter = 0
+
+  def __init__(self, name, content):
+    self.id = Liaison.class_counter
+    Liaison.class_counter += 1
+    self.name = name
+    self.d = content
+
+  def get_nodes(self, nodes):
+    """Retourne la liste des noms des noeuds"""
+    mynodes = []
+    for node in nodes:
+      mynodes.append(node.name)
+    return mynodes
+
+  def add_hbox(self, Main):
+    """Retourne une nouvelle ligne (hbox) dans l'onglet des liaisons"""
+    name = self.name
+    content = self.d
+    try:
+      value = int(content[0])
+    except ValueError:
+      value = 0
+    if value == 2:
+      try:
+        angle = content[1]
+      except IndexError:
+        angle = "0"
+    elif value == 3:
+      try:
+        kx, ky, kz = content[1], content[2], content[3]
+      except IndexError:
+        kx, ky, kz = "0", "0", "0"
+    nodes = self.get_nodes(Main.data_editor.nodes)
+    hbox = Gtk.HBox(homogeneous=False, spacing=6)
+    eventbox = Gtk.EventBox()
+    button = Gtk.CheckButton()
+    button.set_tooltip_text('Sélectionner')
+    hbox.pack_start(button, False, False, 0)
+    combobox = Gtk.ComboBoxText()
+    combobox.set_size_request(90, 30)
+    function.fill_elem_combo(combobox, nodes, name)
+    combobox.connect('changed', self._changed_node_liaison, Main)
+    combobox.set_tooltip_text('Noeud')
+    hbox.pack_start(combobox, False, False, 0)
+
+    combobox = Gtk.ComboBoxText()
+    combobox.set_size_request(140, 30)
+    self._update_combo_liaison(combobox, value)
+    combobox.connect('changed', self._changed_liaison, Main)
+    combobox.show()
+    hbox.pack_start(combobox, False, False, 0)
+    if value == 2:
+      self._insert_incline(hbox, Main, angle)
+    elif value == 3:
+      self._insert_rigidity(hbox, Main, kx, ky, kz)
+    self.hbox = hbox
+    eventbox.add(hbox)
+    eventbox.show_all()
+    eventbox.connect("event", self.onCMenu, Main)
+    return eventbox
+
+  def set_content(self, ed):
+      """Actualise les attributs de l'objet liaison"""
+      hbox = self.hbox
+      node = ed.get_node(self.name)
+      combo = hbox.get_children()[2]
+      l = combo.get_active()
+      if l == 2:
+        a = hbox.get_children()[4].get_text()
+        if a == '': # a tester
+          li = ["2"]
+        else:
+          li = ["2", a.replace(",",".")]
+      elif l == 3:
+        kx = hbox.get_children()[4].get_text()
+        ky = hbox.get_children()[6].get_text()
+        kz = hbox.get_children()[8].get_text()
+        li = ["3", kx, ky, kz]
+      else:
+        li = [str(l)]
+      node.l = li
+
+ 
+  def _update_combo_liaison(self, combobox, number):
+    """Insère les éléments dans le combo des liaisons et rend actif l'élément d'index number"""
+    liaisons = ["Encastrement", "Pivot", "Appui simple", "Appui élastique"]
+    for elem in liaisons:
+      combobox.append_text(elem)
+    if not number == "":
+      combobox.set_active(number)
+
+  def _insert_incline(self, hbox, Main, angle=""):
+    """Ajoute la zone de saisie des appuis simples inclinés"""
+    label = Gtk.Label(label="Angle (deg) = ")
+    label.set_size_request(100, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+    entry = Gtk.Entry()
+    entry.set_width_chars(10)
+    entry.set_placeholder_text('Option')
+    if angle:
+      entry.set_text(angle)
+    entry.connect("changed", self._changed_angle, Main)
+    entry.show()
+    hbox.pack_start(entry, False, False, 0)
+
+  def _insert_rigidity(self, hbox, Main, kx="", ky="", kz=""):
+    """Ajoute la zone de saisie des rigidités"""
+    label = Gtk.Label(label="k<sub>x</sub> = ")
+    label.set_use_markup(True)
+    label.set_size_request(30, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+    entry = Gtk.Entry()
+    entry.set_width_chars(10)
+    entry.set_text(kx)
+    entry.connect("changed", self._changed_k, Main, 0)
+    entry.show()
+    hbox.pack_start(entry, False, False, 0)
+    label = Gtk.Label(label="k<sub>y</sub> = ")
+    label.set_use_markup(True)
+    label.set_size_request(30, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+    entry = Gtk.Entry()
+    entry.set_width_chars(10)
+    entry.set_text(ky)
+    entry.connect("changed", self._changed_k, Main, 1)
+    entry.show()
+    hbox.pack_start(entry, False, False, 0)
+    label = Gtk.Label(label="k<sub>z</sub> = ")
+    label.set_use_markup(True)
+    label.set_size_request(30, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+    entry = Gtk.Entry()
+    entry.set_width_chars(10)
+    entry.set_text(kz)
+    entry.connect("changed", self._changed_k, Main, 2)
+    entry.show()
+    hbox.pack_start(entry, False, False, 0)
+    units = Main.data_editor.get_units()
+    unit_F = function.return_key(units['F'], Main.data_editor.unit_conv['F'])
+    unit_L = function.return_key(units['L'], Main.data_editor.unit_conv['L'])
+    label = Gtk.Label(label="en %s / %s" % (unit_F, unit_L))
+    label.set_size_request(80, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+
+  def _changed_node_liaison(self, widget, Main):
+    """Evènement lié à un changement du noeud d'une liaison"""
+    self.name = widget.get_active_text()
+    self.set_content(Main.data_editor)
+    Main.set_is_changed(True)
+
+  def _changed_liaison(self, widget, Main):
+    """Evènement lié à un changement du combo des liaisons"""
+    #print "_changed_liaison"
+    hbox = widget.get_parent()
+    liaison = widget.get_active()
+    self._remove_option(hbox)
+    if liaison == 2:
+      self._insert_incline(hbox, Main)
+    elif liaison == 3:
+      self._insert_rigidity(hbox, Main)
+
+    self.set_content(Main.data_editor)
+    Main.set_is_changed(True)
+
+
+  def _remove_option(self, hbox):
+    """Supprime dans la zone de saisie les champs complémentaires """
+    for i, elem in enumerate(hbox):
+      if i > 2: hbox.remove(elem)
+
+  def _changed_angle(self, widget, Main):
+    """Evènement lié à un changement d'angle dans un appui de type appui simple"""
+    self.set_content(Main.data_editor)
+    Main.set_is_changed(True)
+
+  def _changed_k(self, widget, Main, i):
+    """Evènement lié à un changement de la raideur dans un appui de type appui élastique"""
+    self.set_content(Main.data_editor)
+    Main.set_is_changed(True)
+
+  def onCMenu(self, widget, event, Main):
+    """Affiche le menu contextuel d'une section"""
+    if event.type == Gdk.EventType.ENTER_NOTIFY:
+      Main.set_hover(widget)
+    elif event.type == Gdk.EventType.MOTION_NOTIFY:
+      return True
+    elif event.type == Gdk.EventType.BUTTON_PRESS:
+      if event.get_button()[1] == 3:
+        pass
+
 class Section(object):
   """Classe pour une section droite"""
   class_counter = 0
@@ -2397,19 +2215,10 @@ class Section(object):
     """Crée la hbox d'une section"""
     self.boxes = {}
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 5)
+    hbox = Gtk.HBox(homogeneous=False, spacing=5)
     button = Gtk.CheckButton()
     button.set_tooltip_text('Sélectionner')
     hbox.pack_start(button, False, False, 0)
-    #image = Gtk.Image()
-    #image.set_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON)
-    #button = Gtk.Button()
-    #button.add(image)
-    #button.set_relief(Gtk.ReliefStyle.NONE)
-    #button.set_focus_on_click(False)
-    #button.set_tooltip_text('Affecter la section')
-    #button.connect('clicked', self.set_profil, Main)
-    #hbox.pack_start(button, False, False, 0)
 
     label = Gtk.Label(label="Barre(s):")
     hbox.pack_start(label, False, False, 0)
@@ -2501,7 +2310,7 @@ class Section(object):
 
   def _get_profil_hbox(self, Main):
     """Retourne la hbox contenant le nom"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="Nom:")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2516,7 +2325,7 @@ class Section(object):
 
   def _get_s_hbox(self, Main):
     """Retourne la hbox relative à la section droite"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="S=")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2530,7 +2339,7 @@ class Section(object):
 
   def _get_i_hbox(self, Main):
     """Retourne la hbox relative au moment quadratique"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="I=")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2544,7 +2353,7 @@ class Section(object):
 
   def _get_h_hbox(self, Main):
     """Retourne la hbox relative à la hauteur"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="H=")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2558,7 +2367,7 @@ class Section(object):
 
   def _get_v_hbox(self, Main):
     """Retourne la hbox relative au moment quadratique"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="v=")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2598,8 +2407,10 @@ class Section(object):
       u = 100
     elif unit == "m":
       u = 1
+    elif unit == "mm":
+      u = 1000
     else:
-      u = 1 # XXX finir
+      u = 1
 
     hbox = self.hbox
     boxes = self.boxes
@@ -2735,9 +2546,62 @@ class Section(object):
     elif event.type == Gdk.EventType.MOTION_NOTIFY:
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
-      #print(dir(event))
       if event.get_button()[1] == 3:
-        CMenuS(Main, self, widget, event)
+        try:
+          self.profil
+          tag0 = 1
+        except AttributeError:
+          tag0 = 0
+        try:
+          self.h
+          tag1 = 1
+        except AttributeError:
+          tag1 = 0
+        try:
+          self.v
+          tag2 = 1
+        except AttributeError:
+          tag2 = 0
+        menu1 = Gtk.Menu()
+        menuitem1 = Gtk.CheckMenuItem(label="Définir le nom", active=tag0)
+        menuitem1.connect("activate", self.on_add_name, Main)
+        menu1.append(menuitem1)
+        menuitem2 = Gtk.CheckMenuItem(label="Définir la hauteur", active=tag1)
+        menuitem2.connect("activate", self.on_add_h, Main)
+        menu1.append(menuitem2)
+        menuitem3 = Gtk.CheckMenuItem(label="Définir la distance v", active=tag2)
+        menuitem3.connect("activate", self.on_add_v, Main)
+        menu1.append(menuitem3)
+        menuitem4 = Gtk.MenuItem(label="Affecter le profilé")
+        menuitem4.connect("activate", self.on_set_profil, Main)
+        if hasattr(Main, 'profil_manager'):
+          menuitem4.set_sensitive(True)
+        else:
+          menuitem4.set_sensitive(False)
+        menu1.append(menuitem4)
+        menuitem5 = Gtk.MenuItem(label="Affecter la section")
+        menuitem5.connect("activate", self.on_set_section, Main)
+        if hasattr(Main, 'section_manager'):
+          menuitem5.set_sensitive(True)
+        else:
+          menuitem5.set_sensitive(False)
+        menu1.append(menuitem5)
+
+        if hasattr(self, "file"):
+          menuitem6 = Gtk.MenuItem(label="Ouvrir l'éditeur")
+          menuitem6.connect("activate", Main.on_open_section_ed, self.file)
+          if hasattr(self, "file"):
+            menuitem6.set_sensitive(True)
+          else:
+            menuitem6.set_sensitive(False)
+          menu1.append(menuitem6)
+
+        menuitem7 = Gtk.MenuItem(label="Supprimer")
+        menuitem7.connect("activate", self.on_delete, (Main, self.id))
+        menuitem7.set_sensitive(False)
+        menu1.append(menuitem7)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
         return True # bloque la propagation du signal
     return False
     Main.set_is_changed()
@@ -2823,22 +2687,19 @@ class Material(object):
     """Crée la hbox d'un matériau"""
     self.boxes = {}
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 5)
+    hbox = Gtk.HBox(homogeneous=False, spacing=5)
     button = Gtk.CheckButton()
     button.set_tooltip_text('Sélectionner')
     hbox.pack_start(button, False, False, 0)
-    image = Gtk.Image()
-    image.set_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON)
-    button = Gtk.Button()
-    button.add(image)
+    button = Gtk.Button.new_from_icon_name('insert-object', Gtk.IconSize.MENU)
     button.set_relief(Gtk.ReliefStyle.NONE)
-    button.set_focus_on_click(False)
+    #button.set_focus_on_click(False)
     if hasattr(Main, 'mat_manager'):
       button.set_sensitive(True)
     else:
       button.set_sensitive(False)
     button.set_tooltip_text('Affecter le matériau')
-    button.connect('clicked', self._set_profil, Main)
+    button.connect('clicked', self.on_set_materiau, Main)
     hbox.pack_start(button, False, False, 0)
 
     label = Gtk.Label(label="Barre(s):")
@@ -2888,7 +2749,7 @@ class Material(object):
 
   def _get_profil_hbox(self, Main):
     """Retourne la hbox contenant le nom du matériau"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="Matériau:")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2901,7 +2762,7 @@ class Material(object):
 
   def _get_e_hbox(self, Main):
     """Retourne la hbox relative au module E"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="E=")
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2915,7 +2776,7 @@ class Material(object):
 
   def _get_mv_hbox(self, Main):
     """Retourne la hbox relative a la masse volumique"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label='\u03C1=')
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -2928,7 +2789,7 @@ class Material(object):
 
   def _get_a_hbox(self, Main):
     """Retourne la hbox relative au coefficient de dilatation"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label='\u03B1=')
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -3064,7 +2925,46 @@ class Material(object):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuMat(Main, self, event)
+        try:
+          self.profil
+          tag0 = 1
+        except AttributeError:
+          tag0 = 0
+        try:
+          self.m
+          tag1 = 1
+        except AttributeError:
+          tag1 = 0
+        try:
+          self.a
+          tag2 = 1
+        except AttributeError:
+          tag2 = 0
+        menu1 = Gtk.Menu()
+        menuitem1 = Gtk.CheckMenuItem(label="Définir le nom", active=tag0)
+        menuitem1.connect("activate", self.on_add_name, Main)
+        menu1.append(menuitem1)
+        menuitem2 = Gtk.CheckMenuItem(label="Définir la masse volumique", active=tag1)
+        menuitem2.connect("activate", self.on_add_mv, Main)
+        menu1.append(menuitem2)
+        menuitem3 = Gtk.CheckMenuItem(label="Définir le coefficient de dilatation", active=tag2)
+        menuitem3.connect("activate", self.on_add_alpha, Main)
+        menu1.append(menuitem3)
+        menuitem4 = Gtk.MenuItem(label="Affecter le matériau")
+        menuitem4.connect("activate", self.on_set_materiau, Main)
+        if hasattr(Main, 'mat_manager'):
+          menuitem4.set_sensitive(True)
+        else:
+          menuitem4.set_sensitive(False)
+        menu1.append(menuitem4)
+
+
+        menuitem5 = Gtk.MenuItem(label="Supprimer")
+        menuitem5.connect("activate", self.on_delete, (Main, self.id))
+        menuitem5.set_sensitive(False)
+        menu1.append(menuitem5)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
         return True # bloque la propagation du signal
     return False
 
@@ -3082,7 +2982,7 @@ class Material(object):
       break
     Main.set_is_changed()
 
-  def _set_profil(self, widget, Main):
+  def on_set_materiau(self, widget, Main):
     """Affecte les valeurs données par la librairie des matériaux"""
     if not hasattr(Main, 'mat_manager') \
 		or Main.mat_manager.window.get_window() is None:
@@ -3225,13 +3125,18 @@ class Char(object):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuChar2(Main, self, event)
+        menu1 = Gtk.Menu()
+        menuitem1 = Gtk.MenuItem(label="Supprimer")
+        menuitem1.connect("activate", self.on_delete, Main)
+        menu1.append(menuitem1)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
         return True # bloque la propagation du signal
     return False
 
   def on_delete(self, widget, Main):
     """Supprime le chargement depuis le CM"""
-    page = Main.charbook.get_nth_page(Main.charbook.get_current_page())   
+    page = Main.charbook.get_nth_page(Main.charbook.get_current_page())
     n_page = Main.charbook.get_current_page()
     vbox = page.get_children()[0].get_children()[0]
     childs = vbox.get_children()
@@ -3243,7 +3148,7 @@ class Char(object):
       del(case.chars[i])
       break
     Main.set_is_changed(True)
- 
+
   def copy_char(self, widget, Main):
     Main.set_is_changed()
 
@@ -3300,7 +3205,7 @@ class CharPp(Char):
 
   def  add_hbox(self, Main):
     """Affiche la ligne pour cocher le poids propre"""
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="Prise en compte du poids propre:")
     label.set_size_request(240, 30)
     hbox.pack_start(label, False, False, 0)
@@ -3325,6 +3230,153 @@ class CharPp(Char):
   def get_is_selected(self):
     return False
 
+class CharDepi(Char):
+  """Classe pour un chargement nodal"""
+
+  def __init__(self, name="", d=""):
+    Char.__init__(self)
+    self.name = name
+    self.props['type'] = 'depi'
+    self.d = d
+
+  def set_content(self):
+    """Actualise le contenu du chargement pour un affaissement d'appui (depi)"""
+    hbox = self.hbox
+    widgets = hbox.get_children()
+    combobox = widgets[2]
+    node = combobox.get_active_text()
+    string = ""
+    # X
+    text = widgets[4].get_text().replace(',', '.')
+    try:
+      float(text)
+    except ValueError:
+      return None
+    string += "%s," % text
+    # Y
+    text = widgets[6].get_text().replace(',', '.')
+    try:
+      float(text)
+    except ValueError:
+      return None
+    string += "%s" % text
+    self.d = string
+
+  def add_hbox(self, Main):
+    """Création de la boite pour la saisie d'un affaissement d'appui (depi)"""
+    units = Main.data_editor.get_units()
+    unit_L = function.return_key(units['L'], Main.data_editor.unit_conv['L'])
+    data, node = self.d, self.name
+    X, Y = '0', '0'
+    if data:
+      data = data.split(",")
+      n = len(data)
+      if n == 2:
+        X, Y = data
+      elif n == 1:
+        X, Y = '0', data[0]
+
+    eventbox = Gtk.EventBox()
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
+    image = Gtk.Image()
+    image.set_from_file("glade/depi.png")
+    image.show()
+    hbox.pack_start(image, False, False, 0)
+
+    button = Gtk.CheckButton()
+    button.set_tooltip_text('Sélectionner')
+    button.show()
+    hbox.pack_start(button, False, False, 0)
+    combobox = Gtk.ComboBoxText()
+    combobox.set_size_request(100, 30)
+    nodes = [val.name for val in Main.data_editor.nodes]
+    function.fill_elem_combo(combobox, nodes, node)
+    combobox.connect('changed', self.update_char_name, Main)
+    combobox.show()
+    hbox.pack_start(combobox, False, False, 0)
+    label = Gtk.Label(label="X=" )
+    label.set_size_request(30, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+    entry = Gtk.Entry()
+    entry.set_width_chars(10)
+    entry.set_text(X)
+    entry.connect('changed', self.update_depi_value, Main)
+    entry.show()
+    hbox.pack_start(entry, False, False, 0)
+
+    label = Gtk.Label(label="Y=")
+    label.set_size_request(30, 30)
+    label.show()
+    hbox.pack_start(label, False, False, 0)
+    entry = Gtk.Entry()
+    entry.set_width_chars(10)
+    entry.set_text(Y)
+    entry.connect('changed', self.update_depi_value, Main)
+    entry.show()
+    hbox.pack_start(entry, False, False, 0)
+
+    hbox.show()
+    self.hbox = hbox
+    self.update_tooltip_L(unit_L)
+    eventbox.add(hbox)
+    eventbox.show_all()
+    eventbox.connect("event", self.onCMenu, Main)
+    return eventbox
+
+  def update_tooltip_L(self, unit_L, unit_F=None):
+    """Actualise les tooltips des longueurs suite à un changement d'unité pour une charge nodale"""
+    widgets = self.hbox.get_children()
+    widgets[4].set_tooltip_markup('Valeur du déplacement d\'appui en %s.\nComposante horizontale' % unit_L)
+    widgets[6].set_tooltip_markup('Valeur du déplacement d\'appui en %s.\nComposante verticale' % unit_L)
+
+  def update_numeric_L(self, factor):
+    widgets = self.hbox.get_children()
+    entry = widgets[4]
+    try:
+      val = float(entry.get_text().replace(",", "."))
+      val = val*factor
+      entry.set_text(str(val))
+    except ValueError:
+      pass
+    entry = widgets[6]
+    try:
+      val = float(entry.get_text().replace(",", "."))
+      val = val*factor
+      entry.set_text(str(val))
+    except ValueError:
+      pass
+
+
+  def update_depi_value(self, widget, Main):
+    """Mise à jour d'une valeur de déplacement imposée"""
+    self.set_content()
+    Main.set_is_changed(True)
+
+  def update_char_name(self, combo, Main):
+    """Changement du combobox du choix des noeuds pour un déplacement imposé"""
+    self.name = combo.get_active_text()
+    Main.set_is_changed(True)
+
+  def set_xml_content(self, parent):
+    """Retourne le noeud xml pour un un déplacement imposé"""
+    if self.name is None:
+      return
+    node = ET.SubElement(parent, "depi")
+    node.set("id", self.name)
+    node.set("d", self.d)
+
+  def update_nodes_combo(self, n, new):
+    """Actualise le combo des deplacements imposés suite à une modification du nom d'un noeud"""
+    combo = self.hbox.get_children()[2]
+    function.change_elem_combo2(combo, n, new)
+    self.name = combo.get_active_text()
+
+  def add_combo_node_item(self, node):
+    """Ajoute un noeud au combo des charges nodales"""
+    combo = self.hbox.get_children()[2]
+    combo.append_text(node)
+
 class CharNo(Char):
   """Classe pour un chargement nodal"""
 
@@ -3333,7 +3385,6 @@ class CharNo(Char):
     self.name = name
     self.props['type'] = 'node'
     self.d = d
-    #print "CharNo id=", self.id
 
   def set_content(self):
     """Actualise le contenu du chargement pour un chargement nodal"""
@@ -3394,7 +3445,7 @@ class CharNo(Char):
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
 
   def update_numeric_F(self, factor):
@@ -3422,14 +3473,14 @@ class CharNo(Char):
         val = float(entry.get_text().replace(",", "."))
         val = val*factor
         entry.set_text(str(val))
-      except ValueError: 
+      except ValueError:
         pass
     entry = widgets[9]
     try:
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
 
 
@@ -3442,7 +3493,7 @@ class CharNo(Char):
     Fx, Fy, Mz = '0', '0', '0'
     data, node = self.d, self.name
     is_polar = False
-    if data: 
+    if data:
       data = data.split(",")
       n = len(data)
       if n == 4 and data[0] == '<':
@@ -3453,7 +3504,7 @@ class CharNo(Char):
       Fy = data[1]
       Mz = data[2]
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     image = Gtk.Image()
     image.set_from_file("glade/nod.xpm")
     image.show()
@@ -3552,13 +3603,13 @@ class CharNo(Char):
     Main.set_is_changed(True)
 
   def update_nodes_combo(self, n, new):
-    """Actualise le combo des noeuds suite à une modification du nom d'un noeud"""
+    """Actualise le combo des noeuds d'une charge nodale suite à une modification du nom d'un noeud"""
     combo = self.hbox.get_children()[2]
     function.change_elem_combo2(combo, n, new)
     self.name = combo.get_active_text()
 
   def add_combo_node_item(self, node):
-    """Ajoute un noeud au combo des noeuds"""
+    """Ajoute un noeud au combo des charges nodales"""
     combo = self.hbox.get_children()[2]
     combo.append_text(node)
 
@@ -3576,7 +3627,7 @@ class CharNo(Char):
     label = widgets[4]
     if is_polar:
       string = 'F = '
-    else: 
+    else:
       string = 'F<sub>x</sub> = '
     label.set_text(string)
     label.set_use_markup(True)
@@ -3679,7 +3730,7 @@ class CharQu(Char):
       entry.set_text(str(val))
     except ValueError:
       pass
-    
+
     entry = widgets[7]
     try:
       val = float(entry.get_text().replace(",", "."))
@@ -3737,7 +3788,7 @@ class CharQu(Char):
     unit_F = function.return_key(units['F'], Main.data_editor.unit_conv['F'])
     isRelative = False
     l_is_relative = False
-    if data: 
+    if data:
       data = data.split(",")
       if len(data) == 5 and data[0][0] == '@':
         isRelative = True
@@ -3757,7 +3808,7 @@ class CharQu(Char):
         a2 = a2[1:]
         l_is_relative = True
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     image = Gtk.Image()
     image.set_from_file("glade/qu.xpm")
     hbox.pack_start(image, False, False, 0)
@@ -4018,7 +4069,7 @@ class CharFp(CharBar):
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
 
   def update_numeric_F(self, factor):
@@ -4070,7 +4121,7 @@ class CharFp(CharBar):
       if n == 5:
         if data[0][0] == '@':
           is_rel = True
-          try: 
+          try:
             if data[0][1] == '<':
               is_pol = True
           except IndexError:
@@ -4090,7 +4141,7 @@ class CharFp(CharBar):
         l_is_relative = True
 
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     image = Gtk.Image()
     image.set_from_file("glade/fp.xpm")
     hbox.pack_start(image, False, False, 0)
@@ -4308,7 +4359,6 @@ class CharFp(CharBar):
 
   def add_char_name(self, name):
     """Ajoute une barre dans le combo des barres pour une charge fp"""
-    print("add_char_name", name)
     combobox = self.hbox.get_children()[2]
     combobox.append_text(name)
 
@@ -4376,7 +4426,7 @@ class CharTh(CharBar):
         t_sup = data[0]
         t_inf = data[1]
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     image = Gtk.Image()
     image.set_from_file("glade/sun-char.png")
     hbox.pack_start(image, False, False, 0)
@@ -4507,14 +4557,14 @@ class CharTr(CharBar):
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
     entry = widgets[11]
     try:
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
 
   def update_numeric_F(self, factor):
@@ -4525,14 +4575,14 @@ class CharTr(CharBar):
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
     entry = widgets[7]
     try:
       val = float(entry.get_text().replace(",", "."))
       val = val*factor
       entry.set_text(str(val))
-    except ValueError: 
+    except ValueError:
       pass
 
   def add_hbox(self, Main):
@@ -4547,7 +4597,7 @@ class CharTr(CharBar):
     unit_F = function.return_key(units['F'], Main.data_editor.unit_conv['F'])
     l_is_relative = True
     is_rel = False
-    if data: 
+    if data:
       data = data.split(",")
       n = len(data)
       if n == 6:
@@ -4569,7 +4619,7 @@ class CharTr(CharBar):
         l_is_relative = False
 
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     image = Gtk.Image()
     image.set_from_file("glade/trapeze.xpm")
     hbox.pack_start(image, False, False, 0)
@@ -4750,7 +4800,7 @@ class CharArc(Char):
     Char.__init__(self)
     self.props['type'] = 'arc'
     self.name = name
-    if d == "": 
+    if d == "":
       self.rel = True
     elif d[0] == '%':
       self.rel = True
@@ -4798,7 +4848,7 @@ class CharArc(Char):
     unit_F = function.return_key(units['F'], Main.data_editor.unit_conv['F'])
 
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     image = Gtk.Image()
     image.set_from_file(self._get_img())
     hbox.pack_start(image, False, False, 0)
@@ -4827,7 +4877,7 @@ class CharArc(Char):
     """Retourne la hbox relative aux positions x"""
     d = self.d
     x1, x2 = d["x1"], d["x2"]
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     if not x1 == 0.:
       label = Gtk.Label(label='x<sub>1</sub> =')
       label.set_use_markup(True)
@@ -4858,7 +4908,7 @@ class CharArc(Char):
     """Retourne la hbox relative aux charges q pour un arc"""
     d = self.d
     q1x, q1y, q2x, q2y = d['q1x'], d['q1y'], d['q2x'], d['q2y']
-    hbox = Gtk.HBox(False, 10)
+    hbox = Gtk.HBox(homogeneous=False, spacing=10)
     if self.proj == 2:
       if self.unif:
         label = Gtk.Label(label='q =')
@@ -4946,9 +4996,55 @@ class CharArc(Char):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuChar1(Main, self, event)
+        if self.proj == 0:
+          is_active = (1, 0, 0)
+        elif self.proj == 1:
+          is_active = (0, 1, 0)
+        elif self.proj == 2:
+          is_active = (0, 0, 1)
+        menu1 = Gtk.Menu()
+        menuitem1 = Gtk.CheckMenuItem(label="Charge linéique", active=is_active[0])
+        menuitem1.set_name('proj0')
+        menuitem1.connect("activate", self.update_arc_type, Main)
+        menu1.append(menuitem1)
+        menuitem2 = Gtk.CheckMenuItem(label="Charge projetée", active=is_active[1])
+        menuitem2.set_name('proj1')
+        menuitem2.connect("activate", self.update_arc_type, Main)
+        menu1.append(menuitem2)
+        menuitem3 = Gtk.CheckMenuItem(label="Charge radiale", active=is_active[2])
+        menuitem3.set_name('proj2')
+        menuitem3.connect("activate", self.update_arc_type, Main)
+        menu1.append(menuitem3)
+
+        menuitem4 = Gtk.CheckMenuItem(label="Charge uniforme", active=self.unif)
+        menuitem4.connect("activate", self.update_unif, Main)
+        menu1.append(menuitem4)
+
+        start = not self.d['x1'] == 0.
+        end = not self.d['x2'] == 1.
+        menuitem5 = Gtk.CheckMenuItem(label="Ajouter un point de départ", active=start)
+        menuitem5.connect("activate", self.add_start_point, Main)
+        menu1.append(menuitem5)
+
+        menuitem6 = Gtk.CheckMenuItem(label="Ajouter un point de fin", active=end)
+        menuitem6.connect("activate", self.add_end_point, Main)
+        menu1.append(menuitem6)
+
+        menuitem7 = Gtk.MenuItem(label="Dupliquer")
+        menuitem7.connect("activate", self.on_duplicate, Main)
+        menuitem7.set_sensitive(False)
+        menu1.append(menuitem7)
+        menuitem8 = Gtk.MenuItem(label="Supprimer")
+        menuitem8.connect("activate", self.on_delete, Main)
+        menu1.append(menuitem8)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
+
         return True # bloque la propagation du signal
     return False
+
+  def on_duplicate(self, widget, args):
+    pass
 
   def update_unif(self, widget, Main):
     """Met à jour les widgets selon que la charge est uniforme ou non"""
@@ -4995,9 +5091,9 @@ class CharArc(Char):
     hbox.show_all()
     Main.set_is_changed()
 
-  def update_arc_type(self, action, current, Main):
+  def update_arc_type(self, widget, Main):
     """Changement du type de chargement pour une charge d'arc"""
-    self.proj = action.get_current_value()
+    self.proj = int(widget.get_name()[4])
     hbox = self.hbox
     widgets = hbox.get_children()
     hbox.remove(widgets[0])
@@ -5069,7 +5165,7 @@ class CharArc(Char):
       entry.set_tooltip_text('Charge en %s' % unit_F)
       entry = childs[3]
       entry.set_tooltip_text('Charge en %s' % unit_F)
-    
+
   def update_numeric_F(self, factor):
     """Actualise les valeurs numériques dans les champs de type entry après changement unité de force pour charge sur un arc"""
     widgets = self.hbox.get_children()
@@ -5081,7 +5177,7 @@ class CharArc(Char):
         val = float(entry.get_text().replace(",", "."))
         val = val*factor
         entry.set_text(str(val))
-      except ValueError: 
+      except ValueError:
         pass
     else:
       entry = childs[1]
@@ -5089,14 +5185,14 @@ class CharArc(Char):
         val = float(entry.get_text().replace(",", "."))
         val = val*factor
         entry.set_text(str(val))
-      except ValueError: 
+      except ValueError:
         pass
       entry = childs[3]
       try:
         val = float(entry.get_text().replace(",", "."))
         val = val*factor
         entry.set_text(str(val))
-      except ValueError: 
+      except ValueError:
         pass
 
 class Case(object):
@@ -5120,12 +5216,13 @@ class Combi(object):
   def add_hbox(self, Main):
     """Crée la hbox d'un noeud simple de la page des noeuds"""
     eventbox = Gtk.EventBox()
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     self.hbox = hbox
     button = Gtk.CheckButton()
     button.set_tooltip_text('Sélectionner')
     hbox.pack_start(button, False, False, 0)
     entry = Gtk.Entry()
+    #entry.set_name('test')
     #entry.set_placeholder_text('Nom')
     #entry.set_width_chars(-1)
     entry.set_text(self.name)
@@ -5148,7 +5245,7 @@ class Combi(object):
       else:
         coef = 0.
       #sep = Gtk.VSeparator()
-      cell = Gtk.HBox(False, 0)
+      cell = Gtk.HBox(homogeneous=False, spacing=0)
       label = Gtk.Label(label=case)
       hbox.set_spacing(10)
       cell.pack_start(label, False, False, 0)
@@ -5203,7 +5300,16 @@ class Combi(object):
       return True
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuCombi(Main, self, event)
+        menu1 = Gtk.Menu()
+        menuitem1 = Gtk.MenuItem(label="Dupliquer")
+        menuitem1.connect("activate", self.on_duplicate, (Main, self))
+        menu1.append(menuitem1)
+        menuitem2 = Gtk.MenuItem(label="Supprimer")
+        menuitem2.connect("activate", self.on_delete, (Main, self.id))
+        menu1.append(menuitem2)
+        menu1.show_all()
+        menu1.popup_at_pointer(event)
+
         return True # bloque la propagation du signal
     return False
 
@@ -5249,6 +5355,7 @@ class DataEditor(object):
     """Inialise les variables"""
     self.nodes = []
     self.barres = []
+    self.liaisons = []
     self.sections = []
     self.materials = []
     self.cases = []
@@ -5263,15 +5370,9 @@ class DataEditor(object):
     self.unit_si = isSI
     self.add_nodes(self._get_xml_nodes())
     self.add_barres()
-    li = self.get_xml_liaisons()
-    self.add_liaisons(li[0])
-    self.add_deps(li[1])
+    self.add_liaisons( self.get_xml_liaisons())
     self.add_sections(self._get_xml_sections())
     self.add_materials(self._get_xml_materials())
-    #try:
-    #  cases = rdm.Cases
-    #except AttributeError:
-    #  cases = None
     self.add_cases()
     self.get_barres_by_node()
     try:
@@ -5285,9 +5386,7 @@ class DataEditor(object):
     self._set_attributes()
     self.add_nodes(self._get_xml_nodes())
     self.add_barres()
-    li = self.get_xml_liaisons()
-    self.add_liaisons(li[0])
-    self.add_deps(li[1])
+    self.add_liaisons(self.get_xml_liaisons())
     self.add_sections(self._get_xml_sections())
     self.add_materials(self._get_xml_materials())
     self.add_cases()
@@ -5403,6 +5502,8 @@ class DataEditor(object):
       content["d"] = node.get("d")
       content["rel"] = node.get("r")
       content["type"] = tag
+      l = node.get('liaison')
+      if not l is None: content["liaison"] = l
       if tag == 'node':
         pass
       elif tag == 'arc':
@@ -5413,9 +5514,10 @@ class DataEditor(object):
 
   def add_node(self, data):
     """Ajoute une instance de la classe Node"""
+    #print(data)
     content = data['d']
     name = data['id']
-    node = Node(name, content)
+    node = Node(name, data)
     coors = function.Str2NodeCoors2(node, self.nodes)
     if coors:
       node.x, node.y = coors[0], coors[1]
@@ -5458,8 +5560,8 @@ class DataEditor(object):
     for elem in self.unit_conv:
       node = ET.SubElement(self.XMLNodes[6], "unit", {"id": elem})
       node.set("d", str(self.unit_conv[elem]))
-    node = ET.SubElement(self.XMLNodes[6], "const", {"g": self.G})
-    node = ET.SubElement(self.XMLNodes[6], "conv", {"conv": str(self.conv)})
+    node = ET.SubElement(self.XMLNodes[6], "const", {"name":"g", "value" : self.G})
+    node = ET.SubElement(self.XMLNodes[6], "const", {"name":"conv", "value": str(self.conv)})
 
   def set_xml_nodes(self):
     """Crée le contenu xml pour les noeuds"""
@@ -5471,7 +5573,12 @@ class DataEditor(object):
     for inst in self.barres:
       node = inst.set_xml(self.XMLNodes[1])
 
-
+  def add_liaison(self, data):
+    """Ajoute une instance de la classe Liaison"""
+    content = data['d']
+    name = data['id']
+    liaison = Liaison(name, content)
+    return liaison
 
   def set_xml_materials(self):
     """Crée le contenu xml pour les matériaux"""
@@ -5535,7 +5642,7 @@ class DataEditor(object):
     content = node.get("d")
     if not content is None:
       di.update(self._get_xml_segment2dot3(content))
-      return di 
+      return di
     start = node.get("start")
     di['start'] = start
     end = node.get("end")
@@ -5571,11 +5678,11 @@ class DataEditor(object):
       try:
         mode = int(mode)
         if not mode in [-1, 0, 1]:
-          raise ValueError 
+          raise ValueError
       except ValueError:
         mode = 0
       di['mode'] = mode
-    return di 
+    return di
 
   def _get_xml_segment2dot3(self, content):
     """Compatibilité version 2.3"""
@@ -5789,13 +5896,11 @@ class DataEditor(object):
       pass
 
   def get_xml_liaisons(self):
-    """Retourne une listes contenant deux dictionnaires des éléments
-    pour les liaisons et les déplacements imposés
-    à afficher dans l'éditeur"""
+    """Retourne un  dictionnaire des éléments pour les liaison"""
     XML = self.XMLNodes
     if XML is None:
       return {}, {}
-    di1, di2 = {}, {}
+    di1 = {}
     nodes = XML["node"].iter()
     for node in nodes:
       name = node.get("id")
@@ -5803,27 +5908,21 @@ class DataEditor(object):
       if not content is None:
         content = content.split(",")
         di1[name] = content
-      content = node.get("dep")
-      if not content is None:
-        content = content.split(",")
-        di2[name] = content
-    return [di1, di2]
+    return di1
 
   def add_liaisons(self, di):
     """Ajoute des propriétés pour les liaisons"""
-    nodes = [val.name for val in self.nodes]
-    for elem in di:
-      ind = nodes.index(elem)
-      node = self.nodes[ind]
-      l = di[elem]
+    for name in di:
+      l = di[name]
       try:
-        liaison = int(l[0])
+        value = int(l[0])
       except ValueError:
         continue
-      node.l = l
+      liaison = self.add_liaison({'id': name, 'd' : l})
+      self.liaisons.append(liaison)
 
-  def set_liaisons(self, box):
-    """Actualise toutes les liaisons dans l'objet Node à partir de la lecture des combobox de la page des liaisons"""
+  def set_liaisons(self):
+    """Actualise toutes les liaisons des objets Node à partir de la lecture des combobox de la page des liaisons"""
     for node in self.nodes:
       try:
         del(node.l)
@@ -5831,164 +5930,6 @@ class DataEditor(object):
         pass
     for hbox in box.get_children():
       self.set_liaison(hbox)
-
-  def set_liaison(self, hbox):
-      """Actualise la liaison d'une ligne de la page des liaisons"""
-      try:
-        checkbutton = hbox.get_children()[1]
-      except IndexError:
-        return
-      try:
-        model = checkbutton.get_model()
-      except AttributeError:
-        return
-      index = checkbutton.get_active()
-      if index == -1:
-        return
-      node_name = model[index][0]
-      button = hbox.get_children()[2]
-      l = button.get_active()
-      if l == -1:
-        return
-      node = self.get_node(node_name)
-      if l == 2:
-        a = hbox.get_children()[4].get_text()
-        if a == '': # a tester
-          li = ["2"]
-        else:
-          li = ["2", a.replace(",",".")]
-      elif l == 3:
-        kx = hbox.get_children()[4].get_text()
-        ky = hbox.get_children()[6].get_text()
-        kz = hbox.get_children()[8].get_text()
-        li = ["3", kx, ky, kz]
-      else:
-        li = [str(l)]
-      node.l = li
-      return node
-
-  def get_liaisons(self):
-    """Retourne la liste des noeuds ayant une liaison"""
-    li = []
-    for node in self.nodes:
-      try:
-        node.l
-        li.append(node)
-      except AttributeError:
-        pass
-    return li
-
-  def get_n_liaisons(self):
-    """Retourne le dictionnaire des numéros des liaisons par noeud"""
-    di = {}
-    for node in self.nodes:
-      node_name = node.name
-      try:
-        n = int(node.l[0])
-        di[node_name] = n
-      except AttributeError:
-        pass
-    return di
-
-  def get_n_liaison(self, node_name):
-    """Retourne l'entier correspondant à la liaison pour node_name"""
-    for node in self.nodes:
-      if node_name == node.name:
-        try:
-          n = int(node.l[0])
-          return n
-        except AttributeError:
-          pass
-    return None
-
-  def get_liaison(self, node_name):
-    """Retourne la liaison pour le noeud donné"""
-    for node in self.nodes:
-      if node.name == node_name:
-        try:
-          return node.l
-        except AttributeError:
-          return None
-
-  def add_deps(self, di):
-    """Ajoute des propriétés dep pour les déplacements imposés à partir du dictionnaire di"""
-    nodes = [val.name for val in self.nodes]
-    for elem in di:
-      ind = nodes.index(elem)
-      node = self.nodes[ind]
-      dep = di[elem]
-      node.dep = dep
-
-  def update_deps(self):
-    """Met à jour les déplacements imposés de tous les noeuds suite à une modification des liaisons"""
-    nodes = self.get_deps()
-    for node in nodes:
-      l = self.get_n_liaison(node.name)
-      dep = node.dep
-      n = len(dep)
-      if n == 2 and l == 2:
-        node.dep = [dep[1]]
-      elif n == 1 and not l == 2:
-        node.dep = ["0", dep[0]]
-
-  def update_dep(self, node):
-    """Met à jour les déplacements imposés d'un noeud si sa liaison a changé"""
-    try:
-      dep = node.dep
-    except AttributeError:
-      return
-    n = len(dep)
-    l = self.get_n_liaison(node.name)
-    if l == 2 and n == 2:
-      node.dep = [dep[1]]
-    elif l == 1 and n == 1:
-      node.dep = ["0", dep[0]]
-
-  def get_deps(self):
-    """Retourne la liste des noeuds ayant un déplacement imposé"""
-    li = []
-    for node in self.nodes:
-      try:
-        node.dep
-        li.append(node)
-      except AttributeError:
-        pass
-    return li
-
-  def set_deps(self, box):
-    """Actualise tous les déplacements imposés dans l'objet Node à partir de la lecture des combobox de la page des deps"""
-    for node in self.nodes:
-      try:
-        del(node.dep)
-      except AttributeError:
-        pass
-    for elem in box.get_children():
-      combo = elem.get_children()[1]
-      try:
-        model = combo.get_model()
-      except AttributeError:
-        continue
-      index = combo.get_active()
-      if index == -1:
-        continue
-      node_name = model[index][0]
-      node = self.get_node(node_name)
-      entry = elem.get_children()[3]
-      x = entry.get_text().replace(",", ".")
-      try:
-        entry = elem.get_children()[5]
-        y = entry.get_text().replace(",", ".")
-      except IndexError:
-        y = None
-      if y is None:
-        node.dep = [x]
-      else:
-        node.dep = [x, y]
-
-
-
-
-
 
 
   # Sections
@@ -6036,7 +5977,7 @@ class DataEditor(object):
 
 
   def _get_xml_sections(self):
-    """Retourne un dictionnaire 
+    """Retourne un dictionnaire
     contenant les dictionnaires des caractéristiques des barres
     à afficher dans l'éditeur"""
     XML = self.XMLNodes
@@ -6082,7 +6023,7 @@ class DataEditor(object):
 
   # Materials
   def _get_xml_materials(self):
-    """Retourne une liste contenant 3 dictionnaires pour young, mv, alpha 
+    """Retourne une liste contenant 3 dictionnaires pour young, mv, alpha
     à afficher dans l'éditeur"""
     XML = self.XMLNodes
     if XML is None:
@@ -6143,7 +6084,7 @@ class DataEditor(object):
   # Case
   def _get_xml_case(self):
     """retourne une liste contenant les chaines de caractères
-    pour les 4 chargements (nodal, barre fp, barre qu et therm)
+    pour tous les chargements (nodal, barre fp, barre qu et therm, ....)
     à afficher dans l'éditeur"""
     # un dictionnaire ne peut convenir car plusieurs charges par barre
     XML = self.XMLNodes
@@ -6178,6 +6119,8 @@ class DataEditor(object):
       for char in case.iter():
         if char.tag == 'node':
           data[name].append(CharNo(char.get("id"), char.get("d")))
+        elif char.tag == 'depi':
+          data[name].append(CharDepi(char.get("id"), char.get("d")))
         elif char.tag == 'barre':
           content = char.get("qu")
           if not content is None:
@@ -6376,12 +6319,12 @@ class DataEditor(object):
       except AttributeError:
         pass
       if hasattr(node, 'x'):
-        assert type(node.x) is type(0.) 
+        assert type(node.x) is type(0.)
       try:
         print("\tentry : ", node.s_x, node.s_y)
         print("\trelatif= : ", node.rel)
         print("\tpolaire= : ", node.pol)
-        
+
       except AttributeError:
         pass
       if hasattr(node, 's'):
@@ -6394,14 +6337,7 @@ class DataEditor(object):
         assert type(node.l) is type([])
         for val in node.l:
           assert type(val) is type("") or  type(val) is type("")
-  
-      try:
-        dep = node.dep
-        print("\tDeps :", dep)
-      except AttributeError:
-        pass
-      if hasattr(node, 'dep'):
-        assert type(node.dep) is type([])
+
       try:
         print("\tkz : %s %s" % (node.kz[0], node.kz[1]))
         assert type(node.kz[1]) is type("s") or type(node.kz[1]) is type("s")
@@ -6415,7 +6351,7 @@ class DataEditor(object):
     print("Affichage des barres par noeud")
     for node in self.barres_by_node:
       print("\tNoeud:", node, self.barres_by_node[node])
-    
+
   def print_combis_and_cases(self):
     print("Liste des cas :")
     for case in self.cases:
@@ -6503,14 +6439,11 @@ class Editor(object):
     s_old = self.selected
     if self.cm_popup:
       return
-# fonctionne aussi -----------
-    #color = Gdk.RGBA(0.6, 0.6, 1, 1)
-    #eventbox.override_background_color(Gtk.StateType.NORMAL, color)
-# -----------------
-    parse, color = Gdk.Color.parse('#cccac8')
-    eventbox.modify_bg(Gtk.StateType.NORMAL, color)
+    context = eventbox.get_style_context()
+    context.add_class("css_hover")
     if not s_old is None and not s_old is eventbox:
-      s_old.override_background_color(Gtk.StateType.NORMAL, None)
+      context = s_old.get_style_context()
+      context.remove_class("css_hover")
     self.selected = eventbox
 
 
@@ -6521,12 +6454,7 @@ class Editor(object):
       return
     n_page = self.book.get_current_page()
     if n_page == 3:
-      book = self.book.get_nth_page(3)
-      n_page2 = book.get_current_page()
-      if n_page2 == 0:
-        self._add_liaison()
-      elif n_page2 == 1:
-        self._add_dep()
+      self.on_add_liaison()
     elif n_page == 4:
       self.on_add_section()
     elif n_page == 5:
@@ -6544,12 +6472,7 @@ class Editor(object):
     elif n_page == 2:
       self.remove_barres()
     elif n_page == 3:
-      book = self.book.get_nth_page(3)
-      n_page2 = book.get_current_page()
-      if n_page2 == 0:
-        self._remove_liaison()
-      elif n_page2 == 1:
-        self._remove_dep()
+      self.remove_liaisons()
     elif n_page == 4:
       self.remove_sections()
     elif n_page == 5:
@@ -6621,12 +6544,11 @@ class Editor(object):
     remove_b = self.toolbar.get_nth_item(5)
     if self.xml_status == -1:
       add_b.set_sensitive(True)
-      add_b.set_stock_id(Gtk.STOCK_CANCEL)
+      add_b.set_icon_name('list-remove')
       add_b.set_tooltip_text("Abandonner les modifications XML")
-      #remove_b.set_sensitive(False)
       remove_b.hide()
     else:
-      add_b.set_stock_id(Gtk.STOCK_ADD)
+      add_b.set_icon_name('list-add')
       add_b.set_tooltip_text("Ajouter un élément")
       remove_b.show()
       if status == 0:
@@ -6690,7 +6612,7 @@ class Editor(object):
     self.print_message(message)
     self.set_is_changed(True)
     self.data_editor.size_changed = True
-    
+
 
   def _ini_window(self):
     self.UP = classPrefs.UserPrefs()
@@ -6731,7 +6653,7 @@ class Editor(object):
         if current_page == page:
           continue
         self._fct[page]()
-      self.w2.get_root_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
+      #self.w2.get_root_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
 
 # les données sont perdues en mode xml quand on passe d'une étude à l'autre
     if self.xml_status == -1:
@@ -6748,9 +6670,9 @@ class Editor(object):
 
     n_page = self.book.get_current_page()
     self._fct[n_page]()
-    watch = Gdk.Cursor.new(Gdk.CursorType.WATCH)
-    self.w2.get_root_window().set_cursor(watch)
-    GObject.idle_add(BG_update, n_page)
+    #watch = Gdk.Cursor.new(Gdk.CursorType.WATCH)
+    #self.w2.get_root_window().set_cursor(watch)
+    GLib.idle_add(BG_update, n_page)
 
   def _on_switch_page(self, book, page, page_num):
     """Changement d'onglet sur le notebook général"""
@@ -6763,7 +6685,7 @@ class Editor(object):
 		0: self._update_units_page,
 		1: self._ini_node_page,
 		2: self._ini_barre_page,
-		3: self._ini_appuis_page,
+		3: self._ini_liaisons_page,
 		4: self._ini_sections_page,
 		5: self._ini_material_page,
 		6: self._ini_cases_book,
@@ -6789,39 +6711,36 @@ class Editor(object):
     Connecte les combobox"""
     #print "Editor::_ini_units_page"
     box = self.data_box['unit']
-    hbox = Gtk.HBox(False, 0)
-    label = Gtk.Label(label="<b>Contrôle des unités</b>")
-    label.set_alignment(0., 0.5)
-    label.set_padding(5, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
+    label = Gtk.Label(label="<b>Contrôle des unités</b>", halign=Gtk.Align.START)
+    label.set_margin_start(10)
     label.set_use_markup(True)
     hbox.pack_start(label, True, True, 0)
-    b = Gtk.Button()
-    b.set_alignment(1., 0.5)
+    b = Gtk.Button.new_from_icon_name('preferences-system', Gtk.IconSize.MENU)
+    b.set_property('halign', Gtk.Align.END)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.connect('clicked', self._save_unit_pref)
     b.set_tooltip_text("Enregistrer comme valeurs par défaut")
-    function.add_icon_to_button2(b, Gtk.STOCK_PREFERENCES, Gtk.IconSize.BUTTON)
     hbox.pack_start(b, False, False, 0)
     box.pack_start(hbox, False, False, 0)
 
 # seul élément qui n'est pas dans un hbox
-    button = Gtk.CheckButton("Convertir les valeurs numériques")
+    button = Gtk.CheckButton(label="Convertir les valeurs numériques")
     button.set_active(True)
     box.pack_start(button, False, False, 0)
 
-    hbox = Gtk.HBox(False, 0)
-    label = Gtk.Label(label="Angle :")
-    label.set_padding(5, 0)
-    label.set_alignment(0., 0.5)
+    hbox = Gtk.HBox(homogeneous=False, spacing=5)
+    label = Gtk.Label(label="Angle :", xalign=0.)
+    label.set_margin_start(10)
     label.set_size_request(220, 30)
     hbox.pack_start(label, False, False, 0)
     label = Gtk.Label(label="degré")
     hbox.pack_start(label, False, False, 0)
     box.pack_start(hbox, False, False, 0)
 
-    hbox = Gtk.HBox(False, 0)
-    label = Gtk.Label(label="g (accélération pesanteur) :")
-    label.set_padding(5, 0)
-    label.set_alignment(0., 0.5)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
+    label = Gtk.Label(label="g (accélération pesanteur) :", xalign=0.)
+    label.set_margin_start(10)
     label.set_size_request(220, 30)
     hbox.pack_start(label, False, False, 0)
     entry = Gtk.Entry()
@@ -6830,19 +6749,19 @@ class Editor(object):
     entry.connect("changed", self._update_G)
     hbox.pack_start(entry, False, False, 0)
     label = Gtk.Label(label="ms<sup>-2</sup>")
-    label.set_padding(5, 0)
+    label.set_margin_start(10)
     label.set_use_markup(True)
     hbox.pack_start(label, False, False, 0)
     box.pack_start(hbox, False, False, 0)
 
     self.ini_units_box(box)
 
-    button = Gtk.CheckButton("Unités impériales")
+    button = Gtk.CheckButton(label="Unités impériales")
     id = button.connect('clicked', self._set_imperial)
     self.handler_id['SI'] = id
     box.pack_start(button, False, False, 0)
 
-    b = Gtk.CheckButton("Convention inversée")
+    b = Gtk.CheckButton(label="Convention inversée")
     conv = self.data_editor.conv
     if conv == -1:
       b.set_active(True)
@@ -6853,7 +6772,7 @@ class Editor(object):
 
   def ini_units_box(self, box):
     """Remplit la zone pour les unités avec les labels et combobox vides"""
-    combo_box = Gtk.VBox(False, 0)
+    combo_box = Gtk.VBox(homogeneous=False, spacing=0)
     texts = {'L': "Longueur",
 		'S': "Section droite",
 		'E': "Module élastique",
@@ -6863,10 +6782,9 @@ class Editor(object):
 		'M': "Masse volumique"
 		}
     for name, text in texts.items():
-      hbox = Gtk.HBox(False, 0)
-      label = Gtk.Label(label="%s :" % text)
-      label.set_alignment(0., 0.5)
-      label.set_padding(5, 0)
+      hbox = Gtk.HBox(homogeneous=False, spacing=0)
+      label = Gtk.Label(label="%s :" % text, xalign=0.)
+      label.set_margin_start(10)
       label.set_size_request(220, 30)
       hbox.pack_start(label, False, False, 0)
       combobox = Gtk.ComboBox()
@@ -6939,7 +6857,7 @@ class Editor(object):
     else:
       b.set_active(False)
     b.handler_unblock(handler_id['conv'])
-    
+
 
   def _set_imperial(self, widget):
     """Change les unités en unités impériales"""
@@ -6957,7 +6875,7 @@ class Editor(object):
       combobox = elem.get_children()[1]
       self._update_new_unit(combobox)
     self._update_units_page()
-      
+
 
   def _update_numeric_L(self, factor):
     """Met à jour les valeurs numériques suite à un changement d'unité de longueur"""
@@ -6966,7 +6884,7 @@ class Editor(object):
       node.set_coors_label(self.data_editor)
     self.data_editor.set_bars_size()
     self.data_editor.set_char_bar_size()
-    self._update_unit_L_char_tooltip() # revoir optimisation 
+    self._update_unit_L_char_tooltip() # revoir optimisation
 
     for barre in self.data_editor.barres:
       barre.update_numeric_L(factor)
@@ -6992,28 +6910,6 @@ class Editor(object):
           entry.set_text(str(val))
         except ValueError:
           pass
-    for i, row in enumerate(self.data_box["dep"].get_children()):
-      childs = row.get_children()
-      try:
-        entry = childs[3]
-      except IndexError:
-        continue
-      try:
-        val = float(entry.get_text().replace(",", "."))
-        val = val*factor
-        entry.set_text(str(val))
-      except ValueError:
-        pass
-      try:
-        entry = childs[5]
-      except IndexError:
-        continue
-      try:
-        val = float(entry.get_text().replace(",", "."))
-        val = val*factor
-        entry.set_text(str(val))
-      except ValueError:
-        pass
     # chargements
     for case in self.data_editor.cases:
       for char in case.chars:
@@ -7124,19 +7020,10 @@ class Editor(object):
       if 'v' in boxes:
         s.update_tooltip_v(self)
 
-    hbox = self.data_box["dep"].get_parent().get_children()[0]
-    try:
-      label = hbox.get_children()[1]
-      text = label.get_text()
-      text = text[:text.rindex('\n')]
-      text = '%s\n(%s)' % (text, unit_L)
-      label.set_text(text)
-    except IndexError:
-      pass
+
     vbox = self.data_box["liaison"]
     for i, elem in enumerate(vbox.get_children()):
       combobox = elem.get_children()[2]
-      model = combobox.get_model()
       index = combobox.get_active()
       if index == 3:
         label = elem.get_children()[-1]
@@ -7188,7 +7075,6 @@ class Editor(object):
     vbox = self.data_box["liaison"]
     for i, elem in enumerate(vbox.get_children()):
       combobox = elem.get_children()[2]
-      model = combobox.get_model()
       index = combobox.get_active()
       if index == 3:
         label = elem.get_children()[-1]
@@ -7243,7 +7129,6 @@ class Editor(object):
       #print "_update_liaison_num", factor
       for i, row in enumerate(self.data_box["liaison"].get_children()):
         combobox = row.get_children()[2]
-        model = combobox.get_model()
         index = combobox.get_active()
         if not index == 3:
           continue
@@ -7299,17 +7184,16 @@ class Editor(object):
 		| Gdk.EventMask.KEY_PRESS_MASK
 		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(20)
     nodes = self.data_editor.nodes
     #self.data_editor.print_node()
-    nodes_vbox = Gtk.VBox(False, 0)
+    nodes_vbox = Gtk.VBox(homogeneous=False, spacing=0)
     for node in nodes: # ne pas trier les noeuds à cause des noeuds relatifs
       hbox = node.add_hbox(self)
       nodes_vbox.pack_start(hbox, False, False, 0)
     self.data_box["noeud"] = nodes_vbox
     vbox.pack_start(nodes_vbox, False, False, 0)
-    #sw.add_with_viewport(vbox)
     viewport.add(vbox)
     sw.add(viewport)
     sw.show_all()
@@ -7369,8 +7253,8 @@ class Editor(object):
       return
     self._fill_preceding_node(lines[0])
     # modification de la page contenant des combobox avec des noeuds
-    self._remove_liaison2(are_deleted)
-    self._remove_nodes_combo(old_nodes, are_deleted)
+    self.remove_liaison2(are_deleted)
+    self.remove_nodes_combos(old_nodes, are_deleted)
     self._remove_combo_char_items(are_deleted)
 
   def _add_node_combo(self, node):
@@ -7385,22 +7269,13 @@ class Editor(object):
     for i, elem in enumerate(box.get_children()):
       combo = elem.get_children()[1]
       combo.append_text(node_name)
-
-    box = self.data_box['dep']
-    for i, elem in enumerate(box.get_children()):
-      combo = elem.get_children()[1]
-      combo.append_text(node_name)
-
     for case in self.data_editor.cases:
       for char in case.chars:
         char.add_combo_node_item(node_name)
 
 
-# revoir entièrement XXX
-# enlever indices ??
-  def _remove_nodes_combo(self, old_nodes, deleted_nodes):
+  def remove_nodes_combos(self, old_nodes, deleted_nodes):
     """Supprime le noeud dans les combo contenant des noeuds."""
-    #print "_remove_nodes_combo", old_nodes, deleted_nodes
     indices = []
     for node in deleted_nodes:
       pos = old_nodes.index(node)
@@ -7412,17 +7287,13 @@ class Editor(object):
     for barre in barres:
       barre.remove_nodes_combo(deleted_nodes)
 
-    box = self.data_box['liaison']
-    for i, elem in enumerate(box.get_children()):
-      combo = elem.get_children()[1]
+    for elem in self.data_editor.liaisons:
+      combo = elem.hbox.get_children()[1]
       for pos in indices:
         combo.remove(pos)
-
-    box = self.data_box['dep']
-    for i, elem in enumerate(box.get_children()):
-      combo = elem.get_children()[1]
-      for pos in indices:
-        combo.remove(pos)
+      #model = combo.get_model()
+      #nodes = [i[0] for i in model]
+      #print(nodes)
 
 
   def _update_node_list(self, Node, pos):
@@ -7432,7 +7303,7 @@ class Editor(object):
     self._update_node_list3(pos, Node.name)
 
   def _update_node_list1(self, Node, node_pos):
-    """Actualise la liste des noeuds pour la page des barres en cas 
+    """Actualise la liste des noeuds pour la page des barres en cas
     d'ajout de noeuds, de supression de noeud ou de modification du nom"""
     nodes = self.data_editor.nodes
     Id = Node.id
@@ -7455,24 +7326,22 @@ class Editor(object):
       node_pos = ids.index(Node.id)
       barre.rename_node_combo(self.data_editor, Node, node_pos)
 
-    
-  def _update_node_list2(self, n, new):
-    """Actualise la liste des noeuds pour la page des appuis en cas 
-    d'ajout de noeuds, de supression de noeud ou de modification du nom"""
-    box = self.data_box['liaison']
-    for i, elem in enumerate(box.get_children()):
-      combo = elem.get_children()[1]
-      function.change_elem_combo2(combo, n, new)
-    self.data_editor.set_liaisons(box)
 
-    box = self.data_box['dep']
-    for i, elem in enumerate(box.get_children()):
-      combo = elem.get_children()[1]
+  def _update_node_list2(self, n, new):
+    """Actualise la liste des noeuds pour la page des liaisons en cas
+    d'ajout de noeuds, de supression de noeud ou de modification du nom"""
+    #box = self.data_box['liaison']
+    for elem in self.data_editor.liaisons:
+      combo = elem.hbox.get_children()[1]
       function.change_elem_combo2(combo, n, new)
+      if combo.get_active() == n:
+        elem.name = new
+      #elem.set_content(self.data_editor)
+
 
 
   def _update_node_list3(self, n, new):
-    """Actualise la liste des noeuds pour la page des chargements en cas 
+    """Actualise la liste des noeuds pour la page des chargements en cas
     d'ajout de noeuds, de supression de noeud ou de modification du nom"""
     for case in self.data_editor.cases:
       for char in case.chars:
@@ -7501,7 +7370,6 @@ class Editor(object):
 
   def update_nodes(self, widget, user_node):
     """Met à jour les coordonnées absolues des noeuds et la longueur des barres"""
-    #print "update_nodes"
     nodes = self.data_editor.nodes
     is_changed = False
     modified_nodes = []
@@ -7523,27 +7391,8 @@ class Editor(object):
         modified_nodes.append(resu)
     self.data_editor.set_bars_size()
     self.data_editor.set_char_bar_size()
-    self._update_unit_L_char_tooltip() # revoir optimisation 
+    self._update_unit_L_char_tooltip() # revoir optimisation
 
-
-  def _remove_liaison2(self, deleted):
-    """Supprime les hbox des liaisons à partir d'une liste de noeuds"""
-    box = self.data_box["liaison"]
-    for elem in box.get_children():
-      combobox = elem.get_children()[1]
-      node_name = combobox.get_active_text()
-      if node_name in deleted:
-        box.remove(elem)
-    child = box.get_children()
-    label_box = box.get_parent().get_children()[0]
-    self._update_title_node_dep(label_box, len(child), True)
-
-    box = self.data_box["dep"]
-    for elem in box.get_children():
-      combobox = elem.get_children()[1]
-      node_name = combobox.get_active_text()
-      if node_name in deleted:
-        box.remove(elem)
 
 
 
@@ -7566,9 +7415,9 @@ class Editor(object):
 		| Gdk.EventMask.KEY_PRESS_MASK
 		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(20)
-    barres_vbox = Gtk.VBox(False, 0)
+    barres_vbox = Gtk.VBox(homogeneous=False, spacing=0)
     barres = self.data_editor.barres
     for barre in barres:
       hbox = barre.add_hbox(self)
@@ -7644,10 +7493,27 @@ class Editor(object):
     box.pack_start(hbox, False, False, 0)
     self._add_barre_combo("mbarre", name)
 
-  def on_add_variable(self, widget=None):
-    """Ajoute une ligne dans la page des barres pour une barre de type barre à inertie variable"""
-    pass
 
+  def on_relax_all(self, widget=None):
+    self.on_cm_relax_all(widget=widget, selected=False, active=1)
+  
+  def on_cm_relax_all(self, widget=None, selected=True, active=0):
+    box = self.data_box["barre"]
+    barres = self.data_editor.barres
+    i = 0
+    for elem in box.get_children():
+      barre = barres[i]
+      image, checkbutton = barre.hbox.get_children()[0:2]
+      if not selected or (selected and checkbutton.get_active()):
+        checkbutton.set_active(False)
+        barre.R0, barre.R1 = active, active
+        file1 = barre.get_img_file()
+        image.set_from_file("glade/%s" % file1)
+      i = i+1
+    self.set_is_changed(True)
+
+  def on_remove_relax(self, widget=None):
+    self.on_cm_relax_all(widget=widget, selected=False, active=0)
 
   def on_add_segment(self, widget=None):
     """Ajoute une ligne dans la page des barres pour une barre de type segment"""
@@ -7690,541 +7556,79 @@ class Editor(object):
 # -------- page des liaisons ------------
 # ---------------------------------------
 
-  def _ini_appuis_page(self):
-    """Initialisation de la page des appuis"""
-    self._ini_liaison_page()
-    self._ini_dep_page()
-
-  def _ini_liaison_page(self):
+  def _ini_liaisons_page(self):
     """Initialisation de la page des liaisons"""
-    book = self.book.get_nth_page(3)
-    box = book.get_nth_page(0)
-    childs = box.get_children()
-    for elem in childs:
-      box.remove(elem)
-    self._make_liaison_page()
-
-  def _make_liaison_page(self):
-    """Crée la page des liaisons
-    Affichage de la page en mode entry"""
-    #print "Editor::make_liaison_page",content
-    nodes = self.data_editor.get_liaisons()
-    n = len(nodes)
-    book = self.book.get_nth_page(3)
-    box = book.get_nth_page(0)
+    box = self.book.get_nth_page(3)
+    if len(box) == 2: # suppression des contenus précédents
+      box.remove(box.get_children()[1])
     sw = Gtk.ScrolledWindow()
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-    vbox = Gtk.VBox(False, 0)
+    viewport = Gtk.Viewport()
+    viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
+		| Gdk.EventMask.BUTTON_PRESS_MASK
+		| Gdk.EventMask.BUTTON_RELEASE_MASK
+		| Gdk.EventMask.KEY_PRESS_MASK
+		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+    viewport.connect("event", self.onCMenu)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(20)
-    hbox = Gtk.HBox(False, 0)
-    self._update_title_node_liaison(hbox, n)
-
-    vbox.pack_start(hbox, False, False, 0)
-    liaisons_vbox = Gtk.VBox(False, 0)
-    for node in nodes:
-      self._make_row_liaison(liaisons_vbox, node)
-    vbox.pack_start(liaisons_vbox, False, False, 0)
-    self.data_box["liaison"] = liaisons_vbox
-    sw.add_with_viewport(vbox)
+    liaisons = self.data_editor.liaisons
+    nodes_vbox = Gtk.VBox(homogeneous=False, spacing=0)
+    for l in liaisons:
+      hbox = l.add_hbox(self)
+      nodes_vbox.pack_start(hbox, False, False, 0)
+    self.data_box["liaison"] = nodes_vbox
+    vbox.pack_start(nodes_vbox, False, False, 0)
+    viewport.add(vbox)
+    sw.add(viewport)
     sw.show_all()
     box.add(sw)
 
-  def _make_row_liaison(self, vbox, node=None):
-    """Crée la ligne des entry dans la page des liaisons
-    """
-    #print "Editor::make_row_liaison",elem
-    node_name, liaison, angle = "", "", ""
-    if node:
-      node_name = node.name
-      content = node.l
-      liaison = content[0]
-      try:
-        liaison = int(liaison)
-      except ValueError:
-        pass
-      if liaison == 2:
-        try:
-          angle = content[1]
-        except IndexError:
-          pass
-      elif liaison == 3:
-        try:
-          kx, ky, kz = content[1], content[2], content[3]
-        except IndexError:
-          kx, ky, kz = "0", "0", "0"
-    hbox = Gtk.HBox(False, 10)
-    button = Gtk.CheckButton()
-    button.show()
-    hbox.pack_start(button, False, False, 0)
-    combobox = Gtk.ComboBoxText()
-    combobox.set_size_request(90, 30)
-    nodes = [val.name for val in self.data_editor.nodes]
-    function.fill_elem_combo(combobox, nodes, node_name)
-    id = combobox.connect('changed', self._changed_node_liaison)
-    combobox.show()
-    hbox.pack_start(combobox, False, False, 0)
-    combobox = Gtk.ComboBoxText()
-    combobox.set_size_request(140, 30)
-    self._update_combo_liaison(combobox, liaison)
-    combobox.connect('changed', self._changed_liaison)
-    combobox.show()
-    hbox.pack_start(combobox, False, False, 0)
-    if liaison == 2:
-      self._insert_incline(hbox, angle)
-    elif liaison == 3:
-      self._insert_rigidity(hbox, kx, ky, kz)
-    hbox.show()
-    vbox.pack_start(hbox, False, False, 0)
-
-  def _update_title_node_liaison(self, hbox, n, remove=False):
-    if remove:
-      for elem in hbox:
-        hbox.remove(elem)
-
-    if n == 0:
-      label = Gtk.Label(label="Ajouter un noeud")
-      label.set_alignment(0.4, 0.5)
-      label.set_size_request(120, 40)
-      label.show()
-      hbox.pack_start(label, False, False, 3)
-      return
-    label = Gtk.Label(label="Noeuds")
-    label.set_alignment(0.4, 0.5)
-    label.set_size_request(120, 40)
-    label.show()
-    hbox.pack_start(label, False, False, 3)
-    label = Gtk.Label(label="Types de liaison")
-    label.set_alignment(0.15, 0.5)
-    label.set_size_request(230, 40)
-    label.show()
-    hbox.pack_start(label, False, False, 3)
 
 
-  def _changed_node_liaison(self, widget):
-    """Evènement lié à un changement du noeud d'une liaison"""
-    #print "_changed_node_liaison"
-    box = self.data_box["liaison"]
-    hbox = widget.get_parent()
-    model = widget.get_model()
-    index = widget.get_active()
-    if index == -1:
-      return # pas de noeud
-    node_name = model[index][0]
-    combo = hbox.get_children()[2]
-    model = combo.get_model()
-    liaison = combo.get_active()
-    if liaison == -1:
-      return # pas de liaison
-    self.data_editor.set_liaisons(box)
-    self.data_editor.update_deps()
-    self._update_all_deps()
-    #self.data_editor.print_node()
-    self.set_is_changed(True)
-
-  def _add_liaison(self):
+  def on_add_liaison(self):
     """Ajoute une ligne dans la page des liaisons"""
     box = self.data_box["liaison"]
-    self._make_row_liaison(box)
-    child = box.get_children()
-    label_box = box.get_parent().get_children()[0]
-    self._update_title_node_liaison(label_box, len(child) + 1, True)
+    liaison = self.data_editor.add_liaison({'id': '', 'd': '0'})
+    self.data_editor.liaisons.append(liaison)
+    hbox = liaison.add_hbox(self)
+    box.pack_start(hbox, False, False, 0)
 
-  def _remove_liaison(self):
+  def remove_liaisons(self, action=None):
     """Supprime des lignes dans la page des liaisons"""
     box = self.data_box["liaison"]
+    liaisons = self.data_editor.liaisons
+    i = 0
     for elem in box.get_children():
-      checkbutton = elem.get_children()[0]
-      if checkbutton.get_active():
-        combobox = elem.get_children()[1]
-        model = combobox.get_model()
-        index = combobox.get_active()
-        if not index == -1:
-          node_name = model[index][0]
-          node = self.data_editor.get_node(node_name)
-          try:
-            del(node.l)
-          except AttributeError:
-            pass
-        box.remove(elem)
-        self.set_is_changed(True)
-    child = box.get_children()
-    label_box = box.get_parent().get_children()[0]
-    self._update_title_node_dep(label_box, len(child), True)
-
-    box = self.data_box["dep"]
-    childs = box.get_children()
-    if len(childs) == 1:
-      return
-    for i, hbox_dep in enumerate(childs):
-      combobox = hbox_dep.get_children()[1]
-      model = combobox.get_model()
-      index = combobox.get_active()
-      if index == -1:
-        continue
-      node_name = model[index][0]
-      node = self.data_editor.get_node(node_name)
-      self._add_node_dep_widget(hbox_dep, node, True)
-
-
-  def _changed_liaison(self, widget):
-    """Evènement lié à un changement du combo des liaisons
-    Affiche la saisie des rigidités si la liaison est un appui élastique
-    Supprime dans le cas contraire"""
-    #print "_changed_liaison"
-    hbox = widget.get_parent()
-    model = widget.get_model()
-    liaison = widget.get_active()
-    self._remove_option(hbox)
-    if liaison == 2:
-      self._insert_incline(hbox)
-    elif liaison == 3:
-      self._insert_rigidity(hbox)
-
-    combo = hbox.get_children()[1]
-    model = combo.get_model()
-    index = combo.get_active()
-    if index == -1:
-      return # pas de noeud
-    node_name = model[index][0]
-    node = self.data_editor.get_node(node_name)
-    self.set_is_changed(True)
-
-    node = self.data_editor.set_liaison(hbox)
-    self.data_editor.update_dep(node)
-
-    box = self.data_box["dep"]
-    childs = box.get_children()
-    if len(childs) == 1:
-      return
-    for i, hbox_dep in enumerate(childs):
-      widgets = hbox_dep.get_children()
-      combobox = widgets[1]
-      model = combobox.get_model()
-      index = combobox.get_active()
-      if index == -1:
-        continue
-      dep_name = model[index][0]
-      if not dep_name == node_name:
-        continue
-      self._add_node_dep_widget(hbox_dep, node, True)
-
-  def _changed_angle(self, widget):
-    """Evènement lié à un changement d'angle dans un appui de type appui simple"""
-    #print " _changed_angle"
-    a = widget.get_text()
-    hbox = widget.get_parent()
-    node = self.data_editor.set_liaison(hbox)
-    self.set_is_changed(True)
-
-  def _changed_k(self, widget, i):
-    """Evènement lié à un changement de la raideur dans un appui de type appui élastique"""
-    k = widget.get_text()
-    hbox = widget.get_parent()
-    node = self.data_editor.set_liaison(hbox)
-    self.set_is_changed()
-    #self.data_editor.print_node()
-
-  def _update_combo_liaison(self, combobox, number):
-    """Insère les éléments dans le combo des liaisons
-    et rend actif l'élément d'index number"""
-    liaison = ["Encastrement", "Rotule", "Appui simple", "Appui élastique"]
-    for elem in liaison:
-      combobox.append_text(elem)
-    if not number == "":
-      combobox.set_active(number)
-
-  def _remove_option(self, hbox):
-    """Supprime dans la zone de saisie les champs complémentaires """
-   #print "_remove_option"
-    for i, elem in enumerate(hbox):
-      if i > 2: hbox.remove(elem) 
-
-  def _insert_incline(self, hbox, angle=""):
-    """Ajoute la zone de saisie des appuis simples inclinés"""
-    label = Gtk.Label(label="Angle (deg) = ")
-    label.set_size_request(100, 30)
-    label.show()
-    hbox.pack_start(label, False, False, 0)
-    entry = Gtk.Entry()
-    entry.set_width_chars(10)
-    entry.set_placeholder_text('Option')
-    if angle:
-      entry.set_text(angle)
-    entry.connect("changed", self._changed_angle)
-    entry.show()
-    hbox.pack_start(entry, False, False, 0)
-
-  def _insert_rigidity(self, hbox, kx="", ky="", kz=""):
-    """Ajoute la zone de saisie des rigidités"""
-    label = Gtk.Label(label="k<sub>x</sub> = ")
-    label.set_use_markup(True)
-    label.set_size_request(30, 30)
-    label.show()
-    hbox.pack_start(label, False, False, 0)
-    entry = Gtk.Entry()
-    entry.set_width_chars(10)
-    entry.set_text(kx)
-    entry.connect("changed", self._changed_k, 0)
-    entry.show()
-    hbox.pack_start(entry, False, False, 0)
-    label = Gtk.Label(label="k<sub>y</sub> = ")
-    label.set_use_markup(True)
-    label.set_size_request(30, 30)
-    label.show()
-    hbox.pack_start(label, False, False, 0)
-    entry = Gtk.Entry()
-    entry.set_width_chars(10)
-    entry.set_text(ky)
-    entry.connect("changed", self._changed_k, 1)
-    entry.show()
-    hbox.pack_start(entry, False, False, 0)
-    label = Gtk.Label(label="k<sub>z</sub> = ")
-    label.set_use_markup(True)
-    label.set_size_request(30, 30)
-    label.show()
-    hbox.pack_start(label, False, False, 0)
-    entry = Gtk.Entry()
-    entry.set_width_chars(10)
-    entry.set_text(kz)
-    entry.connect("changed", self._changed_k, 2)
-    entry.show()
-    hbox.pack_start(entry, False, False, 0)
-    units = self.data_editor.get_units()
-    unit_F = function.return_key(units['F'], self.data_editor.unit_conv['F'])
-    unit_L = function.return_key(units['L'], self.data_editor.unit_conv['L'])
-    label = Gtk.Label("en %s / %s" % (unit_F, unit_L))
-    label.set_size_request(80, 30)
-    label.show()
-    hbox.pack_start(label, False, False, 0)
-
-
-# --------------------------------------------------
-# -------- page des déplacements imposés ------------
-# --------------------------------------------------
-
-  def _ini_dep_page(self):
-    """Page des déplacements imposés"""
-    book = self.book.get_nth_page(3)
-    box = book.get_nth_page(1)
-    childs = box.get_children()
-    for elem in childs:
-      box.remove(elem)
-    self._make_dep_page()
-
-  def _make_dep_page(self):
-    """Crée la page des affaissements
-    Affichage de la page en mode entry"""
-    #print "Editor::make_affaissement_page",content
-    nodes = self.data_editor.get_deps()
-    n = len(nodes)
-    book = self.book.get_nth_page(3)
-    box = book.get_nth_page(1)
-    sw = Gtk.ScrolledWindow()
-    sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-    vbox = Gtk.VBox(False, 0)
-    vbox.set_border_width(20)
-    # Titre des colonnes
-    hbox = Gtk.HBox(False, 0)
-    self._update_title_node_dep(hbox, n)
-    vbox.pack_start(hbox, False, False, 0)
-    dep_vbox = Gtk.VBox(False, 0)
-    # Création des boites de saisie
-    for node in nodes:
-      self._make_row_dep(dep_vbox, node)
-    vbox.pack_start(dep_vbox, False, False, 0)
-    self.data_box["dep"] = dep_vbox
-    sw.add_with_viewport(vbox)
-    sw.show_all()
-    box.add(sw)
-
-
-  def _make_row_dep(self, vbox, node=None):
-    """Crée la ligne des entry dans la page des affaissements
-    """
-    #print "Editor::make_row_dep",elem
-    hbox = Gtk.HBox(False, 10)
-    button = Gtk.CheckButton()
-    button.show()
-    hbox.pack_start(button, False, False, 0)
-    combobox = Gtk.ComboBoxText()
-    combobox.set_size_request(90, 30)
-    nodes = [val.name for val in self.data_editor.nodes]
-    if node:
-      node_name = node.name
-    else:
-      node_name = ""
-    function.fill_elem_combo(combobox, nodes, node_name)
-    combobox.show()
-    combobox.connect('changed', self._changed_node_dep)
-    hbox.pack_start(combobox, False, False, 0)
-    if node:
-      self._add_node_dep_widget(hbox, node)
-    else:
-      label = Gtk.Label(label="(Choisir un point)")
-      label.show()
-      hbox.pack_start(label, False, False, 0)
-    hbox.show()
-    vbox.pack_start(hbox, False, False, 0)
-
-  def _add_node_dep_widget(self, hbox, node=None, remove=True):
-    """Ajoute les widgets de la ligne des déplacements imposés situés après le nom du noeud"""
-    #print "_add_node_dep_widget"
-    x, y = "", ""
-    if remove:
-      for i, elem in enumerate(hbox.get_children()):
-        if i in [0, 1]:
-          continue
-        hbox.remove(elem)
-    liaison = None
-    if node:
-      node_name = node.name
-      try:
-        liaison = int(node.l[0])
-      except AttributeError:
-        pass
-      content = node.dep
-      x = content[0]
-      try:
-        y = content[1]
-      except IndexError:
-        pass
-# XXX bug d'affichage si cette fonction est activée (changement noeud liaison + liaison) à voir
-    #hbox.hide()
-    if liaison == 2:
-      labels = ["Y'="]
-    else:
-      labels = ["X=", "Y="]
-    label = Gtk.Label(label=labels[0])
-    label.set_size_request(40, 30)
-    label.show()
-    hbox.pack_start(label, False, False, 0)
-    entry = Gtk.Entry()
-    entry.set_text(x)
-    entry.set_width_chars(10)
-    entry.connect("changed", self._changed_dep)
-    entry.show()
-    hbox.pack_start(entry, False, False, 0)
-    if not liaison == 2:
-      label = Gtk.Label(label=labels[1])
-      label.set_size_request(40, 30)
-      label.show()
-      hbox.pack_start(label, False, False, 0)
-      entry = Gtk.Entry()
-      entry.set_text(y)
-      entry.set_width_chars(10)
-      entry.connect("changed", self._changed_dep)
-      entry.show()
-      hbox.pack_start(entry, False, False, 0)
-    hbox.show_all()
-
-  def _changed_node_dep(self, widget):
-    """Evènements liés à une modification du noeud dans un déplacement imposé"""
-    #print " _changed_node_dep"
-    hbox = widget.get_parent()
-    widgets = hbox.get_children()
-    try:
-      x = widgets[3].get_text()
-    except IndexError:
-      x = "0"
-    try:
-      y = widgets[5].get_text()
-    except IndexError:
-      y = "0"
-    combobox = widgets[1]
-    model = combobox.get_model()
-    index = combobox.get_active()
-    if index == -1:
-      return
-    node_name = model[index][0]
-    liaison = self.data_editor.get_liaison(node_name)
-    node = self.data_editor.get_node(node_name)
-    if liaison == 2:
-      node.dep = [y]
-    else:
-      node.dep = [x, y]
-    self._add_node_dep_widget(hbox, node, True)
-    box = self.data_box["dep"]
-    self.data_editor.set_deps(box)
-    self.set_is_changed(True)
-
-  def _changed_dep(self, widget):
-    """Actualise les attributs des déplacements des noeuds"""
-    #print "_changed_dep"
-    hbox = widget.get_parent()
-    combo = hbox.get_children()[1]
-    model = combo.get_model()
-    index = combo.get_active()
-    if index == -1:
-      return # pas de noeud
-    box = self.data_box["dep"]
-# pas très optimisé car analyse tous les noeuds
-    self.data_editor.set_deps(box)
-    self.set_is_changed()
-
-  def _add_dep(self):
-    """Ajoute une ligne dans la page des déplacements imposés"""
-    box = self.data_box["dep"]
-    child = box.get_children()
-    label_box = box.get_parent().get_children()[0]
-    self._update_title_node_dep(label_box, len(child) + 1, True)
-    self._make_row_dep(box)
-
-  def _remove_dep(self):
-    """Supprime une ligne dans la page des déplacements imposés"""
-    box = self.data_box["dep"]
-    for elem in box.get_children():
-      checkbutton = elem.get_children()[0]
+      liaison = liaisons[i]
+      checkbutton = liaison.hbox.get_children()[0]
       if checkbutton.get_active():
         box.remove(elem)
+        del(self.data_editor.liaisons[i])
         self.set_is_changed(True)
-    child = box.get_children()
-    label_box = box.get_parent().get_children()[0]
-    self._update_title_node_dep(label_box, len(child), True)
-    self.data_editor.set_deps(box)
-    #self.data_editor.print_node()
+      else:
+        i += 1
 
-  def _update_all_deps(self):
-    """Met à jour tous les déplacements imposés"""
-    #print "_update_all_deps"
-    box = self.data_box["dep"]
-    childs = box.get_children()
-    if len(childs) == 1:
-      return
-    for i, hbox_dep in enumerate(childs):
-      widgets = hbox_dep.get_children()
-      combobox = widgets[1]
-      model = combobox.get_model()
-      index = combobox.get_active()
-      if index == -1:
-        continue
-      node_name = model[index][0]
-      node = self.data_editor.get_node(node_name)
-      self._add_node_dep_widget(hbox_dep, node, True)
+  def remove_liaison2(self, deleted):
+    """Supprime les hbox des liaisons à partir d'une liste de noeuds"""
+    box = self.data_box["liaison"]
+    liaisons = self.data_editor.liaisons
+    i = 0
+    for elem in box.get_children():
+      liaison = liaisons[i]
+      name = liaison.name
+      if name in deleted:
+        box.remove(elem)
+        del(self.data_editor.liaisons[i])
+        self.set_is_changed(True)
+      else:
+        i += 1
 
-  def _update_title_node_dep(self, hbox, n, remove=False):
-    if remove:
-      for elem in hbox:
-        hbox.remove(elem)
-    units = self.data_editor.get_units()
-    if n == 0:
-      label = Gtk.Label(label="Ajouter un noeud (généralement, laisser vide cette page)")
-      label.set_alignment(0.4, 0.5)
-      label.set_size_request(120, 40)
-      label.show()
-      hbox.pack_start(label, False, False, 3)
-      return
-    label = Gtk.Label(label="Noeuds")
-    label.set_alignment(0.4, 0.5)
-    label.set_size_request(130, 40)
-    label.show()
-    hbox.pack_start(label, False, False, 3)
-    unit = function.return_key(units['L'], self.data_editor.unit_conv['L'])
-    text = "Déplacement imposé des noeuds\n(%s)" % unit
-    label = Gtk.Label(label=text)
-    label.set_alignment(0., 0.5)
-    label.set_size_request(230, 40)
-    label.show()
-    hbox.pack_start(label, False, False, 3)
+
+
+
+
+
 
 
 # --------------------------------------------------
@@ -8245,9 +7649,9 @@ class Editor(object):
 		| Gdk.EventMask.KEY_PRESS_MASK
 		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(20)
-    content_vbox = Gtk.VBox(False, 0)
+    content_vbox = Gtk.VBox(homogeneous=False, spacing=0)
     sections = self.data_editor.sections
     if len(sections) == 0:
       S = self.data_editor.add_section({'name': '*', 's': '', 'i': ''})
@@ -8288,7 +7692,7 @@ class Editor(object):
         i += 1
 
   def on_open_section_ed(self, widget=None, path=None):
-    if hasattr(self, 'section_manager'): 
+    if hasattr(self, 'section_manager'):
       self.section_manager.window.present()
       return
     self.section_manager = classSectionEditor.SectionWindow(path)
@@ -8296,7 +7700,7 @@ class Editor(object):
     #self.set_selection_button(True, self.data_editor.sections)
 
   def on_open_lib1(self, widget=None):
-    if hasattr(self, 'profil_manager'): 
+    if hasattr(self, 'profil_manager'):
       self.profil_manager.window.present()
       return
 
@@ -8306,7 +7710,7 @@ class Editor(object):
     self.set_selection_button(True, self.data_editor.sections)
 
   def on_open_lib2(self, widget=None):
-    if hasattr(self, 'mat_manager'): 
+    if hasattr(self, 'mat_manager'):
       self.mat_manager.window.present()
       return
 
@@ -8360,9 +7764,9 @@ class Editor(object):
 		| Gdk.EventMask.KEY_PRESS_MASK
 		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(20)
-    content_vbox = Gtk.VBox(False, 0)
+    content_vbox = Gtk.VBox(homogeneous=False, spacing=0)
     materials = self.data_editor.materials
     if len(materials) == 0:
       mat = self.data_editor.add_material({'name': '*', 'E': ''})
@@ -8427,10 +7831,9 @@ class Editor(object):
       eventbox = self._ini_tab(case.name, page)
       book.append_page(page, eventbox)
 
-# provisoire en attendant version 2.20 de gtk
-    close_b = Gtk.Button()
+    close_b = Gtk.Button.new_from_icon_name('list-add', Gtk.IconSize.MENU)
+    close_b.set_relief(Gtk.ReliefStyle.NONE)
     close_b.connect('clicked', self._on_add_case)
-    function.add_icon_to_button(close_b, Gtk.STOCK_ADD)
     close_b.show_all()
     page = Gtk.HBox()
     page.show()
@@ -8443,13 +7846,13 @@ class Editor(object):
     n_pages = book.get_n_pages()
     if not self.rename_tab_tag is None:
       case = self.data_editor.cases[self.rename_tab_tag]
-      page = self.charbook.get_nth_page(self.rename_tab_tag)   
+      page = self.charbook.get_nth_page(self.rename_tab_tag)
       tab_box = self._ini_tab(case.name, page)
       self.charbook.set_tab_label(page, tab_box)
       self.rename_tab_tag = None
 
-    if page_num == n_pages-1:
-      book.stop_emission("switch-page")
+    #if page_num == n_pages-1:
+    #  book.stop_emission("switch-page")
     self.data_editor.need_drawing = True
     self.w1app.update_drawing(page_num)
 
@@ -8457,47 +7860,124 @@ class Editor(object):
   def _ini_tab(self, name, page):
     """Retourne le contenu de l'onglet du Notebook des cas de charge"""
     #print "_ini_tab", page
-    tab_box = Gtk.HBox(False, 2)
+    tab_box = Gtk.HBox(homogeneous=False, spacing=2)
     eventbox = Gtk.EventBox()
     eventbox.connect("event", self._put_entry_tab)
     label = Gtk.Label(label=name)
-    label.set_padding(4, 0)
+    label.set_margin_start(4)
     tab_box.pack_start(label, False, False, 0)
-    #tab_box.add(label)
-    close_b = Gtk.Button()
+    close_b = Gtk.Button.new_from_icon_name('window-close', Gtk.IconSize.MENU)
+    close_b.set_relief(Gtk.ReliefStyle.NONE)
     close_b.connect('clicked', self._remove_case, page)
-    function.add_icon_to_button(close_b, Gtk.STOCK_CLOSE)
     tab_box.pack_start(close_b, False, False, 0)
     tab_box.show_all()
     eventbox.add(tab_box)
     return eventbox
 
 # non utilisé
-  def copy_chars(self, widget):
+  def on_duplicate(self, widget):
     """Copie les chargements sélectionnés"""
     pass
 
-  def paste_chars(self, widget):
-    """Colle les chargements copiés"""
-    pass
 
   def onCMenu(self, widget, event):
     """Affiche le menu contextuel de la scrollwindow"""
     if event.type == Gdk.EventType.MOTION_NOTIFY:
       if self.selected:
-        self.selected.override_background_color(Gtk.StateType.NORMAL, None)
+        context = self.selected.get_style_context()
+        context.remove_class("css_hover")
         self.selected = None
     elif event.type == Gdk.EventType.BUTTON_PRESS:
       if event.get_button()[1] == 3:
-        CMenuEmpty(self, event)
+        self.on_empty_cm(event)
         return True
     return False
+
+  def on_empty_cm(self, event):
+    actions = {
+      1 : [{'f':self.remove_nodes, 'label':"Supprimer"}],
+      2 : [{'f':self.on_cm_relax_all, 'label':"Tout relaxer", 'data':(True, 1)}, {'f':self.on_cm_relax_all, 'label':"Supprimer les relaxations", 'data':(True, 0)}, {'f':self.remove_barres, 'label':"Supprimer"} ],
+      3 : [{'f':self.remove_liaisons, 'label':"Supprimer"}],
+      4 : [{'f':self.remove_sections, 'label':"Supprimer"}],
+      5 : [{'f':self.remove_materials, 'label':"Supprimer"}],
+      6 : [{'f':self.remove_chars, 'label':"Supprimer"}],
+      7 : [{'f':self.remove_combinaisons, 'label':"Supprimer"}]
+   }
+    menu1 = Gtk.Menu()
+    n_page = self.book.get_current_page()
+    is_sensitive = False
+
+    if n_page == 1:
+      nodes = self.data_editor.nodes
+      for node in nodes:
+        checkbutton = node.hbox.get_children()[1]
+        if checkbutton.get_active():
+          is_sensitive = True
+          break
+    elif n_page == 2:
+      nodes = self.data_editor.barres
+      for node in nodes:
+        checkbutton = node.hbox.get_children()[1]
+        if checkbutton.get_active():
+          is_sensitive = True
+          break
+    elif n_page == 3:
+      nodes = self.data_editor.liaisons
+      for node in nodes:
+        checkbutton = node.hbox.get_children()[0]
+        if checkbutton.get_active():
+          is_sensitive = True
+          break
+    elif n_page == 4:
+      nodes = self.data_editor.sections
+      for node in nodes:
+        checkbutton = node.hbox.get_children()[0]
+        if checkbutton.get_active():
+          is_sensitive = True
+          break
+    elif n_page == 5:
+      nodes = self.data_editor.materials
+      for node in nodes:
+        checkbutton = node.hbox.get_children()[0]
+        if checkbutton.get_active():
+          is_sensitive = True
+          break
+    elif n_page == 6:
+      case_page = self.charbook.get_current_page()
+      page = self.charbook.get_nth_page(case_page)
+      vbox = page.get_children()[0].get_children()[0]
+      childs = vbox.get_children()
+      case = self.data_editor.cases[case_page]
+      for i, hbox in enumerate(childs):
+        char = case.chars[i]
+        if char.get_is_selected():
+          is_sensitive = True
+          break
+    elif n_page == 7:
+      nodes = self.data_editor.combis
+      for node in nodes:
+        checkbutton = node.hbox.get_children()[0]
+        if checkbutton.get_active():
+          is_sensitive = True
+          break
+
+    for action in actions[n_page]:
+      menuitem = Gtk.MenuItem(label=action['label'])
+      menuitem.set_sensitive(is_sensitive)
+      if 'data' in action:
+        menuitem.connect("activate", action['f'], action['data'][0],  action['data'][1])
+      else:
+        menuitem.connect("activate", action['f'])
+      menu1.append(menuitem)
+    menu1.show_all()
+    menu1.popup_at_pointer(event)
+    return True
+
 
   def _ini_case_page(self, case):
     """Crée un onglet dans le notebook des cas de charge. Retourne une scrolled window"""
     sw = Gtk.ScrolledWindow()
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-    #sw.connect("event", self.onCMenu)
     viewport = Gtk.Viewport()
     viewport.set_events(Gdk.EventMask.POINTER_MOTION_MASK
 		| Gdk.EventMask.BUTTON_PRESS_MASK
@@ -8505,7 +7985,7 @@ class Editor(object):
 		| Gdk.EventMask.KEY_PRESS_MASK
 		| Gdk.EventMask.POINTER_MOTION_HINT_MASK)
     viewport.connect("event", self.onCMenu)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(10)
     chars = case.chars
     for char in chars:
@@ -8520,7 +8000,7 @@ class Editor(object):
   def on_w2_add_char_qu(self, widget):
     """Ajoute une charge uniformément répartie"""
     n = self.charbook.get_current_page()
-    page = self.charbook.get_nth_page(n)   
+    page = self.charbook.get_nth_page(n)
     try:
       vbox = page.get_children()[0].get_children()[0]
     except:
@@ -8534,7 +8014,7 @@ class Editor(object):
   def on_w2_add_char_fp(self, widget):
     """Ajoute une charge ponctuelle sur barre"""
     n = self.charbook.get_current_page()
-    page = self.charbook.get_nth_page(n)   
+    page = self.charbook.get_nth_page(n)
     try:
       vbox = page.get_children()[0].get_children()[0]
     except:
@@ -8545,10 +8025,24 @@ class Editor(object):
     hbox = char.add_hbox(self)
     vbox.pack_start(hbox, False, False, 0)
 
+  def on_w2_add_depi(self, widget):
+    n = self.charbook.get_current_page()
+    page = self.charbook.get_nth_page(n)
+    try:
+      vbox = page.get_children()[0].get_children()[0]
+    except:
+      return None
+    case = self.data_editor.cases[n]
+    char = CharDepi()
+    case.chars.append(char)
+    hbox = char.add_hbox(self)
+    vbox.pack_start(hbox, False, False, 0)
+
+
   def on_w2_add_char_nod(self, widget):
     """Ajoute une charge nodale"""
     n = self.charbook.get_current_page()
-    page = self.charbook.get_nth_page(n)   
+    page = self.charbook.get_nth_page(n)
     try:
       vbox = page.get_children()[0].get_children()[0]
     except:
@@ -8562,7 +8056,7 @@ class Editor(object):
   def on_w2_add_char_tri(self, widget):
     """Ajoute une charge trapézoidale"""
     n = self.charbook.get_current_page()
-    page = self.charbook.get_nth_page(n)   
+    page = self.charbook.get_nth_page(n)
     try:
       vbox = page.get_children()[0].get_children()[0]
     except:
@@ -8576,7 +8070,7 @@ class Editor(object):
   def on_w2_add_char_therm(self, widget):
     """Ajoute une charge nodale"""
     n = self.charbook.get_current_page()
-    page = self.charbook.get_nth_page(n)   
+    page = self.charbook.get_nth_page(n)
     try:
       vbox = page.get_children()[0].get_children()[0]
     except:
@@ -8590,7 +8084,7 @@ class Editor(object):
   def on_w2_add_char_arc0(self, widget):
     """Ajoute une charge sur un arc proj=0"""
     n = self.charbook.get_current_page()
-    page = self.charbook.get_nth_page(n)   
+    page = self.charbook.get_nth_page(n)
     try:
       vbox = page.get_children()[0].get_children()[0]
     except:
@@ -8604,7 +8098,7 @@ class Editor(object):
   def remove_chars(self, widget=None):
     """Supprime les chargements sélectionnés"""
     #print "Editor::remove_chars"
-    page = self.charbook.get_nth_page(self.charbook.get_current_page())   
+    page = self.charbook.get_nth_page(self.charbook.get_current_page())
     n_page = self.charbook.get_current_page()
     vbox = page.get_children()[0].get_children()[0]
     childs = vbox.get_children()
@@ -8627,7 +8121,7 @@ class Editor(object):
     ind = n
     name = "cas %s" % ind
     cases = self.data_editor.get_cases_name()
-    while name in cases: 
+    while name in cases:
       ind += 1
       name = "cas %s" % ind
     case = Case(name)
@@ -8646,11 +8140,11 @@ class Editor(object):
     n = self.charbook.page_num(page)
     if self.charbook.get_n_pages() == 2: # impossible de supprimer onglet 0
       return
-    if page == None: 
+    if page == None:
       return
     if not self.rename_tab_tag is None:
       case = self.data_editor.cases[self.rename_tab_tag]
-      page = self.charbook.get_nth_page(self.rename_tab_tag)   
+      page = self.charbook.get_nth_page(self.rename_tab_tag)
       tab_box = self._ini_tab(case.name, page)
       self.charbook.set_tab_label(page, tab_box)
       self.rename_tab_tag = None
@@ -8724,7 +8218,7 @@ class Editor(object):
           char.add_combo_bar_item(name)
       for node in self.data_editor.nodes:
         node.add_combo_item(name)
-    
+
 
   def _remove_combo_char_items(self, deleted):
     """Supprime les barres dans les combobox des charges"""
@@ -8761,9 +8255,9 @@ class Editor(object):
     entry.grab_focus()
     self.rename_tab_tag = self.charbook.get_current_page()
     entry.connect("event", self._on_tab_entry, text)
-  
 
-  def _on_tab_entry(self, widget, event, text): 
+
+  def _on_tab_entry(self, widget, event, text):
     """Evènement sur un Entry d'un onglet de chargement"""
     #if event.type == Gdk.EventType.EXPOSE:
     #  text = widget.get_text()
@@ -8783,7 +8277,7 @@ class Editor(object):
         self.rename_tab_tag = None
       elif key == "Escape":
         case = self.data_editor.cases[self.rename_tab_tag]
-        page = self.charbook.get_nth_page(self.rename_tab_tag)   
+        page = self.charbook.get_nth_page(self.rename_tab_tag)
         tab_box = self._ini_tab(case.name, page)
         self.charbook.set_tab_label(page, tab_box)
         self.rename_tab_tag = None
@@ -8798,7 +8292,7 @@ class Editor(object):
     n_page = self.charbook.get_current_page()
     page = self.charbook.get_nth_page(n_page)
     hbox = self.charbook.get_tab_label(page)
-    
+
     entry = hbox.get_children()[0]
     new_text = entry.get_text()
     new_text = new_text.replace('_', '-')
@@ -8810,7 +8304,7 @@ class Editor(object):
         text = '%s(%s)' % (new_text, i)
         i += 1
       new_text = text
-    
+
     tab_box = self._ini_tab(new_text, page)
     self.charbook.set_tab_label(page, tab_box)
     self.data_editor.cases[n_page].name = new_text
@@ -8825,7 +8319,7 @@ class Editor(object):
 
   def _ini_combi_page(self):
     """Initialisation de la page des combinaisons
-    Utilisée à l'ouverture de l'éditeur 
+    Utilisée à l'ouverture de l'éditeur
     et si les cas de charges sont modifiés"""
     combis = self.data_editor.combis
     #cases = self.data_editor.get_cases_name()
@@ -8840,7 +8334,7 @@ class Editor(object):
     #debug_get_props(sw)
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     box = self.book.get_nth_page(7)
-    vbox = Gtk.VBox(False, 0)
+    vbox = Gtk.VBox(homogeneous=False, spacing=0)
     vbox.set_border_width(20)
 
     for elem in box.get_children():
@@ -8865,18 +8359,18 @@ class Editor(object):
       return
     if len(vbox.get_children()) == 1:
       return
-    box = Gtk.VBox(False, 0)
+    box = Gtk.VBox(homogeneous=False, spacing=0)
     box.set_name('start')
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="Une combinaison permet d'utiliser ensemble les cas de charge en leur appliquant une pondération. \nUtiliser cette page est facultatif.\nLes coefficients de pondération sont généralement compris entre 0 et 5.")
     hbox.pack_start(label, False, False, 0)
     box.pack_start(hbox, False, False, 0)
-    hbox = Gtk.HBox(False, 0)
+    hbox = Gtk.HBox(homogeneous=False, spacing=0)
     label = Gtk.Label(label="Démarrer en cliquant sur \"Ajouter\" ")
     hbox.pack_start(label, False, False, 0)
-    b = Gtk.Button()
+    b = Gtk.Button.new_from_icon_name('list-add', Gtk.IconSize.MENU)
+    b.set_relief(Gtk.ReliefStyle.NONE)
     b.connect('clicked', self.on_w2_add)
-    function.add_icon_to_button(b, Gtk.STOCK_ADD)
     hbox.pack_start(b, False, False, 0)
     box.pack_start(hbox, False, False, 0)
     box.show_all()
@@ -8946,13 +8440,13 @@ class Editor(object):
     for combi in combis:
       hbox = combi.hbox
       entry = hbox.get_children()[1]
+      entry_context = entry.get_style_context()
       name = entry.get_text().strip()
       if names.get(name, 0) > 1:
-        color = color1
+        entry_context.add_class("css_error")
       else:
-        color = color2
-# override_background_color ne fonctionne pas ici! Entry a t il un background? -> eventbox
-      entry.override_color(Gtk.StateType.NORMAL, color)
+        entry_context.remove_class("css_error")
+
 
 
   def get_cases(self):
@@ -8981,7 +8475,7 @@ class Editor(object):
     self.update_editor_title(True)
     if redraw:
       self.data_editor.need_drawing = True
-      GObject.idle_add(self.w1app.update_drawing)
+      GLib.idle_add(self.w1app.update_drawing)
 
 
   def update_editor_title(self, changed=False):
@@ -9041,7 +8535,7 @@ class Editor(object):
     self._show_doc(page)
     self.w5.show()
 
-    
+
   def _show_doc(self, page):
     """Affiche la documentation de l'éditeur de données"""
     textview = self.w5.get_children()[0].get_children()[0]
@@ -9066,10 +8560,7 @@ class Editor(object):
     theme = themes[page]
     text = theme.find("content").text
     litext = text.split('\n')
-    color = Gdk.RGBA(0, 1, 0, 1) # XXX tester
-    #entry.override_background_color(Gtk.StateType.NORMAL, color)
-    #pixbuf = Gtk.Pixbuf.Pixbuf.new_from_file("glade/arrow-right.xpm")
-    #color = Gdk.Color.parse('#f4dfdf')
+    color = Gdk.RGBA(0, 1, 0, 1)
     h1 = textbuffer.create_tag("h1", weight=Pango.Weight.BOLD,size_points=16.0,foreground = "purple")
     h2 = textbuffer.create_tag("h2", weight=Pango.Weight.BOLD, size_points=12.0)
     h3 = textbuffer.create_tag("h3", weight=Pango.Weight.BOLD, size_points=11.0)
@@ -9077,10 +8568,8 @@ class Editor(object):
     for i,text in enumerate(litext):
       if text == '' : continue
       if text[0:3] == "***" :
-        #textbuffer.insert_pixbuf(end_iter,pixbuf)
         textbuffer.insert_with_tags(end_iter,"%s\n"% text[3:], h3)
       elif text[0:2] == "**" :
-        #textbuffer.insert_pixbuf(end_iter,pixbuf)
         textbuffer.insert_with_tags(end_iter,"%s\n" % text[2:], h2)
       elif text[0] == "*" :
         textbuffer.insert_with_tags(end_iter,"%s\n" % text[1:], h1)
@@ -9094,8 +8583,8 @@ class Editor(object):
     return True
 
   # destruction de la fenetre w5
-  def on_w5_destroy(self, widget, event): 
-    if hasattr(self, "w5"): 
+  def on_w5_destroy(self, widget, event):
+    if hasattr(self, "w5"):
       self.w5.destroy()
       del(self.w5)
 
@@ -9103,7 +8592,6 @@ class Editor(object):
   # ----------------- Outils -------------
   # --------------------------------------
 
-# utile?
   def _update_combo(self, combobox, val):
     """Rend actif le combo pour la valeur val"""
     model = combobox.get_model()
