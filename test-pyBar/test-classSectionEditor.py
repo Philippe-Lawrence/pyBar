@@ -11,7 +11,7 @@ except:
 try:
   gi.require_version('Gtk', '3.0')
 except:
-  print("Nécessite pygtk3.0")
+  print("Nécessite gtk3.0")
   sys.exit(0)
 from gi.repository import Gtk, Gdk, Pango, GObject
 import classSectionEditor
@@ -28,6 +28,8 @@ class fakeW(classSectionEditor.SectionWindow):
     self.path = ""
     self.modified = False
     self.s = classSection.StringAnalyser(string)
+   
+    classSectionEditor.Nodes.BOX = self.s.GetBox()
     classSectionEditor.Nodes.NODES = self.s.nodes
     classSectionEditor.Nodes.ARCS = self.s.arcs
     self.ini_box()

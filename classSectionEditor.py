@@ -1215,6 +1215,7 @@ class SectionWindow(object):
     self.modified = False
     xml = self.get_xml()
     self.s = classSection.StringAnalyser(xml)
+    Nodes.BOX = self.s.GetBox()
     self.write_resu()
     GLib.idle_add(self.update_drawing)
 
@@ -1245,10 +1246,12 @@ class SectionWindow(object):
       print("Impossible d'ouvrir le fichier") # XXX
     Nodes.NODES = self.s.nodes
     Nodes.ARCS = self.s.arcs
+    Nodes.BOX = self.s.GetBox()
     self.ini_box()
     GLib.idle_add(self.update_drawing)
 
   def on_new(self, widget=None):
+    print("ttttt")
     self.modified = True
     Nodes.NODES = {}
     Nodes.ARCS = {}
@@ -1459,42 +1462,10 @@ class SectionWindow(object):
   def on_about(self, widget):
     about()
 
-  def GetBox(self):
-    self.box = None
-    nodes = Nodes.NODES
-    arcs = Nodes.ARCS
-    for node_id in nodes:
-      node = nodes[node_id]
-      x, y = node.x, node.y
-      try:
-        x = float(x)
-        y = float(y)
-      except ValueError:
-        continue
-      if self.box is None:
-        self.box = [x, y, x, y]
-        continue
-      xmin, ymin, xmax, ymax = self.box
-      if x < xmin: xmin = x
-      elif x > xmax: xmax = x
-      if y < ymin: ymin = y
-      elif y > ymax: ymax = y
-      self.box = [xmin, ymin, xmax, ymax]
-    if self.box is None: 
-      return None
-    xmin, ymin, xmax, ymax = self.box
-    for a in arcs:
-      arc = arcs[a]
-      self.box = arc.GetBox(self.box)
-    for id in self.s.paths:
-      node = self.s.paths[id]
-      if node is None: continue
-      self.box = node.GetBox(self.box)
-
 
 
   def GetCairoScale(self, w0, h0):
-    self.GetBox()
+    self.box = Nodes.BOX
     if self.box is None: 
       return 1
     xmin, ymin, xmax, ymax = self.box

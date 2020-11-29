@@ -2048,6 +2048,7 @@ class Liaison(object):
       """Actualise les attributs de l'objet liaison"""
       hbox = self.hbox
       node = ed.get_node(self.name)
+      if node is None : return
       combo = hbox.get_children()[2]
       l = combo.get_active()
       if l == 2:
@@ -5928,8 +5929,8 @@ class DataEditor(object):
         del(node.l)
       except AttributeError:
         pass
-    for hbox in box.get_children():
-      self.set_liaison(hbox)
+    for liaison in self.liaisons:
+      liaison.set_content(self)
 
 
   # Sections
@@ -6497,7 +6498,7 @@ class Editor(object):
 
   def on_w2_xml(self, widget):
     """Basculement en mode xml ou normal"""
-    print ("on_w2_xml")
+    #print ("on_w2_xml")
     vbox = self.w2.get_children()[0]
     childs = vbox.get_children()
     if isinstance(childs[1], Gtk.Notebook):
@@ -6653,7 +6654,6 @@ class Editor(object):
         if current_page == page:
           continue
         self._fct[page]()
-      #self.w2.get_root_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
 
 # les données sont perdues en mode xml quand on passe d'une étude à l'autre
     if self.xml_status == -1:
@@ -6670,8 +6670,6 @@ class Editor(object):
 
     n_page = self.book.get_current_page()
     self._fct[n_page]()
-    #watch = Gdk.Cursor.new(Gdk.CursorType.WATCH)
-    #self.w2.get_root_window().set_cursor(watch)
     GLib.idle_add(BG_update, n_page)
 
   def _on_switch_page(self, book, page, page_num):
@@ -7023,10 +7021,11 @@ class Editor(object):
 
     vbox = self.data_box["liaison"]
     for i, elem in enumerate(vbox.get_children()):
-      combobox = elem.get_children()[2]
+      ev = elem.get_children()[0]
+      combobox = ev.get_children()[2]
       index = combobox.get_active()
       if index == 3:
-        label = elem.get_children()[-1]
+        label = ev.get_children()[-1]
         text = 'en %s / %s' % (unit_F, unit_L)
         label.set_text(text)
     # chargements
@@ -7074,10 +7073,11 @@ class Editor(object):
     unit_F = function.return_key(units['F'], self.data_editor.unit_conv['F'])
     vbox = self.data_box["liaison"]
     for i, elem in enumerate(vbox.get_children()):
-      combobox = elem.get_children()[2]
+      ev = elem.get_children()[0]
+      combobox = ev.get_children()[2]
       index = combobox.get_active()
       if index == 3:
-        label = elem.get_children()[-1]
+        label = ev.get_children()[-1]
         text = 'en %s / %s' % (unit_F, unit_L)
         label.set_text(text)
 
@@ -7126,14 +7126,16 @@ class Editor(object):
     self.set_is_changed(True)
 
   def _update_liaison_num(self, factor):
+      """Actualise les valeurs numériques pour les changements d'unité dans les liaisons"""
       #print "_update_liaison_num", factor
-      for i, row in enumerate(self.data_box["liaison"].get_children()):
-        combobox = row.get_children()[2]
+      for i, ev in enumerate(self.data_box["liaison"].get_children()):
+        hbox = ev.get_children()[0]
+        combobox = hbox.get_children()[2]
         index = combobox.get_active()
         if not index == 3:
           continue
         for j in [4, 6, 8]:
-          entry = row.get_children()[j]
+          entry = hbox.get_children()[j]
           try:
             val = float(entry.get_text().replace(",", "."))
             val = val*factor
@@ -7267,7 +7269,7 @@ class Editor(object):
     node_name = node.name
     box = self.data_box['liaison']
     for i, elem in enumerate(box.get_children()):
-      combo = elem.get_children()[1]
+      combo = elem.get_children()[0].get_children()[1]
       combo.append_text(node_name)
     for case in self.data_editor.cases:
       for char in case.chars:
@@ -7559,8 +7561,8 @@ class Editor(object):
   def _ini_liaisons_page(self):
     """Initialisation de la page des liaisons"""
     box = self.book.get_nth_page(3)
-    if len(box) == 2: # suppression des contenus précédents
-      box.remove(box.get_children()[1])
+    if len(box) == 1: # suppression des contenus précédents
+      box.remove(box.get_children()[0])
     sw = Gtk.ScrolledWindow()
     sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     viewport = Gtk.Viewport()
@@ -7608,6 +7610,7 @@ class Editor(object):
         self.set_is_changed(True)
       else:
         i += 1
+    self.data_editor.set_liaisons()
 
   def remove_liaison2(self, deleted):
     """Supprime les hbox des liaisons à partir d'une liste de noeuds"""
@@ -8495,8 +8498,10 @@ class Editor(object):
         changes.append(id)
     return changes
 
+# inutile ????
   def _quit(self, widget):
     """Action sur le bouton quitter - Emet un signal de fermeture"""
+    print("quit")
     event = Gdk.Event(Gdk.EventType.DELETE)
     self.w2.emit("delete-event", event)
 

@@ -3953,8 +3953,10 @@ class Drawing(object):
       except ValueError:
         continue
       _color = color
-      if not self.status == 8 and noeud in Char.KS.NodeDeps:
-        _color = "red"
+# supprimer le 21/9/2019 pour éviter un bug avec les combinaisons
+# réflchir pour remettre
+      #if not self.status == 8 and noeud in Char.KS.NodeDeps:
+      #  _color = "red"
       if liaison == 0:
         angle = self._get_clumping_angle(struct, noeud)
         self._draw_clumping(cr, x0, y0, x, y, struct_scale, angle, _color)
@@ -8466,7 +8468,10 @@ class Tab(object):
 
   def layout_motion_event(self, area, event):
     """Gère les fonctionnalités lors d'un évènement de survol du Layout"""
-    x_event, y_event = event.x, event.y
+    try:
+      x_event, y_event = event.x, event.y
+    except AttributeError:
+      x_event, y_event = 0, 0
     #print("layout_motion_event", x_event, y_event, self.is_selected)
 
     # test -----------------

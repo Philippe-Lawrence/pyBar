@@ -2740,6 +2740,7 @@ class Structure(object):
     for arc in Curves:
       if name == arc:
         return arc
+    if isinstance(name, str): raise TypeError("name de type str au lieu int")
     super_bars = self.SuperBars
     barres = self.Barres
     for b in super_bars:

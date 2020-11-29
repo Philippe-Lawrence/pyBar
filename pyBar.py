@@ -539,8 +539,7 @@ class MainWindow(object):
     key = Gdk.keyval_name (event.keyval)
     if key == 'Control_L':
       self.key_press = False
-      event = Gdk.Event(Gdk.EventType.MOTION_NOTIFY)
-      tab.layout.emit("motion-notify-event", event)
+      tab.layout_motion_event(tab.layout, event)
 
 # attention si la fenetre de pybar n'a pas le focus, les événements clavier ne sont pas interceptés alors que les évènements souris le sont.
   def _key_press_event(self, widget, event):
@@ -609,6 +608,8 @@ class MainWindow(object):
   def button_press_event(self, widget, event):
     #print("button_press_event")
     tab = self.active_tab
+    screen = Gdk.Screen.get_default()
+    window = screen.get_root_window()
     try:
       obj_selected = tab.is_selected
     except AttributeError:
@@ -624,15 +625,12 @@ class MainWindow(object):
         status = drawing.status
         if obj_selected[0] == 'entry':
           entry = obj_selected[2]
-          destroy_ev = Gdk.Event(Gdk.EventType.DESTROY)
-          entry.emit("event", destroy_ev)
           tab.remove_entry_box()
           tab.remove_tools_box()
           tab.is_selected = ('draw', drawing)
+          tab.layout_motion_event(tab.layout, event)
           return
 
-        screen = Gdk.Screen.get_default()
-        window = screen.get_root_window()
         if obj_selected[0] == 'curve':
           self._select_curve(drawing, obj_selected[2])
           return
@@ -669,15 +667,14 @@ class MainWindow(object):
             return
         if obj_selected[0] == 'node':
             watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
-            screen = Gdk.Screen.get_default()
-            window = screen.get_root_window()
             window.set_cursor(watch)
             node = obj_selected[2]
             # ajouter ici les menus pour les noeuds
             self._create_menu3(event, drawing, node)
             return
         if obj_selected[0] == 'bar':
-            widget.get_root_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
+            watch = Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.ARROW)
+            window.set_cursor(watch)
             self._create_menu2(event, obj_selected[2])
             return
         self._create_menu1(event, obj_selected[1])
@@ -1080,12 +1077,12 @@ class MainWindow(object):
     if 'Barre' in options:
       menuitem2 = Gtk.CheckMenuItem(label="Afficher les barres", active=options['Barre'])
       menuitem2.connect("activate", self.on_barre_display, drawing)
-    if 'Axis' in options:
       menu1.append(menuitem2)
+    if 'Axis' in options:
       menuitem3 = Gtk.CheckMenuItem(label="Afficher les repères", active=options['Axis'])
       menuitem3.connect("activate", self.on_axis_display, drawing)
-    if 'Title' in options:
       menu1.append(menuitem3)
+    if 'Title' in options:
       menuitem4 = Gtk.CheckMenuItem(label="Afficher le titre", active=options['Title'])
       menuitem4.connect("activate", self.on_title_display, drawing)
       menu1.append(menuitem4)
@@ -1932,10 +1929,6 @@ class MainWindow(object):
     #if hasattr(tab, "surface"):
       #tab.del_surface()
     #  tab.configure_event(tab.layout)
-    #else:
-    #  print("ooooo")
-      #event = Gdk.Event(Gdk.EventType.CONFIGURE)
-      #tab.layout.emit("configure-event", event)
     GLib.idle_add(tab.configure_event, tab.layout)
 
     tab.layout.queue_draw()
