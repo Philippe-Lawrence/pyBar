@@ -54,10 +54,10 @@ Les barres peuvent être supprimées à l'aide du bouton "Supprimer", après les
 Cette page contient trois onglets :
 - Pour la saisie des liaisons,
 - Pour la saisie des affaissements d'appuis (optionnel). Les affaissements d'appuis seront pris en compte pour tous les cas de charge,
-- Pour les rotules élastiques (optionnel).
+- Pour les pivot élastiques (optionnel).
 **Onglet des liaisons
 1) Ajouter des liaisons à la structure en cliquant sur le bouton "Ajouter".
-2) Choisir le noeud et la liaison correspondante (encastrement, rotule, appui simple et appui élastique)
+2) Choisir le noeud et la liaison correspondante (encastrement, pivot, appui simple et appui élastique)
 Si l'appui simple est choisi, il est possible de définir un angle d'inclinaison entre -90 et +90°.
 Si l'appui élastique est choisi, il faut indiquer les rigidités de l'appui, en translation (2 valeurs kx et ky) et en rotation kz. 
 Les rigidités sont positives. Trois cas sont possibles pour les valeurs des rigidités :
@@ -72,7 +72,7 @@ Dans le deuxième onglet, indiquer les affaissements d'appuis (uniquement vertic
 1) Ajouter un affaissement.
 2) Indiquer le noeud.
 3) Saisir la valeur de l'affaissement, généralement négative.
-**Onglet des rotules élastiques
+**Onglet des pivots élastiques
 </content>
 	</theme>
 

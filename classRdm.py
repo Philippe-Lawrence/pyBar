@@ -423,6 +423,7 @@ class KStructure(object):
     struct = self.struct
     if struct.status == 1:
       matK = self.MatriceK()
+      #print(matK)
       if matK.size == 0:
         return matK
       det = numpy.linalg.slogdet(matK)[1] # evite un overflow
@@ -450,6 +451,7 @@ class KStructure(object):
     matK = numpy.zeros((size, size))
     noeuds = struct.Nodes
     codeDDL = self.codeDDL
+    #print(codeDDL)
     raideurs = struct.RaideurAppui
     RotuleElast = struct.RotuleElast
     for noeud0 in noeuds:
@@ -479,7 +481,7 @@ class KStructure(object):
         row += 1
       content = RotuleElast.get(noeud0)
       if not content is None:
-        # équation supplémentaire de compatibilité au niveau de la rotule
+        # équation supplémentaire de compatibilité au niveau de la pivot
         self._RotuleElasM(matK, noeud0, content, row)
         row += 1
     #print("matK", matK)
@@ -526,7 +528,7 @@ class KStructure(object):
         code = 7
         nDDL = 3
       if noeud in struct.RotuleElast:
-        if code == 6: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
+        if code == 6: print("debug GetNodeDdl, pas de pivot elast si noeud relaxé")
         code = 1111
         nDDL += 1
       # on supprime u et v si déplacements imposés
@@ -559,7 +561,7 @@ class KStructure(object):
         nDDL = 1
       n_liaisons += 2
       if noeud in struct.RotuleElast:
-        if code == 0: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
+        if code == 0: print("debug GetNodeDdl, pas de pivot elast si noeud relaxé")
         code = 11
         nDDL += 1
 
@@ -573,7 +575,7 @@ class KStructure(object):
         nDDL = 2
       n_liaisons += 1
       if noeud in struct.RotuleElast:
-        if code == 4: print("debug GetNodeDdl, pas de rotule elast si noeud relaxé")
+        if code == 4: print("debug GetNodeDdl, pas de pivot elast si noeud relaxé")
         code = 1011
         nDDL += 1
 
@@ -641,7 +643,7 @@ class KStructure(object):
 
   def _add_elastic(self, matK, row, ddl, values):
     """Ajoute les valeurs des raideurs sur les appuis élastiques
-    Si rotule élastique, on prend la valeur de gauche (wG) comme rotation
+    Si pivot élastique, on prend la valeur de gauche (wG) comme rotation
     pour l'appui élastique"""
     #print("add_elastic", row, ddl, values)
     col = row
@@ -982,7 +984,7 @@ class KStructure(object):
 
 
   def _RotuleElasM(self, matK, noeud, content, row):
-    """On écrit que le moment Mij d'une barre dont l'extrémité est une rotule élastique doit être équivalent au moment élastique transmis
+    """On écrit que le moment Mij d'une barre dont l'extrémité est une pivot élastique doit être équivalent au moment élastique transmis
     Attention il ne peut y avoir que 2 barres par noeuds
     """
     #print("_RotuleElasM", noeud)
@@ -999,7 +1001,7 @@ class KStructure(object):
     pos1 = self.get_ddl_pos(noeud1)
     code1 = self.codeDDL[noeud1][0]
     ddls1 = self.CODES_DDL[code1]
-    # noeud avec rotule élastique à l'origine de la barre
+    # noeud avec pivot élastique à l'origine de la barre
     if noeud == noeud0:
       rz = False
       if noeud1 in RotuleElast and RotuleElast[noeud1][0] == bar_name:
@@ -1031,7 +1033,7 @@ class KStructure(object):
       if ddls1[2] == 1 or rz:
         matK[row, pos1] += M1[2]
     else:
-    # noeud avec rotule élastique à l'extrémité de la barre
+    # noeud avec pivot élastique à l'extrémité de la barre
       M0, M1 = self._getM2(bar_name, noeud0, noeud1, relax0, relax1)
       self.ChangeAxis2(appuis_inclines, noeud0, noeud1, M0, M1)
       if ddls0[0] == 1:
@@ -2238,7 +2240,7 @@ class Structure(object):
         k0 = float(k0)
         self.RotuleElast[noeud1] = (barre, k0)
       except:
-        self.PrintError("Erreur pour la rotule élastique du noeud : %s" % noeud1, 1)
+        self.PrintError("Erreur pour la pivot élastique du noeud : %s" % noeud1, 1)
     
     k1 = node.get('k1')
     if not k1 is None:
@@ -2246,7 +2248,7 @@ class Structure(object):
         k1 = float(k1)
         self.RotuleElast[noeud2] = (barre, k1)
       except:
-        self.PrintError("Erreur pour la rotule élastique du noeud : %s" % noeud2, 1)
+        self.PrintError("Erreur pour la pivot élastique du noeud : %s" % noeud2, 1)
     
 
     mode = node.get('mode')
@@ -2740,7 +2742,7 @@ class Structure(object):
     for arc in Curves:
       if name == arc:
         return arc
-    if isinstance(name, str): raise TypeError("name de type str au lieu int")
+    #if isinstance(name, str): raise TypeError("name de type str au lieu int")
     super_bars = self.SuperBars
     barres = self.Barres
     for b in super_bars:
@@ -3098,7 +3100,7 @@ class Structure(object):
 
       except ValueError:
         self.status = 0
-        self.PrintError("Erreur pour la rotule élastique du noeud : %s" % noeud, 1)
+        self.PrintError("Erreur pour la pivot élastique du noeud : %s" % noeud, 1)
         continue
       self.RotulePlast[noeud] = (barres[0], barres[1], mp)
       #print("self.RotulePlast=", self.RotulePlast)
@@ -3177,7 +3179,7 @@ class Structure(object):
         if not n == 0:
           relaxs[noeud] = 1
         if noeud in liaisons and liaisons[noeud] == 0:
-          # on transforme l'encastrement en rotule
+          # on transforme l'encastrement en pivot
           liaisons[noeud] = 1
       elif n >= 2 and n == n_relax+1:
         if noeud in liaisons and liaisons[noeud] in [0, 3]:
@@ -3838,11 +3840,11 @@ class CasCharge(object):
       if not struct.VerifAlphaExist(list(self.charBarTherm.keys())):
         self.status = 0
         self.charBarTherm = {}
-    # on supprime les couples si la rotule est élastique (inutile pour les relaxations car pas d'équation de moment
+    # on supprime les couples si la pivot est élastique (inutile pour les relaxations car pas d'équation de moment
     for noeud in rot_elast:
       if noeud in self.charNode and not self.charNode[noeud][2] == 0:
         self.charNode[noeud][2] = 0.
-        struct.PrintError("Impossible d'avoir un moment sur le noeud %s contenant une rotule élastique dans %s" % (noeud, case_name), 1)
+        struct.PrintError("Impossible d'avoir un moment sur le noeud %s contenant une pivot élastique dans %s" % (noeud, case_name), 1)
     self.UserNodesChar = copy.deepcopy(self.charNode) # pour dupliquer les listes contenues dans le dictionnaire
     for node in self._charArcNode: # superposition charges nodales arcs
       char = self._charArcNode[node]
@@ -4642,7 +4644,7 @@ class CasCharge(object):
 
   def _GetAff2Char(self, noeud, beamStart, beamEnd):
     """Transforme les affaissements d'appuis en chargement nodal
-    retourne une liste [FX,FY,M] ou [FX,FY,M,M'] si rotule élastique"""
+    retourne une liste [FX,FY,M] ou [FX,FY,M,M'] si pivot élastique"""
     #print("_GetAff2Char", noeud)
     KS = self.KS
     struct = self.struct
@@ -4656,7 +4658,7 @@ class CasCharge(object):
       n = 3
     charAff = [0.]*n
 
-    # terme pour l'équation de la rotule élastique
+    # terme pour l'équation de la pivot élastique
     # on ajoute les termes correspondants à u et v bloqués
     if n == 4:
       noeud0, noeud1, relax0, relax1 = struct.Barres[barre_elast]
@@ -4773,7 +4775,7 @@ class CasCharge(object):
         chars.append(0.)
         barre_elast = rot_elast[noeud][0]
         noeud0, noeud1 = struct.Barres[barre_elast][0:2]
-        # on ajoute les M0ij dans l'équation de la rotule élastique
+        # on ajoute les M0ij dans l'équation de la pivot élastique
         if noeud == noeud0:
           char = self._GetFNodij(barre_elast)
         else:
@@ -4969,7 +4971,7 @@ class CasCharge(object):
     return -1.5/l*ddlNDeb[1]-0.5*ddlNDeb[2]+1.5/l*ddlNFin[1] + wrelax
 
   def _GetBarrePlast(self):
-    """Retourne deux listes de barres ayant à une extrémité une rotule plastique
+    """Retourne deux listes de barres ayant à une extrémité une pivot plastique
     - liste1 : origine
     - liste2 : fin
     """
@@ -5000,7 +5002,7 @@ class CasCharge(object):
     di = {}
     li1, li2 = self._GetBarrePlast()
 
-    # rotule plast sur l'origine
+    # pivot plast sur l'origine
     for barre in li1:
       noeud0, noeud1, relax0, relax1 = barres[barre]
       mp = RotulePlast[noeud0][2]
@@ -5021,7 +5023,7 @@ class CasCharge(object):
         wj = wj_iso
       di[barre] = [wi, wj]
 
-    # rotule plast sur fin de barre
+    # pivot plast sur fin de barre
     for barre in li2:
       noeud0, noeud1, relax0, relax1 = barres[barre]
       mp = RotulePlast[noeud1][2]
@@ -5387,6 +5389,7 @@ class CombiChar(CasCharge):
       if coef == 0:
         continue
       Char = chars[cas]
+      if Char.status == 0: continue
       #print(Char.EndBarSol)
       for barre in barres:
         di[barre] = add_soll(di[barre], Char.EndBarSol[barre], coef)
@@ -5404,6 +5407,7 @@ class CombiChar(CasCharge):
       if not i == 0 and coef == 0:
         continue
       Char = chars[cas]
+      if Char.status == 0: continue
       ddl = Char.ddlValue
       for node in nodes:
         if node in di:
@@ -5444,6 +5448,7 @@ class CombiChar(CasCharge):
       if coef == 0:
         continue
       Char = chars[cas]
+      if Char.status == 0: continue
       for noeud in Char.Reactions:
         if not noeud in di:
           di[noeud] = {}
@@ -5600,7 +5605,6 @@ class R_Structure(object):
     self.Chars = {}
     #self.char_error = [] # erreur en relation avec un chargement, provisoire
     for cas in self.Cases:
-      #xmlnodes = self.struct.XMLNodes["char"].iter('case')
       Char = CasCharge(cas, xmlnode, self.struct)
       if Char.NodeDeps:
         KS = KStructure(self.struct, Char.NodeDeps)
@@ -6160,6 +6164,8 @@ class R_Structure(object):
 
   def GetSigma(self, Char, u, barre):
     """Retourne les contraintes normales en fibres supérieure et inférieure"""
+    if Char is None :
+      return None, None
     if Char.status == -1 or Char.status == 0:
       return None, None
     struct = self.struct
@@ -6693,7 +6699,11 @@ class R_Structure(object):
 
 # ----------- CALCUL DES SOLLICITATIONS DANS LES BARRES -------------------
   def NormalPoint(self, Char, barre, u, charQu, charFp, charTri, conv):
-    N = -Char.EndBarSol[barre][0][0]
+    try:
+      N = -Char.EndBarSol[barre][0][0]
+    except AttributeError:
+      print("debug dans NormalPoint")
+      return None
     N += self.NormalIso(barre, u, charQu, charFp, charTri)
     crit = 1e-12
     if abs(N) < crit:
@@ -6730,7 +6740,11 @@ class R_Structure(object):
 
   def TranchantPoint(self, Char, barre, u, charQu, charFp, charTri, conv):
     """Retourne la valeur de l'effort tranchant dans la barre"""
-    V1 = -Char.EndBarSol[barre][0][1]
+    try:
+      V1 = -Char.EndBarSol[barre][0][1]
+    except AttributeError:
+      print("debug dans TranchantPoint")
+      return None
     V0 = self.TranchantIso(barre, u, charQu, charFp, charTri)
     V = V1+V0
     crit = 1e-12
@@ -7086,8 +7100,12 @@ class R_Structure(object):
     en cas de discontinuité, retourne la valeur à gauche"""
     #print("MomentPoint", charTri)
     l = self.struct.Lengths[barre]
-    M1 = -Char.EndBarSol[barre][0][2]
-    M2 = Char.EndBarSol[barre][1][2]
+    try:
+      M1 = -Char.EndBarSol[barre][0][2]
+      M2 = Char.EndBarSol[barre][1][2]
+    except AttributeError:
+      print("debug dans MomentPoint")
+      return None
     mf0 = self.MomentIso(barre, u, charQu, charFp, charTri)
     M = M1+(M2-M1)/l*u+mf0
     crit = 1e-12

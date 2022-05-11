@@ -32,24 +32,29 @@ class fakeRdm(R_Structure) :
   def __init__(self, xml):
     # si on n'écrit pas ici explicitement le init de la classe parent, ce dernier n'est pas exécuté
     self.struct = Structure(xml)
-    self.status = self.struct.status
+    structure = self.struct
+    self.status = structure.status
     if self.status == -1:
       return
     self.char_error = []
     self.conv = 1
     self.Cases = self.GetCasCharge()
     self.CombiCoef = self.GetCombi()
-    xmlnode = list(self.struct.XMLNodes["char"].iter('case'))
+    xmlnode = list(structure.XMLNodes["char"].iter('case'))
+
+    KS1 = KStructure(structure) 
     self.Chars = {}
     for cas in self.Cases:
-      Char = CasCharge(cas, xmlnode, self.struct)
+      Char = CasCharge(cas, xmlnode, structure)
+      if Char.NodeDeps:
+        KS = KStructure(structure, Char.NodeDeps)
+      else:
+        KS = KS1
+      Char.KS = KS
+      Char.status = KS.status
       self.Chars[cas] = Char
     self.bar_values = {}
     self.SolveCombis()
 
-  def Solve(self, struct, Char):
-    struct.status = 1
-    matK = struct.GetInvMatK()
-    Char.Solve(struct, matK)
 
 

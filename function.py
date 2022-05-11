@@ -497,6 +497,7 @@ def GetCumulCharBarre(barre, Char):
     """Retourne les valeurs des charges uniformes et triangulaires cumulées pour une barre
     Format {0: ((qxD,qYD), ), a2: ((qxG,qyG), (qxD,qyD)), 1: ((qxG,qyG), )}
     Attention aux valeurs extremes 0 et 1 à revoir"""
+    if Char is None: return {}, 0
     di = {}
     maxi = 0
     char_tri = Char.charBarTri.get(barre, {})

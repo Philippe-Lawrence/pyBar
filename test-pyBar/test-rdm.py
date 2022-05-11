@@ -5,81 +5,38 @@ import os
 from fakeclassRdm import fakeRdm, fakeReadXMLString, fakeReadXMLFile
 from classRdm import *
 import function
-string="""<?xml version='1.0' encoding='UTF-8'?>
-<data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.24">
+string="""<data pyBar="http://pybar.fr/index.php?page=logiciel-pybar" version="3.3">
   <elem id="node">
-    <node d="0,0" id="N1" liaison="1" />
-    <node d="1,0" id="N2" liaison="2" />
-    <node d="2,0" id="N3" liaison="2" />
+    <node id="N1" d="0,0" liaison="2,-45" />
+    <node id="N2" d="1,0" liaison="2,45" />
   </elem>
   <elem id="barre">
-    <barre end="N2" id="B1" r0="0" r1="0" start="N1" />
-    <barre end="N3" id="B2" r0="0" r1="0" start="N2" />
+    <barre id="B1" start="N1" end="N2" r0="0" r1="0" />
   </elem>
   <elem id="geo">
-    <barre h="0.1" id="*" igz="1.71e-06" profil="IPE 100" s="0.00103" v="0.05" />
+    <barre id="*" profil="IPE 80" s="0.0007639999999999999" igz="8.014e-07" h="0.08" v="0.04" />
   </elem>
   <elem id="material">
-    <barre alpha="12e-6" id="*" mv="7800" profil="AcierXC10" young="2.16e+11" />
+    <barre id="*" young="200e9" />
   </elem>
   <elem id="char">
     <case id="cas 1">
       <pp d="false" />
-      <depi id="N2" d="0,-0.01" />
-      <barre id="B1" qu="0,,0.0,-10.0" />
-    </case>
-    <case id="cas 2">
-      <barre id="B2" qu="0,,0.0,-10.0" />
+      <barre id="B1" fp="0.5,0,-1000,0" />
     </case>
   </elem>
   <elem id="combinaison" />
   <elem id="prefs">
-    <unit d="1.0" id="C" />
-    <unit d="1.0" id="E" />
-    <unit d="1.0" id="F" />
-    <unit d="1.0" id="I" />
-    <unit d="1.0" id="M" />
-    <unit d="1.0" id="L" />
-    <unit d="1.0" id="S" />
-    <const g="9.81" />
-    <conv conv="1.0" />
+    <unit id="L" d="1.0" />
+    <unit id="C" d="1.0" />
+    <unit id="E" d="1.0" />
+    <unit id="F" d="1.0" />
+    <unit id="I" d="1.0" />
+    <unit id="M" d="1.0" />
+    <unit id="S" d="1.0" />
+    <const name="g" value="9.81" />
+    <const name="conv" value="1" />
   </elem>
-  <draw id="prefs" />
-</data>"""
-string="""<?xml version="1.0" ?>
-<data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
-	<elem id="node">
-		<node d="0,0" id="N1" liaison="1" dep="0.01,0.01" />
-		<node d="@N1,2,0" id="N2" liaison="2,45"/>
-	</elem>
-	<elem id="barre">
-		<barre start="N1" end="N2" id="B1"/>
-	</elem>
-	<elem id="geo">
-		<barre h="" id="*" igz="1.0" s="1e-06" v=""/>
-	</elem>
-	<elem id="material">
-		<barre id="*" young="200000000000.0"/>
-	</elem>
-	<elem id="char">
-		<case id="cas 1">
-			<depi id="N1"  d="0.01,0.01" />
-		</case>
-		<case id="cas 2">
-			<depi id="N1"  d="0.01,0.01" />
-			<barre id="B1" tri="@,%50,%60,0.0,10000.0,90.0"/>
-		</case>
-	</elem>
-	<elem id="combinaison"/>
-	<elem id="prefs">
-		<unit d="1.0" id="C"/>
-		<unit d="1.0" id="E"/>
-		<unit d="1.0" id="F"/>
-		<unit d="1.0" id="I"/>
-		<unit d="1.0" id="M"/>
-		<unit d="1.0" id="L"/>
-		<unit d="1.0" id="S"/>
-	</elem>
 </data>"""
 
 
@@ -95,7 +52,6 @@ xml = fakeReadXMLString(string)
 rdm = fakeRdm(xml)
 rdm.struct.PrintErrorConsole()
 #print(rdm.struct.Barres)
-print(rdm.struct.InvMatK)
 
 # les données géométrique se trouvent dans rdm.struct
 # print rdm.struct.Sections

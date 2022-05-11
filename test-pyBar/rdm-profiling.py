@@ -51,19 +51,12 @@ class fakeRdm(R_Structure) :
     self.struct.Lengths = L
     self.struct._RelaxNode()
     self.struct._GetBarreByNode()
-    self.struct._MakeLiDDL()
-    matK = self.struct.MatriceK()
-    #print matK
-    #print self.struct.codeDDL
-
-    self.struct.InvMatK = numpy.linalg.inv(matK)
-
-
+    KS1 = KStructure(self.struct) 
 
     #rdm = classRdm.R_Structure(struct)
     self.Cases = self.GetCasCharge()
     self.CombiCoef = self.GetCombi()
-    xmlnode = self.struct.XMLNodes["char"].getiterator('case')
+    xmlnode = self.struct.XMLNodes["char"].iter('case')
     self.Chars = {}
     for cas in self.Cases:
       Char = CasCharge(cas, xmlnode, self.struct)

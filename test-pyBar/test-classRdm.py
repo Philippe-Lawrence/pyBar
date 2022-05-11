@@ -60,7 +60,7 @@ class barreSimpleTestCase(unittest.TestCase) :
     #rdm=self._genere_instance()
     assert rdm.struct.Nodes == {"N1" : (0,0), "N2" : (2,0)}
     assert rdm.struct.Barres == {"B1" : ["N1","N2",0,0]}
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     Char = rdm.Chars['cas 1']
     q = rdm.struct.Sections["*"]*rdm.struct.VolMass["*"]*rdm.struct.G-1
     self.assertAlmostEqual(rdm.DepPoint(Char, "B1",1.)[1], 
@@ -105,7 +105,7 @@ class barreSimple2TestCase(unittest.TestCase) :
     rdm = self._genere_instance()
     assert rdm.struct.Nodes == {"N1": (0, 0), "N2": (2,0)}
     assert rdm.struct.Barres == {"B1" : ["N1","N2",0,0]}
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     Char = rdm.Chars['cas 1']
     self.assertEqual(rdm.DepPoint(Char, "B1",1.)[1], 
       rdm.struct.Lengths["B1"]**3/48/rdm.struct.MQua["*"]/rdm.struct.Youngs["*"],
@@ -410,7 +410,7 @@ class barre4appui_appui_inclineTestCase(unittest.TestCase):
     # l'ordre ou elles apparaissent
     rdm = self._genere_instance()
     Char = rdm.Chars['cas 1']
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     self.assertAlmostEqual(Char.ddlValue["N2"][0],-3.516873286e-07,7, 
       "Le déplacement du noeud N2 n'est pas correct")
     self.assertAlmostEqual(Char.ddlValue["N2"][2],5.5599403e-07,7, 
@@ -427,7 +427,7 @@ class barre2appui_appui_incline2TestCase(unittest.TestCase):
     string ="""<?xml version="1.0" ?>
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
-		<node d="0,0" dep="0.01,0.01" id="N1" liaison="1"/>
+		<node d="0,0" id="N1" liaison="1"/>
 		<node d="@N1,2,0" id="N2" liaison="2,45"/>
 	</elem>
 	<elem id="barre">
@@ -440,7 +440,9 @@ class barre2appui_appui_incline2TestCase(unittest.TestCase):
 		<barre id="*" young="200000000000.0"/>
 	</elem>
 	<elem id="char">
-		<case id="cas 1"/>
+		<case id="cas 1">
+			<depi id="N1" d="0.01,0.01"/>
+		</case>
 		<case id="cas 2">
 			<barre id="B1" tri="@,%50,%60,0.0,10000.0,90.0"/>
 		</case>
@@ -464,7 +466,7 @@ class barre2appui_appui_incline2TestCase(unittest.TestCase):
     # l'ordre ou elles apparaissent
     rdm = self._genere_instance()
     Char = rdm.Chars['cas 1']
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     self.assertAlmostEqual(Char.ddlValue["N1"][0],0.01,7, 
       "Le déplacement du noeud N1 n'est pas correct")
     self.assertAlmostEqual(Char.ddlValue["N1"][1],0.01,7, 
@@ -485,7 +487,7 @@ class barre2appui_appui_inclineTestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N0" liaison="1"/>
-		<node dep="0.1" d="2&lt;45" id="N2" liaison="2,45"/>
+		<node  d="2&lt;45" id="N2" liaison="2,45"/>
 	</elem>
 	<elem id="barre">
 		<barre start="N0" end="N2" id="B1"/>
@@ -497,7 +499,9 @@ class barre2appui_appui_inclineTestCase(unittest.TestCase):
 		<barre id="*" young="200000000000.0"/>
 	</elem>
 	<elem id="char">
-		<case id="cas 1"/>
+		<case id="cas 1">
+			<depi id="N2" d="0,0.1"/>
+		</case>
 	</elem>
 	<elem id="combinaison">
 		<combinaison d="1.0" id="combi1"/>
@@ -520,7 +524,7 @@ class barre2appui_appui_inclineTestCase(unittest.TestCase):
     # l'ordre ou elles apparaissent
     rdm = self._genere_instance()
     Char = rdm.Chars['cas 1']
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     self.assertAlmostEqual(Char.ddlValue["N2"][0],-0.0707106781187,7, 
       "Le déplacement du noeud N2 n'est pas correct")
     self.assertAlmostEqual(Char.ddlValue["N2"][1],0.0707106781187,7, 
@@ -534,8 +538,8 @@ class barre4appui_2rotule_dep_TestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
-		<node d="1,0" id="N2"  dep="0.01" liaison="2"/>
-		<node d="2,0" id="N3"  dep="0.01" liaison="2"/>
+		<node d="1,0" id="N2"  liaison="2"/>
+		<node d="2,0" id="N3"  liaison="2"/>
 		<node d="3,0" id="N4" liaison="0"/>
 	</elem>
 	<elem id="barre">
@@ -552,6 +556,8 @@ class barre4appui_2rotule_dep_TestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0,0.01"/>
+			<depi id="N3" d="0,0.01"/>
 	<barre fp="%0.5,0.0,-1000000.0,0.0" id="B2"/>
 		</case>
 	</elem>
@@ -603,7 +609,7 @@ class barre2appui_dep_TestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="1"/>
-		<node dep="0.001" d="5,0" id="N2" liaison="2"/>
+		<node d="5,0" id="N2" liaison="2"/>
 		<node d="10,0" id="N3" liaison="2"/>
 	</elem>
 	<elem id="barre">
@@ -619,6 +625,7 @@ class barre2appui_dep_TestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0,0.001"/>
 			<barre fp="%0.5,0.0,-10000.0,0.0" id="B1"/>
 			<barre fp="%0.5,0.0,-10000.0,0.0" id="B2"/>
 		</case>
@@ -646,7 +653,7 @@ class barre2appui_dep_TestCase(unittest.TestCase):
     Char = rdm.Chars['cas 1']
     assert rdm.struct.Nodes == {"N1": (0, 0), "N2": (5, 0), "N3": (10, 0)}
     assert rdm.struct.Barres == {"B1" : ["N1","N2",0,0], "B2" : ["N2","N3",0,0]}
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     self.assertAlmostEqual(Char.ddlValue["N2"][1],0.001,7, 
       "Le déplacement du noeud N2 n'est pas correct")
     self.assertAlmostEqual(Char.ddlValue["N1"][2],-Char.ddlValue["N3"][2],7, 
@@ -857,7 +864,7 @@ class barreBiEncastreeTestCase(unittest.TestCase):
     rdm=self._genere_instance()
     assert rdm.struct.Nodes == {"N1" : (0,0), "N2": (0.4, 0), "N3" : (1,0)}
     assert rdm.struct.Barres == {"B1" : ["N1","N2",0,0], "B2" : ["N2","N3",0,0]}
-    self.assertEqual(rdm.struct.status,2,"Erreur dans la lecture des données") 
+    self.assertEqual(rdm.struct.status,1,"Erreur dans la lecture des données") 
     Char = rdm.Chars['cas 1']
     self.assertAlmostEqual(rdm.DepPoint(Char, "B1",0.3)[1],1e-10,7, 
       "Le déplacement n'est pas correct")
@@ -1281,7 +1288,7 @@ class CompareRotuleElastEtAppuiInclineTestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
-		<node d="@N1,1,0" id="N2" liaison="2,45" dep="-0.01"/>
+		<node d="@N1,1,0" id="N2" liaison="2,45" />
 		<node d="@N2,1&lt;45" id="N3" liaison="1"/>
 
 
@@ -1299,6 +1306,7 @@ class CompareRotuleElastEtAppuiInclineTestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0,-0.01"/>
 			<node d="1000.0,0.0,0.0" id="N2"/>
 			<barre fp="%0.4,1000.0,-1000.0,0.0" id="B2"/>
 		</case>
@@ -1322,7 +1330,7 @@ class CompareRotuleElastEtAppuiInclineTestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
-		<node d="@N1,1,0" dep="-0.01" id="N2" liaison="2,45"/>
+		<node d="@N1,1,0"  id="N2" liaison="2,45"/>
 		<node d="@N2,1&lt;45" id="N3" liaison="1"/>
 	</elem>
 	<elem id="barre">
@@ -1337,6 +1345,7 @@ class CompareRotuleElastEtAppuiInclineTestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0,-0.01"/>
 			<node d="1000000.0,0.0,0.0" id="N2"/>
 			<barre fp="%0.4,1000000.0,-1000000.0,0.0" id="B2"/>
 		</case>
@@ -1406,7 +1415,7 @@ class Compare2RotuleElastTestCase(unittest.TestCase):
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
 		<node d="@N1,1,0.5" id="N2"/>
-		<node d="@N1,2,0" dep="0.01,0.02" id="N3"/>
+		<node d="@N1,2,0"  id="N3"/>
 		<node d="3,0.6" id="N4"/>
 		<node d="4,0" id="N5" liaison="0"/>
 	</elem>
@@ -1423,7 +1432,9 @@ class Compare2RotuleElastTestCase(unittest.TestCase):
 		<barre id="*" mv="7800.0" young="200000000000.0"/>
 	</elem>
 	<elem id="char">
-		<case id="cas 1"/>
+		<case id="cas 1">
+			<depi id="N3" d="0.01,0.02"/>
+		</case>
 	</elem>
 	<elem id="combinaison">
 		<combinaison d="1.0" id="Combinaison 4"/>
@@ -1445,7 +1456,7 @@ class Compare2RotuleElastTestCase(unittest.TestCase):
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
 		<node d="@N1,1,0.5" id="N2"/>
-		<node d="@N1,2,0" dep="0.01,0.02" id="N3"/>
+		<node d="@N1,2,0"  id="N3"/>
 		<node d="3,0.6" id="N4"/>
 		<node d="4,0" id="N5" liaison="0"/>
 	</elem>
@@ -1462,7 +1473,9 @@ class Compare2RotuleElastTestCase(unittest.TestCase):
 		<barre id="*" mv="7800.0" young="200000000000.0"/>
 	</elem>
 	<elem id="char">
-		<case id="cas 1"/>
+		<case id="cas 1">
+			<depi id="N3" d="0.01,0.02"/>
+		</case>
 	</elem>
 	<elem id="combinaison">
 		<combinaison d="1.0" id="Combinaison 4"/>
@@ -2433,7 +2446,7 @@ class rotule_elast3_TestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="1"/>
-		<node d="50,0" id="N2" dep="0,-1"/>
+		<node d="50,0" id="N2" />
 		<node d="100,0" id="N3" liaison="2"/>
 	</elem>
 	<elem id="barre">
@@ -2444,11 +2457,12 @@ class rotule_elast3_TestCase(unittest.TestCase):
 		<barre h="0.08" id="*" igz="1." profil="IPE 80" s="10." v="0.04"/>
 	</elem>
 	<elem id="material">
-		<barre id="*" young="1.0"/>
+		<barre id="*" young="1.0e9"/>
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
 			<node d="0.0,-1.0,0.0" id="N2"/>
+			<depi id="N2" d="0,-1"/>
 		</case>
 	</elem>
 	<elem id="combinaison">
@@ -2498,7 +2512,7 @@ class rotule_elast4_TestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
-		<node d="0.5,0" id="N2" dep="0.01,-0.01"/>
+		<node d="0.5,0" id="N2"/>
 		<node d="1,0" id="N3" liaison="0"/>
 		<node d="0.5,1" id="N4"/>
 	</elem>
@@ -2515,6 +2529,7 @@ class rotule_elast4_TestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0.01,-0.01"/>
 			<node d="0.0,-1.0,0.0" id="N2"/>
 		</case>
 	</elem>
@@ -2567,7 +2582,7 @@ class rotule_elast5_TestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="0"/>
-		<node d="0.5,0" id="N2" dep="0.01,-0.01"/>
+		<node d="0.5,0" id="N2" />
 		<node d="1,0" id="N3" liaison="0"/>
 		<node d="0.5,1" id="N4"/>
 	</elem>
@@ -2584,6 +2599,7 @@ class rotule_elast5_TestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0.01,-0.01"/>
 			<node d="0.0,-1.0,0.0" id="N2"/>
 		</case>
 	</elem>
@@ -2639,7 +2655,7 @@ class dep_imp_relaxation_TestCase(unittest.TestCase):
 <data pyBar="http://open.btp.free.fr/?/pyBar" version="2.2">
 	<elem id="node">
 		<node d="0,0" id="N1" liaison="1"/>
-		<node d="0.5,0" dep="0,0.01" id="N2"/>
+		<node d="0.5,0"  id="N2"/>
 		<node d="1,0" id="N3" liaison="2"/>
 	</elem>
 	<elem id="barre">
@@ -2654,6 +2670,7 @@ class dep_imp_relaxation_TestCase(unittest.TestCase):
 	</elem>
 	<elem id="char">
 		<case id="cas 1">
+			<depi id="N2" d="0,0.01"/>
 			<node d="0.0,-1.0,0.0" id="N2"/>
 		</case>
 	</elem>

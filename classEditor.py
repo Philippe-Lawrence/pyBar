@@ -172,8 +172,7 @@ class ArcNode(AbstractNode):
       self.rel = False
     self.x = None
     self.y = None
-    if 'liaison' in data :
-      self.l = data['liaison']
+    if 'liaison' in data : self.liaison = data['liaison'].split(',')
 
   def set_content_from_widgets(self, relative_node=None):
     """Modifie les attributs à partir de la lecture des widgets pour un noeud d'arc"""
@@ -201,8 +200,7 @@ class ArcNode(AbstractNode):
     node.set("r", self.rel and "1" or "0")
     node.set("pos_on_curve", self.pos_on_curve and "true" or "false")
     try:
-      l = self.l
-      node.set("liaison", ",".join(l))
+      node.set("liaison", ",".join(self.liaison))
     except AttributeError:
       pass
     return node
@@ -427,7 +425,8 @@ class Node(AbstractNode):
     self.x = None
     self.y = None
     self.set_content_from_string(content['d'])
-    if 'liaison' in content : self.l = content['liaison']
+    if 'liaison' in content : 
+      self.liaison = content['liaison'].split(',')
 
   def set_content_from_string(self, content):
     """Crée les attribut de l'instance en fonction de la chaine de caractère"""
@@ -477,8 +476,8 @@ class Node(AbstractNode):
     string += "%s" % self.s_y
     node.set("d", string)
     try:
-      l = self.l # !! liaison
-      node.set("liaison", ",".join(l))
+      #assert(isinstance(self.liaison, list))
+      node.set("liaison", ",".join(self.liaison))
     except AttributeError:
       pass
 
@@ -1635,7 +1634,7 @@ class Barre(AbstractBar):
     return hbox
 
   def update_k(self, widget, Main):
-    """Met à jour la rotule élastique"""
+    """Met à jour la pivot élastique"""
     new = widget.get_text()
     name = widget.get_name()
     if name == "k0":
@@ -1651,7 +1650,7 @@ class Barre(AbstractBar):
     Main.set_is_changed()
 
   def update_numeric_F(self, factor):
-    """Actualise les valeurs numériques pour les rotules élastiques"""
+    """Actualise les valeurs numériques pour les pivots élastiques"""
     if "k0" in self.boxes:
       entry = self.boxes["k0"].get_children()[1]
       try:
@@ -2064,7 +2063,7 @@ class Liaison(object):
         li = ["3", kx, ky, kz]
       else:
         li = [str(l)]
-      node.l = li
+      node.liaison = li
 
  
   def _update_combo_liaison(self, combobox, number):
@@ -2137,6 +2136,7 @@ class Liaison(object):
     """Evènement lié à un changement du noeud d'une liaison"""
     self.name = widget.get_active_text()
     self.set_content(Main.data_editor)
+    Main.data_editor.set_liaisons()
     Main.set_is_changed(True)
 
   def _changed_liaison(self, widget, Main):
@@ -5926,7 +5926,7 @@ class DataEditor(object):
     """Actualise toutes les liaisons des objets Node à partir de la lecture des combobox de la page des liaisons"""
     for node in self.nodes:
       try:
-        del(node.l)
+        del(node.liaison)
       except AttributeError:
         pass
     for liaison in self.liaisons:
@@ -6101,7 +6101,8 @@ class DataEditor(object):
     status = False
     first_case_name = XML["char"].find('case').get("id")
     pp = XML["char"].find('case').find('pp')
-    status = pp.get("d")
+    if 'd' in pp.keys():
+      status = pp.get("d")
     if status:
       if status == 'true':
         status = True
@@ -6331,12 +6332,12 @@ class DataEditor(object):
       if hasattr(node, 's'):
         assert type(node.s) is type("s") or type(node.s) is type("s")
       try:
-        print("\tLiaison : %s finir" % node.l[0])
+        print("\tLiaison : %s finir" % node.liaison[0])
       except AttributeError:
         pass
       if hasattr(node, 'l'):
-        assert type(node.l) is type([])
-        for val in node.l:
+        assert type(node.liaison) is type([])
+        for val in node.liaison:
           assert type(val) is type("") or  type(val) is type("")
 
       try:
@@ -6974,7 +6975,7 @@ class Editor(object):
     """Met à jour les valeurs numériques suite à un changement d'unité de force"""
     # appui élastique
     self._update_liaison_num(factor)
-    # rotules élastiques
+    # pivots élastiques
     for b in self.data_editor.barres:
       b.update_numeric_F(factor)
 
@@ -7081,7 +7082,7 @@ class Editor(object):
         text = 'en %s / %s' % (unit_F, unit_L)
         label.set_text(text)
 
-    # rotules élastiques
+    # pivots élastiques
     for barre in self.data_editor.barres:
       barre.update_tooltip_F(unit_F)
 

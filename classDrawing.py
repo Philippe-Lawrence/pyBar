@@ -1151,6 +1151,44 @@ class Drawing(object):
     self.has_pattern = False
     self.chart_zoom = {}
 
+  def get_info(self, study, barre):
+    barre = barre.name
+    rdm = study.rdm
+    struct = study.rdm.struct
+    #crit = 1e-10
+    crit = max(struct.width, struct.height)/1e8
+    unit_L = study.get_unit_name('L')
+    unit_S = study.get_unit_name('S')
+    unit_I = study.get_unit_name('I')
+    name = struct.GetBarreName(barre)
+    l = struct.GetLength(barre)
+    if l is None:
+      return ("Non disponible", 0)
+    if l < crit:
+      l = 0
+    s = struct.GetSection(barre)
+    if s is None:
+      return ("Non disponible", 0)
+    if s < crit/1e4:
+      s = 0
+    i = struct.GetMQua(barre)
+    if i is None:
+      return ("Non disponible", 0)
+    if i < crit/1e8:
+      i = 0
+    a = struct.GetAngle(barre)
+    if a is None:
+      return ("Non disponible", 0)
+    a = a/math.pi*180
+    if abs(a) < crit:
+      a = 0
+    text = "%s : l = %s %s, S = %s %s, Igz = %s %s, Angle = %s°" % (name,
+		function.PrintValue(l, struct.units['L']), unit_L,
+		function.PrintValue(s, struct.units['S']), unit_S,
+		function.PrintValue(i, struct.units['I']), unit_I,
+		function.PrintValue(a))
+    return (text, 2)
+
   def set_status(self, status):
     self.status = status
 
@@ -1857,7 +1895,7 @@ class Drawing(object):
       self._draw_char_bar_fp(cr, x0, y0, barre, study, chars[barre], scale, color="green")
     chars = Char.UserNodesChar
     for noeud in chars:
-      if len(Nodes[noeud]) == 0:
+      if not noeud in Nodes or len(Nodes[noeud]) == 0:
         continue
       x, y = Nodes[noeud]
       x, y= x*scale+x0, -y*scale+y0
@@ -3846,16 +3884,16 @@ class Drawing(object):
         self._draw_one_relax(cr, -12/scale, 0, scale, False)
         cr.restore()
 
-    # rotules élastiques
+    # pivots élastiques
     try:
-      rotules = struct.RotuleElast
+      pivots = struct.RotuleElast
     except AttributeError:
-      rotules = {}
-    for noeud in rotules:
+      pivots = {}
+    for noeud in pivots:
       n_barre = struct.BarByNode.get(noeud, 2)
       x, y = struct.Nodes[noeud]
       if len(n_barre) >= 3:
-        barre = rotules[noeud][0]
+        barre = pivots[noeud][0]
         pt1, pt2, rel1, rel2 = struct.Barres[barre]
         if pt1 == noeud:
           delta = 12/scale
@@ -5260,7 +5298,7 @@ class Drawing(object):
       combi_error = True
     if self.status == 2:
       show_all = True # on montre les chargements
-    if s_case is None:
+    if s_case is None or s_case > n_cases-1:
       s_case = self.s_case = 0
 
     if show_all:
@@ -6373,6 +6411,9 @@ class SigmaDrawing(ChildDrawing):
     self.chart_zoom = {}
     self.has_pattern = False
 
+  def get_info(self, study, barre):
+    return ("Non disponible", 0)
+
   def set_status(self, status):
     """Blocage du status pour ce type de dessin"""
     self.status = 2
@@ -6447,6 +6488,8 @@ class SigmaDrawing(ChildDrawing):
     else:
       zoom = 1
     self.sig_inf, self.sig_sup = self.get_sigma(rdm)
+    if self.sig_inf is None or  self.sig_sup is None:
+      return
     s1, s2 = self.sig_inf, self.sig_sup
     maxi = max(abs(s1), abs(s2))
     if maxi == 0:
@@ -6574,6 +6617,7 @@ class SigmaDrawing(ChildDrawing):
 
   def expose_drawing(self, cr, study):
     """Lance la création des pattern"""
+    #print("expose_drawing", self.struct_scale)
     rdm = study.rdm
     struct = rdm.struct
     units = struct.units
@@ -6845,7 +6889,6 @@ class SigmaDrawing(ChildDrawing):
   def get_sigma(self, rdm):
     """Retourne les valeurs des contraintes"""
     Char = rdm.GetCharByNumber(self.s_case)
-
     return rdm.GetSigma(Char, self.u, self.s_bar)
 
   def _get_mapping_data(self, x1_d, y1_d, x2_d, y2_d):
@@ -6976,7 +7019,6 @@ class Study(object):
 
   def get_max(self, drawing, Char=None):
     """Retourne le maximum des sollicitations de l'ensemble des chargements ou d'un chargement si précisé"""
-    #print("get_max")
     status = drawing.status
     di = {4: 'N', 5: 'V', 6: 'M', 7: 'u'}
     s_cases = drawing.s_cases
@@ -6994,7 +7036,7 @@ class Study(object):
     maxi = 0.
     for mode in ['N', 'V', 'M']:
       val = self.rdm.GetCombiMax(mode)
-      if val > maxi:
+      if not val is None and val > maxi:
         maxi = val
     return maxi
 
@@ -7839,43 +7881,9 @@ class Tab(object):
 
   def _area_barre_info(self, barre, drawing):
     """Retourne les informations sur la barre choisie"""
-    barre = barre.name
     study = self.studies[drawing.id_study]
-    rdm = study.rdm
-    struct = study.rdm.struct
-    #crit = 1e-10
-    crit = max(struct.width, struct.height)/1e8
-    unit_L = study.get_unit_name('L')
-    unit_S = study.get_unit_name('S')
-    unit_I = study.get_unit_name('I')
-    name = struct.GetBarreName(barre)
-    l = struct.GetLength(barre)
-    if l is None:
-      return ("Non disponible", 0)
-    if l < crit:
-      l = 0
-    s = struct.GetSection(barre)
-    if s is None:
-      return ("Non disponible", 0)
-    if s < crit/1e4:
-      s = 0
-    i = struct.GetMQua(barre)
-    if i is None:
-      return ("Non disponible", 0)
-    if i < crit/1e8:
-      i = 0
-    a = struct.GetAngle(barre)
-    if a is None:
-      return ("Non disponible", 0)
-    a = a/math.pi*180
-    if abs(a) < crit:
-      a = 0
-    text = "%s : l = %s %s, S = %s %s, Igz = %s %s, Angle = %s°" % (name,
-		function.PrintValue(l, struct.units['L']), unit_L,
-		function.PrintValue(s, struct.units['S']), unit_S,
-		function.PrintValue(i, struct.units['I']), unit_I,
-		function.PrintValue(a))
-    return (text, 2)
+    return drawing.get_info(study, barre)
+
 
   def _area_node_info(self, noeud, drawing):
     """Retourne les informations sur le noeud choisi"""
@@ -8073,11 +8081,8 @@ class Tab(object):
     entry = MyEntry()
     text = str(value)
     entry.set_text(text)
-    #entry.modify_font(Pango.FontDescription("sans 14"))
     entry.set_tooltip_text("Modifier l'échelle")
-    #entry.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#cac9c8"))
     entry.connect('event', self.on_scale_change, tag)
-    #entry.set_width_chars(n_chars)
     entry.set_has_frame(False)
 
     hbox.pack_start(entry, False, False, 0)
@@ -8434,7 +8439,7 @@ class Tab(object):
             if drawing.get_max_scale(value, study):
               drawing.set_zoom(value)
               drawing.struct_scale = value
-              #drawing.set_scale(study.rdm.struct)
+              drawing.set_scale(study.rdm.struct)
               drawing.del_patterns()
               self.get_layout_size([drawing])
               self.configure_event(self.layout)
